@@ -1,0 +1,27 @@
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
+  border-bottom: 2px solid gray;
+  gap: 0.3rem;
+  box-shadow:  0 -10px 18px -10px gray inset;
+}
+.navItem {
+  border-top-left-radius: 1.6rem;
+  border-top-right-radius: 1.6rem;
+  padding: 0.7rem;
+  border: gray 1.5px solid;
+  transition: all 0.3s;
+  cursor: pointer;
+  text-align: center;
+  font-weight: bold;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.navItem:hover,
+.navItem:active,
+.navItemActive {
+  background-color: var(--mauVien--);
+  color: var(--mauNen--);
+}

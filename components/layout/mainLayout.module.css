@@ -1,0 +1,22 @@
+.header {
+  font-size: 1.4rem;
+  padding: 1rem;
+  padding-bottom: 0;
+  margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.container {
+  border-radius: 1rem;
+  margin: 0 auto;
+  width: 60%;
+  font-size: 1.6rem;
+}
+
+@media only screen and (max-width: 1439.98px) {
+  .container {
+    width: 80%;
+  }
+}

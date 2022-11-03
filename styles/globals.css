@@ -10,17 +10,113 @@ a {
   color: inherit;
   text-decoration: none;
 }
-
+a:hover {
+  color: #4fc4cf;
+}
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  padding: 0;
+  margin: 0;
+  line-height: 1.4;
+}
 * {
   box-sizing: border-box;
 }
+body {
+  font-size: 62.5%;
+  color: #2e2e2e;
+  /* background-color: #f8f5f2; */
+  /* Biến màu ở đây */
+  --mauNen--: #fffffe;
+  --mauTieuDe--: #181818;
+  --mauNut--: #4fc4cf;
+  --mauVien--: #181818;
+  --mauThe--: #f0e2e1;
+  --mauMh1--: #994ff3;
+  --mauMh2--: #fbdd74;
+  --mauMh3--: #078080;
+  --mauMh4--: #c73926;
+}
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-  body {
-    color: white;
-    background: black;
-  }
+/* Css chung cho input,select,textarea */
+input,
+select,
+textarea {
+  padding: 0.3rem;
+  border-radius: 5px;
+  border: 2px solid gray;
+  cursor: pointer;
+  transition: all 0.3s;
+  outline: none;
+  font-size: 1.2rem;
+}
+input:hover,
+select:hover,
+textarea:hover,
+input:focus,
+select:focus,
+textarea:focus {
+  background-color: #c9e6e8;
+  border: 2px solid var(--mauNut--);
+}
+/* Tạo css nút chính  */
+.btn {
+  padding: 0.5rem 1rem;
+  font-size: 1.4rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  border-radius: 0.6rem;
+  transition: all 0.3s;
+  cursor: pointer;
+  background-color: var(--mauNut--);
+  border: 1px solid var(--mauNut--);
+  color: var(--mauTieuDe--);
+  box-shadow: inset 2px lightgray;
+}
+.btn:hover {
+  background-color: var(--mauNen--);
+}
+
+.btn-submit {
+  background-image: linear-gradient(
+    to right,
+    #ef629f 0%,
+    #eecda3 51%,
+    #ef629f 100%
+  );
+  border: 2px solid #ef629f;
+  text-align: center;
+  text-transform: uppercase;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;
+  display: block;
+}
+.btn-submit:hover {
+  background-position: right center; /* change the direction of the change here */
+  color: #fff;
+  text-decoration: none;
+}
+.btn-ghost {
+  background-color: var(--mauNen--);
+  border: 1px solid gray;
+  color: gray;
+}
+.btn-ghost:hover {
+  background-color: gray;
+  border: 1px solid gray;
+  color: var(--mauNen--);
+}
+.btn-small {
+  padding: 0.3rem 0.7rem;
+  font-size: 1.2rem;
+}
+button:disabled {
+  text-decoration: line-through;
+  cursor: not-allowed;
 }

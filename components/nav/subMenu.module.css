@@ -1,0 +1,24 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border-radius: 2rem;
+  overflow: hidden;
+  font-size: 1.2rem;
+  border: 1px solid var(--mauNen--);
+  width: fit-content;
+  margin: 0 auto;
+}
+.item {
+  padding: 0.6rem 1rem;
+  background-color: var(--mauVien--);
+  color: var(--mauNen--);
+  border: 1px solid var(--mauNen--);
+  transition: all 0.3s;
+}
+.item:hover,
+.item:active,
+.itemActive {
+  color: var(--mauMh2--);
+  background-color: rgba(0, 0, 0, 0.8);
+}

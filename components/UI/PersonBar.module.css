@@ -1,0 +1,62 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: var(--mauNen--);
+  box-shadow: 3px 3px 10px lightgrey;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+.infos,
+.actions {
+  display: flex;
+  flex-direction: row;
+  /* flex-wrap: wrap; */
+}
+.infos > *,
+.actions > * {
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.infos h3 {
+  font-size: 1.4rem;
+}
+.sexNam {
+  color: var(--mauNen--);
+  background-color: var(--mauMh1--);
+}
+.sexNu {
+  color: var(--mauNen--);
+  background-color: var(--mauNut--);
+}
+.lop {
+  color: var(--mauNen--);
+  background-color: darkgrey;
+  border-right: 1px solid var(--mauNen--);
+}
+.editBtn {
+  color: var(--mauNen--);
+  background-color: var(--mauMh3--);
+}
+.delBtn {
+  color: var(--mauNen--);
+  background-color: var(--mauMh4--);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.delBtn:hover p {
+  color: var(--mauNut--);
+}
+
+@media only screen and (max-width: 1199.98px) {
+  .container {
+    display: flex;
+    flex-direction: column;
+  }
+  .infos > *,
+  .actions > * {
+    flex: 1;
+  }
+}

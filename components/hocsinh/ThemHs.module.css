@@ -1,0 +1,94 @@
+.container {
+  border-radius: 1rem;
+  border: 4px dashed var(--mauNen--);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.controls,
+.control {
+  display: flex;
+  flex-direction: row;
+  gap: 3rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.control {
+  gap: 1rem;
+}
+.controls {
+  width: minmax(30%, 90%);
+  border-bottom: 2px dotted var(--mauNen--);
+  padding-bottom: 1rem;
+}
+/* Css custom checkbox */
+/* The container */
+.customCheck {
+  display: block;
+  position: relative;
+  padding-left: 40px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 1.6rem;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.customCheck input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+  /* top:5px; */
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 28px;
+  width: 28px;
+  background-color: var(--mauNen--);
+  border-radius: 5px;
+  border: 2px solid gray;
+}
+
+/* On mouse-over, add a grey background color */
+.customCheck:hover input ~ .checkmark {
+  background-color: lightgray;
+}
+
+.customCheck input:checked ~ .checkmark {
+  background-color: var(--mauMh1--);
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.customCheck input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.customCheck .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
