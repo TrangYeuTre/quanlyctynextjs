@@ -1,0 +1,39 @@
+.container {
+  /* padding: 1rem; */
+  border-radius: 1rem;
+  box-shadow: 3px 3px 10px 3px lightgray inset;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  overflow: hidden;
+  width: 95%;
+  margin: 0 auto;
+  border: 1px solid lightgray;
+}
+.description {
+  padding: 0 1rem;
+  color: gray;
+}
+.actions {
+  display: flex;
+  flex-direction: row;
+}
+.actions > * {
+  padding: 1.2rem 1rem;
+  cursor: pointer;
+}
+.action1 {
+  background-color: var(--mauMh3--);
+  color: var(--mauNen--);
+  transition: all 0.3s;
+}
+.action2 {
+  background-color: var(--mauMh4--);
+  color: var(--mauNen--);
+  transition: all 0.3s;
+}
+.action1:hover,
+.action2:hover {
+  color: var(--mauNut--);
+}

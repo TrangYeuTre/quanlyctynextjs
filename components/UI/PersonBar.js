@@ -7,9 +7,12 @@ const PersonBar = (props) => {
   const router = useRouter();
   //Cần những thứ sau truyền xuống :  name, id, gioiTinh, currentRoute dùng đẻ trở lại trang sau khi xóa
   const { shortName, id, gioiTinh, arrLoaiLop, currentRoute } = props;
+  //Tách phần mainRoute ra để dùng cho href bên dưới
+  const arrRoutesSplit = currentRoute.split("/");
+  const mainRoute = arrRoutesSplit[1];
   //Cb xóa
   const deletePersonHandler = (id) => {
-    console.log(id);
+    console.log(id)
     //FETCH HERE
     // fetch();
     //Redirect về trang cần
@@ -34,7 +37,7 @@ const PersonBar = (props) => {
       {/* Phần nút actions */}
       <div className={classes.actions}>
         <div className={classes.editBtn}>
-          <Link href={`/hoc-sinh/sua/${id}`}>
+          <Link href={`/${mainRoute}/sua/${id}`}>
             <p>Sửa</p>
           </Link>
         </div>

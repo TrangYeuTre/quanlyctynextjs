@@ -4,7 +4,7 @@ import MainLayout from "../components/layout/mainLayout";
 function MyApp({ Component, pageProps }) {
   return (
     <MainLayout>
-      <Component {...pageProps} />
+        <Component {...pageProps} />
     </MainLayout>
   );
 }

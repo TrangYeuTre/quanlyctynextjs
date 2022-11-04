@@ -1,0 +1,3 @@
+- Xong cái chọn giáo viên bar --> làm context api để lưu mảng giáo viên, dùng đẻ xác định luông giáo viên được chọn - ok
+- Build một comp riêng để render danh sách học sinh có thể chọn được, bên trong chèn Search với tính năng 2ligh hs cần tìm
+- Dùng context api xử lý chốt ds hoc tro ca nhân ko ổn, lỗi quá --> thay vào đó dùng luôn data từ db load xuống 

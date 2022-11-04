@@ -1,6 +1,6 @@
 import ThemHsPage from "../../../components/hocsinh/ThemHs";
 
-const DsHocSinhCaNhanRoute = (props) => {
+const SuaHocSinhRoute = (props) => {
   //Dummy một hs được chọn
   const HS_DUMMY = {
     id: "hs1",
@@ -29,4 +29,4 @@ const DsHocSinhCaNhanRoute = (props) => {
 //SSP lấy dah sách hs đẻ render satic
 // export async function getStaticPaths() {}
 
-export default DsHocSinhCaNhanRoute;
+export default SuaHocSinhRoute;

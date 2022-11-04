@@ -1,5 +1,5 @@
 export const navItems = () => {
-  const arrNavItems = [
+  const ARR_NAV_ITEMS = [
     {
       id: "i-1",
       route: "/hoc-sinh",
@@ -71,5 +71,5 @@ export const navItems = () => {
     },
     { id: "i-8", route: "/auth/logout", name: "Logout" },
   ];
-  return arrNavItems;
+  return ARR_NAV_ITEMS;
 };

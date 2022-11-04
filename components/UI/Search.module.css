@@ -1,6 +1,7 @@
 .container {
   width: 100%;
   text-align: center;
+  position: relative;
 }
 .container input {
   font-size: 1.2rem;
@@ -8,4 +9,10 @@
   border-radius: 1rem;
   width: 60%;
   margin: 0 auto;
+  padding-left: 2.6rem;
+}
+.icon {
+  position: absolute;
+  left:22%;
+  top:.5rem;
 }

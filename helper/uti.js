@@ -8,7 +8,7 @@ export const sortArtByLastShortName = (arrIn) => {
     const curItem = arrClone[i].shortName.trim();
     const arrNameSplit = curItem.split(" ");
     const lastName = arrNameSplit[arrNameSplit.length - 1];
-    arrLastName.push(lastName);
+    arrLastName.push(lastName.toLowerCase());
   }
   //sort lại mảng phần tên
   let arrLastNameSorted = arrLastName.sort((a, b) => (a < b ? -1 : 1));
@@ -18,7 +18,7 @@ export const sortArtByLastShortName = (arrIn) => {
     const curName = arrLastNameSorted[j];
     //Tìm
     const indexItemMatched = arrClone.findIndex((item) =>
-      item.shortName.includes(curName)
+      item.shortName.toLowerCase().includes(curName)
     );
     if (indexItemMatched !== -1) {
       //Tìm thấy thì xử lý đẩy vào mảng kết quả

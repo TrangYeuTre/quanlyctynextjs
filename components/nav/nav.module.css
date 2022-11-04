@@ -3,7 +3,8 @@
   grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
   border-bottom: 2px solid gray;
   gap: 0.3rem;
-  box-shadow:  0 -10px 18px -10px gray inset;
+  box-shadow: 0 -10px 18px -10px gray inset;
+  overflow: hidden;
 }
 .navItem {
   border-top-left-radius: 1.6rem;
@@ -24,4 +25,6 @@
 .navItemActive {
   background-color: var(--mauVien--);
   color: var(--mauNen--);
+  position: relative;
+  top: 0.6rem;
 }

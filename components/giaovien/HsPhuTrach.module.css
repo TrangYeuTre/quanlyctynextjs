@@ -1,0 +1,17 @@
+.smallArea {
+  grid-column: 1/2;
+}
+.bigArea {
+  grid-column: 2/-1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.control {
+  border-bottom: 4px dashed var(--mauMh3--);
+  padding-bottom: 1rem;
+  display : flex;
+  flex-direction: column;
+  gap : .9rem;
+}

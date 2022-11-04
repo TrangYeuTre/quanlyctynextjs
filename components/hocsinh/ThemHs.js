@@ -171,10 +171,9 @@ const ThemHsPage = (props) => {
                   id="gioiTinh"
                   ref={gioiTinhRef}
                   required
+                  defaultValue="nam"
                 >
-                  <option value="nam" selected>
-                    Nam
-                  </option>
+                  <option value="nam">Nam</option>
                   <option value="nu">Nữ</option>
                 </select>
               </div>
@@ -189,6 +188,7 @@ const ThemHsPage = (props) => {
                   name="ten"
                   id="ten"
                   ref={tenHocSinhRef}
+                  defaultValue=""
                   required
                 />
               </div>
@@ -200,6 +200,7 @@ const ThemHsPage = (props) => {
                   name="shortName"
                   id="shortName"
                   ref={shortNameRef}
+                  defaultValue=""
                   required
                 />
               </div>
@@ -213,6 +214,7 @@ const ThemHsPage = (props) => {
                   name="ngaySinh"
                   id="ngaySinh"
                   ref={ngaySinhRef}
+                  defaultValue={convertInputDateFormat("03-21-1991")}
                   required
                 />
               </div>
@@ -237,7 +239,6 @@ const ThemHsPage = (props) => {
                   type="number"
                   name="hocPhiCaNhan"
                   id="hocPhiCaNhan"
-                  // value={hpCaNhan}
                   defaultValue="300000"
                   onChange={setHpCaNhanHandler}
                   style={{ width: "8rem" }}
@@ -251,7 +252,6 @@ const ThemHsPage = (props) => {
                   type="number"
                   name="hocPhiNhom"
                   id="hocPhiNhom"
-                  // value={hpNhom}
                   defaultValue="90000"
                   onChange={setHpNhomHandler}
                   style={{ width: "8rem" }}
@@ -265,7 +265,7 @@ const ThemHsPage = (props) => {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "1rem",
+                gap: "2rem",
                 borderBottom: "2px dotted var(--mauNen--)",
                 paddingBottom: "1rem",
               }}
@@ -278,6 +278,7 @@ const ThemHsPage = (props) => {
                   name="tenPhuHuynh"
                   id="tenPhuHuynh"
                   ref={tenPhuHuynhRef}
+                  defaultValue=""
                 />
               </div>
               <div className={classes.control}>
@@ -288,6 +289,7 @@ const ThemHsPage = (props) => {
                   name="soDienThoai"
                   id="soDienThoai"
                   ref={soDienThoaiRef}
+                  defaultValue=""
                 />
               </div>
               <div className={classes.control}>
@@ -298,6 +300,7 @@ const ThemHsPage = (props) => {
                   name="diaChi"
                   id="diaChi"
                   ref={diaChiRef}
+                  defaultValue=""
                 />
               </div>
             </div>
@@ -308,9 +311,8 @@ const ThemHsPage = (props) => {
                 style={{ width: "90%" }}
                 rows="7"
                 ref={thongTinCoBanRef}
-              >
-                Thông tin cơ bản về trẻ
-              </textarea>
+                defaultValue="Thông tin cơ bản trẻ"
+              />
             </div>
             {/* Ghi chú ở đây */}
             <CTA message={message}>
@@ -371,19 +373,10 @@ const ThemHsPage = (props) => {
                   id="gioiTinh"
                   ref={gioiTinhRef}
                   required
+                  defaultValue={dataHocSinh.gioiTinh === "nam" ? "nam" : "nu"}
                 >
-                  <option
-                    value="nam"
-                    selected={dataHocSinh.gioiTinh === "nam" ? "checked" : null}
-                  >
-                    Nam
-                  </option>
-                  <option
-                    value="nu"
-                    selected={dataHocSinh.gioiTinh === "nu" ? "checked" : null}
-                  >
-                    Nữ
-                  </option>
+                  <option value="nam">Nam</option>
+                  <option value="nu">Nữ</option>
                 </select>
               </div>
             </div>
@@ -397,7 +390,7 @@ const ThemHsPage = (props) => {
                   name="ten"
                   id="ten"
                   ref={tenHocSinhRef}
-                  value={dataHocSinh.tenHocSinh}
+                  defaultValue={dataHocSinh.tenHocSinh}
                   required
                 />
               </div>
@@ -409,7 +402,7 @@ const ThemHsPage = (props) => {
                   name="shortName"
                   id="shortName"
                   ref={shortNameRef}
-                  value={dataHocSinh.shortName}
+                  defaultValue={dataHocSinh.shortName}
                   required
                 />
               </div>
@@ -423,7 +416,7 @@ const ThemHsPage = (props) => {
                   name="ngaySinh"
                   id="ngaySinh"
                   ref={ngaySinhRef}
-                  value={convertInputDateFormat(dataHocSinh.ngaySinh)}
+                  defaultValue={convertInputDateFormat(dataHocSinh.ngaySinh)}
                   required
                 />
               </div>
@@ -434,9 +427,8 @@ const ThemHsPage = (props) => {
                   name="soPhutHocMotTiet"
                   id="soPhutHocMotTiet"
                   style={{ width: "5rem" }}
-                  defaultValue="60"
                   ref={soPhutHocMotTietRef}
-                  value={dataHocSinh.soPhutHocMotTiet}
+                  defaultValue={dataHocSinh.soPhutHocMotTiet}
                   required
                 />
               </div>
@@ -449,8 +441,7 @@ const ThemHsPage = (props) => {
                   type="number"
                   name="hocPhiCaNhan"
                   id="hocPhiCaNhan"
-                  // value={hpCaNhan}
-                  value={dataHocSinh.hocPhiCaNhan}
+                  defaultValue={dataHocSinh.hocPhiCaNhan}
                   onChange={setHpCaNhanHandler}
                   style={{ width: "8rem" }}
                   step="1000"
@@ -463,9 +454,7 @@ const ThemHsPage = (props) => {
                   type="number"
                   name="hocPhiNhom"
                   id="hocPhiNhom"
-                  // value={hpNhom}
-                  value={dataHocSinh.hocPhiNhom}
-                  // defaultValue="90000"
+                  defaultValue={dataHocSinh.hocPhiNhom}
                   onChange={setHpNhomHandler}
                   style={{ width: "8rem" }}
                   step="1000"
@@ -478,7 +467,7 @@ const ThemHsPage = (props) => {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "1rem",
+                gap: "2rem",
                 borderBottom: "2px dotted var(--mauNen--)",
                 paddingBottom: "1rem",
               }}
@@ -491,7 +480,7 @@ const ThemHsPage = (props) => {
                   name="tenPhuHuynh"
                   id="tenPhuHuynh"
                   ref={tenPhuHuynhRef}
-                  value={dataHocSinh.tenPhuHuynh}
+                  defaultValue={dataHocSinh.tenPhuHuynh}
                 />
               </div>
               <div className={classes.control}>
@@ -502,7 +491,7 @@ const ThemHsPage = (props) => {
                   name="soDienThoai"
                   id="soDienThoai"
                   ref={soDienThoaiRef}
-                  value={dataHocSinh.soDienThoai}
+                  defaultValue={dataHocSinh.soDienThoai}
                 />
               </div>
               <div className={classes.control}>
@@ -513,7 +502,7 @@ const ThemHsPage = (props) => {
                   name="diaChi"
                   id="diaChi"
                   ref={diaChiRef}
-                  value={dataHocSinh.diaChi}
+                  defaultValue={dataHocSinh.diaChi}
                 />
               </div>
             </div>
@@ -524,10 +513,8 @@ const ThemHsPage = (props) => {
                 style={{ width: "90%" }}
                 rows="7"
                 ref={thongTinCoBanRef}
-                value={dataHocSinh.thongTinCoBan}
-              >
-                Thông tin cơ bản về trẻ
-              </textarea>
+                defaultValue={dataHocSinh.thongTinCoBan}
+              />
             </div>
             {/* Ghi chú ở đây */}
             <CTA message={message}>

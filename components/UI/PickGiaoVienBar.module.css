@@ -1,0 +1,33 @@
+.container {
+  border-right: 4px dashed var(--mauMh3--);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-end;
+  text-align: right;
+  padding: 1rem 0;
+}
+.container h3 {
+  margin-right: 1rem;
+}
+.tag {
+  border: 1px solid gray;
+  border-right: none;
+  padding: 0.4rem;
+  padding-right: 2rem;
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  background-color: var(--mauNen--);
+  box-shadow: -18px 0 20px lightgray inset;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 90%;
+}
+.tag:hover,
+.tagSelected {
+  background-color: var(--mauMh1--);
+  border: 1px solid var(--mauMh1--);
+  color: var(--mauNen--);
+  box-shadow: none;
+  width: 100%;
+}

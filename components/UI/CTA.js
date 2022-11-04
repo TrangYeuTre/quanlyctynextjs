@@ -3,7 +3,7 @@ import classes from "./CTA.module.css";
 const Card = (props) => {
   const { message } = props;
   return (
-    <seciton className={classes.container}>
+    <section className={classes.container}>
       <div className={classes.content}>
         {message && (
           <div className={classes.message}>
@@ -13,7 +13,7 @@ const Card = (props) => {
         )}
         <div className={classes.actions}>{props.children}</div>
       </div>
-    </seciton>
+    </section>
   );
 };
 
