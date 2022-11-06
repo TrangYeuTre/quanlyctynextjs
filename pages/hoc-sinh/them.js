@@ -1,7 +1,7 @@
 import ThemHsPage from "../../components/hocsinh/ThemHs";
 
-const HocSinhRoute = (props) => {
-  return <ThemHsPage renderMode="them"/>;
+const ThemHocSinhRoute = (props) => {
+  return <ThemHsPage renderMode="them" />;
 };
 
-export default HocSinhRoute;
+export default ThemHocSinhRoute;

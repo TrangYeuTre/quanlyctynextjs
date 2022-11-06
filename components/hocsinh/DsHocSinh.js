@@ -16,7 +16,6 @@ const DanhSachHocSinhPage = (props) => {
   const [arrHocSinh, setArrHocSinh] = useState([]);
   //CB lấy key search
   const setSearchKeyHandler = (value) => {
-    console.log(value);
     setSearchKey(value);
   };
 
@@ -44,7 +43,7 @@ const DanhSachHocSinhPage = (props) => {
             id={item.id}
             shortName={item.shortName}
             gioiTinh={item.gioiTinh}
-            arrLoaiLop={item.arrLoaiLop}
+            arrLoaiLop={item.lopHoc}
             currentRoute="/hoc-sinh/ds-ca-nhan"
           />
         ))}

@@ -2,11 +2,12 @@ import classes from "./ListPerson.module.css";
 import Search from "./Search";
 import { useEffect, useState, useContext } from "react";
 import { sortArtByLastShortName } from "../../helper/uti";
+import ActionBar from "./ActionBar";
 
 const ListPerson = (props) => {
   //Lấy mảng người xuống render --> Mục tiêu của comp này là trả lại lên trên mảng tương ứng với ngươjf được chọn
   //Ghi chú : vẫn trả lại lên trên mảng full với những người có isSelected, không phải mảng filter ra người isSelectd nhé
-  const { arrPeople } = props;
+  const { arrPeople, getArrResult } = props;
   //State mảng người
   const [arrPeopleRender, setArrPeopleRender] = useState([]);
   //Lấy keywords lên từ Search để lọc
@@ -15,10 +16,8 @@ const ListPerson = (props) => {
   const getKeywordHandler = (keyword) => {
     setKeyword(keyword);
   };
-  //CB phụ
   //CB chọn người / bỏ chọn luôn
   const chonNguoiHandler = (id) => {
-    console.log(id);
     //Clone mảng state đẻ tương tác
     const arrClone = [...arrPeopleRender];
     //Tìm và đánh isSelected
@@ -30,6 +29,10 @@ const ListPerson = (props) => {
         !arrClone[indexNguoiMatched].isSelected;
       setArrPeopleRender(sortArtByLastShortName(arrClone));
     }
+  };
+  //CB chính trả lại kết quả
+  const getArrResultHandler = () => {
+    getArrResult(arrPeopleRender);
   };
   //Side effect lọc lại mảng theo search đẻ rende ra
   useEffect(() => {
@@ -76,6 +79,12 @@ const ListPerson = (props) => {
           })}
         </ul>
       )}
+      {/* Actions xác thực mảng người được chọn để trả về comp trên */}
+      <ActionBar
+        description="Chọn xong phải bấm nút chốt nhé --->"
+        action1="Chốt"
+        doAction1={getArrResultHandler}
+      />
     </div>
   );
 };

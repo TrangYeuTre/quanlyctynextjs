@@ -12,7 +12,9 @@ const ActionBar = (props) => {
 
   return (
     <section className={classes.container}>
-      <div className={classes.description}>{description}</div>
+      <div className={classes.description}>
+        <p>{description}</p>
+      </div>
       <div className={classes.actions}>
         {action1 && (
           <div className={classes.action1} onClick={action1Handler}>

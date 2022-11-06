@@ -1,0 +1,22 @@
+.success {
+  display: block;
+  width: 100;
+  padding: 1rem;
+  /* border-radius: 0.8rem; */
+  color: var(--mauNen--);
+  background-color: var(--mauMh3--);
+  transition: all 0.3s;
+  font-size: 1.6rem;
+  text-align: center;
+}
+.error {
+  display: block;
+  width: 100;
+  padding: 1rem;
+  /* border-radius: 0.8rem; */
+  color: var(--mauNen--);
+  background-color: var(--mauMh4--);
+  transition: all 0.3s;
+  font-size: 1.6rem;
+  text-align: center;
+}

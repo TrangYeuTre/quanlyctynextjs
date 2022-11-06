@@ -1,12 +1,19 @@
 import classes from "./ThemHs.module.css";
 import Card from "../UI/Card";
 import CTA from "../UI/CTA";
-import { useEffect, useState, useRef, Fragment } from "react";
+import { useEffect, useState, useRef, Fragment, useContext } from "react";
+import NotiContext from "../../context/notiContext";
 import Link from "next/link";
 import { convertInputDateFormat } from "../../helper/uti";
+import { useRouter } from "next/router";
+import { BsCheckLg } from "react-icons/bs";
 
 const ThemHsPage = (props) => {
-  //Mong đợi mode dể render tương ứng
+  const notiCtx = useContext(NotiContext);
+  const notiData = notiCtx.noti;
+  const router = useRouter();
+  console.log(notiData);
+  //Mong đợi mode dể render tương ứngmessage
   const { renderMode, dataHocSinh } = props;
   //Ref value cho input
   const gioiTinhRef = useRef();
@@ -18,116 +25,115 @@ const ThemHsPage = (props) => {
   const soDienThoaiRef = useRef();
   const diaChiRef = useRef();
   const thongTinCoBanRef = useRef();
+  const caNhanRef = useRef();
+  const nhomRef = useRef();
+  const hocPhiCaNhanRef = useRef();
+  const hocPhiNhomRef = useRef();
 
-  //State lấy giá trị nhóm,cá nhân
-  const [isNhom, setNhom] = useState(false);
-  const [isCaNhan, setCaNhan] = useState(false);
-  //Sate lấy giá trị hp nhóm cá nhân
-  const [hpCaNhan, setHpCaNhan] = useState(300000);
-  const [hpNhom, setHpNhom] = useState(90000);
-  //State cho phép submit hay không
-  const [isSubmit, setSubmit] = useState(false);
-  //State báo lỗi
-  const [message, setMessage] = useState(null);
-  //Cb đổi state
-  const setNhomHandler = () => {
-    setNhom(!isNhom);
+  //State lấy nhóm hay cá nhân
+  const [isCanhan, setIsCanhan] = useState(
+    dataHocSinh ? dataHocSinh.lopHoc.find((item) => item === "canhan") : false
+  );
+  const [isNhom, setIsNhom] = useState(
+    dataHocSinh ? dataHocSinh.lopHoc.find((item) => item === "nhom") : false
+  );
+  //State cho bấm nút hay không
+  const [isSubmit, setIsSubmit] = useState(false);
+
+  //Cb đánh check
+  const toggleCanhanHandler = () => {
+    setIsCanhan(!isCanhan);
   };
-  const setCaNhanHandler = () => {
-    setCaNhan(!isCaNhan);
+  //Cb đánh check
+  const toggleNhomHandler = () => {
+    setIsNhom(!isNhom);
   };
-  const setHpCaNhanHandler = (e) => {
-    setTimeout(() => {
-      setHpCaNhan(e.target.value);
-    }, 3000);
-  };
-  const setHpNhomHandler = (e) => {
-    setTimeout(() => {
-      setHpNhom(e.target.value);
-    }, 3000);
-  };
+
   //Cb chính fetch thêm hs
   const themHocSinhMoiHandler = async (e) => {
     e.preventDefault();
     //Tổng hợp value đẻ submnit
     const dataSubmit = {
-      canhan: isCaNhan,
-      nhom: isNhom,
+      lopHoc: [isCanhan ? "canhan" : null, isNhom ? "nhom" : null],
       gioiTinh: gioiTinhRef.current.value,
       tenHocSinh: tenHocSinhRef.current.value,
       shortName: shortNameRef.current.value,
       ngaySinh: ngaySinhRef.current.value,
       soPhutHocMotTiet: soPhutHocMotTietRef.current.value,
-      hocPhiCaNhan: hpCaNhan,
-      hocPhiNhom: hpNhom,
+      hocPhiCaNhan: hocPhiCaNhanRef.current.value,
+      hocPhiNhom: hocPhiNhomRef.current.value,
       tenPhuHuynh: tenPhuHuynhRef.current.value,
       soDienThoai: soDienThoaiRef.current.value,
       diaChi: diaChiRef.current.value,
       thongTinCoBan: thongTinCoBanRef.current.value,
     };
     //FETCH HERE
-    // await fetch();
+    const response = await fetch("/api/hocSinh", {
+      method: "POST",
+      body: JSON.stringify(dataSubmit),
+      headers: { "Content-Type": "application/json" },
+    });
+    const statusCode = response.status;
+    const dataRes = await response.json();
+    //Chạy push noti
+    setTimeout(() => {
+      notiCtx.clearNoti();
+    }, 5000);
+    notiCtx.pushNoti({
+      status: statusCode,
+      message: dataRes.thongbao,
+    });
+    window.scrollTo(0, 0);
   };
   //Cb chính fetch sưa hs
   const suaHocSinhHandler = async (e) => {
     e.preventDefault();
     //Tổng hợp value đẻ submnit
     const dataSubmit = {
-      canhan: isCaNhan,
-      nhom: isNhom,
+      id: dataHocSinh.id,
+      lopHoc: [isCanhan ? "canhan" : null, isNhom ? "nhom" : null],
       gioiTinh: gioiTinhRef.current.value,
       tenHocSinh: tenHocSinhRef.current.value,
       shortName: shortNameRef.current.value,
       ngaySinh: ngaySinhRef.current.value,
       soPhutHocMotTiet: soPhutHocMotTietRef.current.value,
-      hocPhiCaNhan: hpCaNhan,
-      hocPhiNhom: hpNhom,
+      hocPhiCaNhan: hocPhiCaNhanRef.current.value,
+      hocPhiNhom: hocPhiNhomRef.current.value,
       tenPhuHuynh: tenPhuHuynhRef.current.value,
       soDienThoai: soDienThoaiRef.current.value,
       diaChi: diaChiRef.current.value,
       thongTinCoBan: thongTinCoBanRef.current.value,
     };
-    console.log(dataSubmit);
     //FETCH HERE
-    // await fetch();
+    const response = await fetch("/api/hocSinh", {
+      method: "PUT",
+      body: JSON.stringify(dataSubmit),
+      headers: { "Content-Type": "application/json" },
+    });
+    const statusCode = response.status;
+    const dataRes = await response.json();
+    //Chạy push noti
+    setTimeout(() => {
+      notiCtx.clearNoti();
+      if (statusCode === 200 || statusCode === 201) {
+        router.push("/hoc-sinh/ds-ca-nhan");
+      }
+    }, 5000);
+    notiCtx.pushNoti({
+      status: statusCode,
+      message: dataRes.thongbao,
+    });
+    window.scrollTo(0, 0);
   };
-  //Side effect xử lý để được ấn nút submit
+  //Side effect
   useEffect(() => {
-    if (isNhom && hpNhom === 0) {
-      setMessage("Đã chọn nhóm thì học phí nhóm phải lớn hơn 0.");
-      setSubmit(false);
+    //Xêt có được bấm submit hay không
+    if (isCanhan || isNhom) {
+      setIsSubmit(true);
+    } else {
+      setIsSubmit(false);
     }
-    if (isCaNhan && hpCaNhan === 0) {
-      setMessage("Đã chọn cá nhân thì học phí cá nhân phải lớn hơn 0.");
-      setSubmit(false);
-    }
-    if (!isNhom && !isCaNhan) {
-      setMessage("Phải chọn lớp cá nhân hoặc nhóm để tiếp tục!");
-      setSubmit(false);
-    }
-    if (isNhom && hpNhom > 0) {
-      setSubmit(true);
-      setMessage(null);
-    }
-    if (isCaNhan && hpCaNhan > 0) {
-      setSubmit(true);
-      setMessage(null);
-    }
-  }, [isNhom, isCaNhan, hpNhom, hpCaNhan]);
-  //Side effect dugnf cho chế đó sửa
-  useEffect(() => {
-    if (renderMode === "sua" && !isNhom && !isCaNhan) {
-      setMessage("Sửa : Nhớ chọn lại lớp cá nhân hoặc nhóm để sửa !");
-    }
-    if (renderMode === "sua" && isNhom && dataHocSinh.hocPhiNhom === 0) {
-      setMessage("Sửa : Đã chọn nhóm thì học phí nhóm phải lớn hơn 0.");
-      setSubmit(false);
-    }
-    if (renderMode === "sua" && isCaNhan && dataHocSinh.hocPhiCaNhan === 0) {
-      setMessage("Sửa :Đã chọn cá nhân thì học phí cá nhân phải lớn hơn 0.");
-      setSubmit(false);
-    }
-  }, [renderMode, isNhom, isCaNhan, dataHocSinh]);
+  }, [isCanhan, isNhom]);
   return (
     <Card>
       {renderMode === "them" && (
@@ -135,33 +141,38 @@ const ThemHsPage = (props) => {
           <h3>Thêm học sinh mới</h3>
           <form className={classes.container} onSubmit={themHocSinhMoiHandler}>
             {/* Dòng đầu tiên lấy thông tin: lớp cá nhân, nhóm, giới tính */}
-            <div className={classes.controls}>
+            <div
+              className={
+                isSubmit
+                  ? classes.controls
+                  : `${classes.controls} ${classes.warning}`
+              }
+            >
               <div className={classes.control}>
-                <label htmlFor="canhan" className={classes.customCheck}>
-                  Cá nhân{" "}
-                  <input
-                    type="checkbox"
-                    id="canhan"
-                    name="canhan"
-                    value="canhan"
-                    onChange={setCaNhanHandler}
-                  />
-                  <span className={classes.checkmark}></span>
-                </label>
+                <label>Cá nhân</label>
+                <div className={classes.boxCheck} onClick={toggleCanhanHandler}>
+                  {isCanhan && (
+                    <div className={classes.checkIcon}>
+                      <BsCheckLg />
+                    </div>
+                  )}
+                </div>
               </div>
               <div className={classes.control}>
-                <label htmlFor="nhom" className={classes.customCheck}>
-                  Nhóm{" "}
-                  <input
-                    type="checkbox"
-                    id="nhom"
-                    value="nhom"
-                    name="nhom"
-                    onChange={setNhomHandler}
-                  />
-                  <span className={classes.checkmark}></span>
-                </label>
+                <label>Nhóm</label>
+                <div className={classes.boxCheck} onClick={toggleNhomHandler}>
+                  {isNhom && (
+                    <div className={classes.checkIcon}>
+                      <BsCheckLg />
+                    </div>
+                  )}
+                </div>
               </div>{" "}
+              {!isSubmit && (
+                <p style={{ color: "red", fontSize: "1rem" }}>
+                  Chú ý phải chọn ở đây nhé.
+                </p>
+              )}
             </div>
             <div className={classes.controls}>
               <div className={classes.control}>
@@ -240,7 +251,8 @@ const ThemHsPage = (props) => {
                   name="hocPhiCaNhan"
                   id="hocPhiCaNhan"
                   defaultValue="300000"
-                  onChange={setHpCaNhanHandler}
+                  // onChange={setHpCaNhanHandler}
+                  ref={hocPhiCaNhanRef}
                   style={{ width: "8rem" }}
                   step="1000"
                   required
@@ -253,7 +265,8 @@ const ThemHsPage = (props) => {
                   name="hocPhiNhom"
                   id="hocPhiNhom"
                   defaultValue="90000"
-                  onChange={setHpNhomHandler}
+                  // onChange={setHpNhomHandler}
+                  ref={hocPhiNhomRef}
                   style={{ width: "8rem" }}
                   step="1000"
                   required
@@ -315,7 +328,7 @@ const ThemHsPage = (props) => {
               />
             </div>
             {/* Ghi chú ở đây */}
-            <CTA message={message}>
+            <CTA message={notiData.message}>
               <button
                 type="submit"
                 className="btn btn-submit"
@@ -337,33 +350,38 @@ const ThemHsPage = (props) => {
           <h3>Sửa thông tin học sinh: {dataHocSinh.shortName}</h3>
           <form className={classes.container} onSubmit={suaHocSinhHandler}>
             {/* Dòng đầu tiên lấy thông tin: lớp cá nhân, nhóm, giới tính */}
-            <div className={classes.controls}>
+            <div
+              className={
+                isSubmit
+                  ? classes.controls
+                  : `${classes.controls} ${classes.warning}`
+              }
+            >
               <div className={classes.control}>
-                <label htmlFor="canhan" className={classes.customCheck}>
-                  Cá nhân{" "}
-                  <input
-                    type="checkbox"
-                    id="canhan"
-                    name="canhan"
-                    value="canhan"
-                    onChange={setCaNhanHandler}
-                  />
-                  <span className={classes.checkmark}></span>
-                </label>
+                <label>Cá nhân</label>
+                <div className={classes.boxCheck} onClick={toggleCanhanHandler}>
+                  {isCanhan && (
+                    <div className={classes.checkIcon}>
+                      <BsCheckLg />
+                    </div>
+                  )}
+                </div>
               </div>
               <div className={classes.control}>
-                <label htmlFor="nhom" className={classes.customCheck}>
-                  Nhóm{" "}
-                  <input
-                    type="checkbox"
-                    id="nhom"
-                    value="nhom"
-                    name="nhom"
-                    onChange={setNhomHandler}
-                  />
-                  <span className={classes.checkmark}></span>
-                </label>
+                <label>Nhóm</label>
+                <div className={classes.boxCheck} onClick={toggleNhomHandler}>
+                  {isNhom && (
+                    <div className={classes.checkIcon}>
+                      <BsCheckLg />
+                    </div>
+                  )}
+                </div>
               </div>{" "}
+              {!isSubmit && (
+                <p style={{ color: "red", fontSize: "1rem" }}>
+                  Chú ý phải chọn ở đây nhé.
+                </p>
+              )}
             </div>
             <div className={classes.controls}>
               <div className={classes.control}>
@@ -442,7 +460,8 @@ const ThemHsPage = (props) => {
                   name="hocPhiCaNhan"
                   id="hocPhiCaNhan"
                   defaultValue={dataHocSinh.hocPhiCaNhan}
-                  onChange={setHpCaNhanHandler}
+                  ref={hocPhiCaNhanRef}
+                  // onChange={setHpCaNhanHandler}
                   style={{ width: "8rem" }}
                   step="1000"
                   required
@@ -455,7 +474,8 @@ const ThemHsPage = (props) => {
                   name="hocPhiNhom"
                   id="hocPhiNhom"
                   defaultValue={dataHocSinh.hocPhiNhom}
-                  onChange={setHpNhomHandler}
+                  ref={hocPhiNhomRef}
+                  // onChange={setHpNhomHandler}
                   style={{ width: "8rem" }}
                   step="1000"
                   required
@@ -517,7 +537,7 @@ const ThemHsPage = (props) => {
               />
             </div>
             {/* Ghi chú ở đây */}
-            <CTA message={message}>
+            <CTA message={notiData.message}>
               <button
                 type="submit"
                 className="btn btn-submit"
