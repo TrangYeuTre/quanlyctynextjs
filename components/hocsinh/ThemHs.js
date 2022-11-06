@@ -25,8 +25,6 @@ const ThemHsPage = (props) => {
   const soDienThoaiRef = useRef();
   const diaChiRef = useRef();
   const thongTinCoBanRef = useRef();
-  const caNhanRef = useRef();
-  const nhomRef = useRef();
   const hocPhiCaNhanRef = useRef();
   const hocPhiNhomRef = useRef();
 
@@ -39,6 +37,24 @@ const ThemHsPage = (props) => {
   );
   //State cho bấm nút hay không
   const [isSubmit, setIsSubmit] = useState(false);
+
+  //Cb clear input
+  const clearInput = () => {
+    setIsCanhan(false);
+    setIsNhom(false);
+    setIsSubmit(false);
+    gioiTinhRef.current.value = "";
+    tenHocSinhRef.current.value = "";
+    shortNameRef.current.value = "";
+    ngaySinhRef.current.value = "";
+    soPhutHocMotTietRef.current.value = 60;
+    tenPhuHuynhRef.current.value = "";
+    soDienThoaiRef.current.value = "";
+    diaChiRef.current.value = "";
+    thongTinCoBanRef.current.value = "";
+    hocPhiCaNhanRef.current.value = 300000;
+    hocPhiNhomRef.current.value = 90000;
+  };
 
   //Cb đánh check
   const toggleCanhanHandler = () => {
@@ -78,6 +94,7 @@ const ThemHsPage = (props) => {
     //Chạy push noti
     setTimeout(() => {
       notiCtx.clearNoti();
+      clearInput();
     }, 5000);
     notiCtx.pushNoti({
       status: statusCode,
@@ -118,7 +135,8 @@ const ThemHsPage = (props) => {
       if (statusCode === 200 || statusCode === 201) {
         router.push("/hoc-sinh/ds-ca-nhan");
       }
-    }, 5000);
+      clearInput();
+    }, 3000);
     notiCtx.pushNoti({
       status: statusCode,
       message: dataRes.thongbao,

@@ -2,5 +2,6 @@
 - Build một comp riêng để render danh sách học sinh có thể chọn được, bên trong chèn Search với tính năng 2ligh hs cần tìm
 - Dùng context api xử lý chốt ds hoc tro ca nhân ko ổn, lỗi quá --> thay vào đó dùng luôn data từ db load xuống 
 - Áp db vào thực tế luôn để test trực tiếp cho sát - ok xong load danh sách hs rồi - done
-- Fetch thêm hs lỗi con mẹ gì rồi- fix doen
-- Load trang sửa học sinh nào
+- Fetch thêm hs lỗi con mẹ gì rồi- fix done
+- Load trang sửa học sinh nào - done
+- Fetch xóa học sinh nào - 

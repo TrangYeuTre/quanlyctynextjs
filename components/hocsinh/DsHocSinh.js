@@ -5,8 +5,13 @@ import PersonBar from "../UI/PersonBar";
 import Search from "../UI/Search";
 import { sortArtByLastShortName } from "../../helper/uti";
 import classes from "./DsHocSinh.module.css";
+import { useContext } from "react";
+import NotiContext from "../../context/notiContext";
+import { useRouter } from "next/router";
 
 const DanhSachHocSinhPage = (props) => {
+  const notiCtx = useContext(NotiContext);
+  const router = useRouter();
   //Lấy về từ props
   const { arrHocSinhDaPhanLoai } = props;
   //State lấy keyword search
@@ -17,6 +22,22 @@ const DanhSachHocSinhPage = (props) => {
   //CB lấy key search
   const setSearchKeyHandler = (value) => {
     setSearchKey(value);
+  };
+  //CB xóa học sinh theo id
+  const delHocSinhHandler = async (id) => {
+    const response = await fetch("/api/hocSinh", {
+      method: "DELETE",
+      body: JSON.stringify(id),
+      headers: { "Content-Type": "application/json" },
+    });
+    const statusCode = response.status;
+    const dataGot = await response.json();
+    //Đẩy thông báo
+    setTimeout(() => {
+      notiCtx.clearNoti();
+      router.reload();
+    }, 3000);
+    notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
 
   //Xử lý side effect láy mảng hs nếu có search
@@ -44,7 +65,7 @@ const DanhSachHocSinhPage = (props) => {
             shortName={item.shortName}
             gioiTinh={item.gioiTinh}
             arrLoaiLop={item.lopHoc}
-            currentRoute="/hoc-sinh/ds-ca-nhan"
+            doDelFetch={delHocSinhHandler}
           />
         ))}
       </div>

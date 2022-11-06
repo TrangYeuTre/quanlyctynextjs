@@ -8,13 +8,15 @@ const handler = async (req, res) => {
   //Xử lý biến cá nhân và nhóm
   let canhan = null;
   let nhom = null;
-  const caNhanMatched = lopHoc.findIndex((i) => i === "canhan");
-  if (caNhanMatched !== -1) {
-    canhan = true;
-  }
-  const nhomMatched = lopHoc.findIndex((i) => i === "nhom");
-  if (nhomMatched !== -1) {
-    nhom = true;
+  if (method !== "DELETE") {
+    const caNhanMatched = lopHoc.findIndex((i) => i === "canhan");
+    if (caNhanMatched !== -1) {
+      canhan = true;
+    }
+    const nhomMatched = lopHoc.findIndex((i) => i === "nhom");
+    if (nhomMatched !== -1) {
+      nhom = true;
+    }
   }
   //Tạo biến chứa client và database
   let client;
@@ -111,6 +113,22 @@ const handler = async (req, res) => {
       return res.status(500).json({ thongbao: "Sửa thông tin học sinh lỗi" });
     }
   }
+  //Xử lý xóa học sinh
+  if (method === "DELETE") {
+    //Lấy id
+    const hocSinhXoaId = req.body;
+    //Xóa thôi
+    try {
+      await db
+        .collection("hocsinhs")
+        .deleteOne({ _id: ObjectId(hocSinhXoaId) });
+      client.close();
+      return res.status(200).json({ thongbao: "Xóa học sinh thành công" });
+    } catch (err) {
+      client.close();
+      return res.status(500).json({ thongbao: "Xóa học sinh lỗi." });
+    }
+  } //end xóa học sinh
 };
 
 export default handler;

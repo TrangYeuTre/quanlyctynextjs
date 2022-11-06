@@ -43,7 +43,6 @@ export async function getStaticProps() {
         diaChi: item.diaChi,
       };
     });
-    console.log(arrHocSinhConvertId);
     //Filter lại học sinh cá nhân thôi
     let arrFilterCaNhan = [];
     for (let i = 0; i < arrHocSinhConvertId.length; i++) {

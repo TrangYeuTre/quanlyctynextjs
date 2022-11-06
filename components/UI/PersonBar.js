@@ -6,17 +6,14 @@ import { useRouter } from "next/router";
 const PersonBar = (props) => {
   const router = useRouter();
   //Cần những thứ sau truyền xuống :  name, id, gioiTinh, currentRoute dùng đẻ trở lại trang sau khi xóa
-  const { shortName, id, gioiTinh, arrLoaiLop, currentRoute } = props;
+  const { shortName, id, gioiTinh, arrLoaiLop, doDelFetch } = props;
   //Tách phần mainRoute ra để dùng cho href bên dưới
-  const arrRoutesSplit = currentRoute.split("/");
-  const mainRoute = arrRoutesSplit[1];
+  const arrPaths = router.asPath.split("/");
+  const mainRoute = arrPaths[1];
   //Cb xóa
   const deletePersonHandler = (id) => {
-    console.log(id)
-    //FETCH HERE
-    // fetch();
-    //Redirect về trang cần
-    router.push(currentRoute);
+    //Không fetch ở đây, đẩy lên trên để fetch xóa, như vậy mới tái sử dụng nhiều lần được nhé
+    doDelFetch(id);
   };
   return (
     <div className={classes.container}>
