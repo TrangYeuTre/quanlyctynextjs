@@ -4,4 +4,5 @@ const GiaoVienRoute = (props) => {
   return <ThemGvPage renderMode="them"/>;
 };
 
+
 export default GiaoVienRoute;

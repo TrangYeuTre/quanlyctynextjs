@@ -4,10 +4,20 @@ import CTA from "../UI/CTA";
 import { useRef, Fragment } from "react";
 import Link from "next/link";
 import { convertInputDateFormat } from "../../helper/uti";
+import { useContext } from "react";
+import NotiContext from "../../context/notiContext";
+import { useRouter } from "next/router";
 
 const ThemGvPage = (props) => {
+  const notiCtx = useContext(NotiContext);
+  const router = useRouter();
   //Mong đợi mode dể render tương ứng
   const { renderMode, dataGiaoVien } = props;
+  //Lấy id giáo viên khi kích sửa
+  let giaoVienSuaId;
+  if (dataGiaoVien) {
+    giaoVienSuaId = dataGiaoVien.id;
+  }
   //Ref value cho input
   const gioiTinhRef = useRef();
   const tenGiaoVienRef = useRef();
@@ -19,6 +29,18 @@ const ThemGvPage = (props) => {
   const luongCaNhanRef = useRef();
   const luongNhomRef = useRef();
 
+  //CB clear input
+  const clearInput = () => {
+    gioiTinhRef.current.value = "";
+    tenGiaoVienRef.current.value = "";
+    shortNameRef.current.value = "";
+    soDienThoaiRef.current.value = "";
+    diaChiRef.current.value = "";
+    thongTinCoBanRef.current.value = "";
+    luongCaNhanRef.current.value = 160000;
+    luongNhomRef.current.value = 90000;
+  };
+
   //Cb chính fetch thêm giáo viên
   const themGiaoVienMoiHandler = async (e) => {
     e.preventDefault();
@@ -29,33 +51,66 @@ const ThemGvPage = (props) => {
       gioiTinh: gioiTinhRef.current.value,
       ngaySinh: ngaySinhRef.current.value,
       luongCaNhan: luongCaNhanRef.current.value,
-      luongNhon: luongNhomRef.current.value,
+      luongNhom: luongNhomRef.current.value,
       soDienThoai: soDienThoaiRef.current.value,
       diaChi: diaChiRef.current.value,
       thongTinCoBan: thongTinCoBanRef.current.value,
+      hocTroCaNhan: [],
+      hocTroNhom: [],
+      lichDayCaNhan: [],
     };
-    console.log(dataSubmit);
-    //FETCH HERE
-    // await fetch();
+    //Tiến hành fetch thôi
+    const response = await fetch("/api/giaoVien", {
+      method: "POST",
+      body: JSON.stringify(dataSubmit),
+      headers: { "Content-Type": "application/json" },
+    });
+    const statusCode = response.status;
+    const dataGot = await response.json();
+    //Đẩy thông báo nào
+    setTimeout(() => {
+      notiCtx.clearNoti();
+      if (statusCode === 200 || statusCode === 201) {
+        clearInput();
+      }
+    }, process.env.DELAY_TIME_NOTI);
+    window.scrollTo(0, 0);
+    notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
   //Cb chính fetch sưa hs
   const suaGiaoVienHandler = async (e) => {
     e.preventDefault();
     //Tổng hợp value đẻ submnit
     const dataSubmit = {
+      giaoVienSuaId: giaoVienSuaId,
       tenGiaoVien: tenGiaoVienRef.current.value,
       shortName: shortNameRef.current.value,
       gioiTinh: gioiTinhRef.current.value,
       ngaySinh: ngaySinhRef.current.value,
       luongCaNhan: luongCaNhanRef.current.value,
-      luongNhon: luongNhomRef.current.value,
+      luongNhom: luongNhomRef.current.value,
       soDienThoai: soDienThoaiRef.current.value,
       diaChi: diaChiRef.current.value,
       thongTinCoBan: thongTinCoBanRef.current.value,
     };
-    console.log(dataSubmit);
-    //FETCH HERE
-    // await fetch();
+    //Chạy fetch
+    const response = await fetch("/api/giaoVien", {
+      method: "PUT",
+      body: JSON.stringify(dataSubmit),
+      headers: { "Content-Type": "application/json" },
+    });
+    const statusCode = response.status;
+    const dataGot = await response.json();
+    //Đẩy thông báo nào
+    setTimeout(() => {
+      notiCtx.clearNoti();
+      if (statusCode === 200 || statusCode === 201) {
+        clearInput();
+        router.push("/giao-vien/ds-giao-vien");
+      }
+    }, process.env.DELAY_TIME_NOTI);
+    window.scrollTo(0, 0);
+    notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
 
   return (
@@ -129,7 +184,7 @@ const ThemGvPage = (props) => {
                   type="number"
                   name="luongCaNhan"
                   id="luongCaNhan"
-                  defaultValue="160000"
+                  defaultValue={160000}
                   style={{ width: "8rem" }}
                   step="1000"
                   ref={luongCaNhanRef}
@@ -142,7 +197,7 @@ const ThemGvPage = (props) => {
                   type="number"
                   name="luongNhom"
                   id="luongNhom"
-                  defaultValue="90000"
+                  defaultValue={90000}
                   style={{ width: "8rem" }}
                   step="1000"
                   ref={luongNhomRef}

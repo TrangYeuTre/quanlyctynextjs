@@ -24,7 +24,6 @@ const PickGiaoVienBar = (props) => {
     arrGvClone.forEach((item) => (item.isSelected = false));
     //Xử lý gv được selecte hay không
     if (giaoVienDuocChonId) {
-      console.log("r1");
       const indexGvMatched = arrGvClone.findIndex(
         (gv) => gv.id.toString() === giaoVienDuocChonId.toString()
       );
@@ -56,7 +55,7 @@ const PickGiaoVienBar = (props) => {
               className={finalStyle}
               onClick={pickGiaoVienHandler.bind(0, gv.id)}
             >
-              {gv.shortName}
+              <p>{gv.shortName}</p>
             </div>
           );
         })}

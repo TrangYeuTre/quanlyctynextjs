@@ -7,7 +7,8 @@ import ActionBar from "./ActionBar";
 const ListPerson = (props) => {
   //Lấy mảng người xuống render --> Mục tiêu của comp này là trả lại lên trên mảng tương ứng với ngươjf được chọn
   //Ghi chú : vẫn trả lại lên trên mảng full với những người có isSelected, không phải mảng filter ra người isSelectd nhé
-  const { arrPeople, getArrResult } = props;
+  //arrPeopleSelected là mảng truyền xuống để đánh người đã được chọn sẵn nếu có
+  const { arrPeople, getArrResult, arrPeopleSelected, hintAction } = props;
   //State mảng người
   const [arrPeopleRender, setArrPeopleRender] = useState([]);
   //Lấy keywords lên từ Search để lọc
@@ -49,11 +50,31 @@ const ListPerson = (props) => {
       setArrPeopleRender(sortArtByLastShortName(arrFilter));
     } //end if
   }, [arrPeople, keyword]);
+  //Side effect đánh mảng người được selectd nếu có
+  useEffect(() => {
+    if (arrPeopleSelected.length > 0) {
+      const arrClone = [...arrPeople];
+      //Phải luôn clear isSelected của arrClone này
+      arrClone.forEach((i) => (i.isSelected = false));
+      //Chạy lặp mảng default để đánh
+      for (let i = 0; i < arrPeopleSelected.length; i++) {
+        const curId = arrPeopleSelected[i].id.toString();
+        const personMatched = arrClone.findIndex(
+          (i) => i.id.toString() === curId
+        );
+        if (personMatched !== -1) {
+          arrClone[personMatched].isSelected = true;
+        }
+      } //end for
+      //Cuối cùng là set lại mảng render
+      setArrPeopleRender(sortArtByLastShortName(arrClone));
+    }
+  }, [arrPeople, arrPeopleSelected]);
   //Props
   return (
     <div className={classes.container}>
       {/* Search nhanh nè */}
-      <div style={{ width: "70%", margin: "0 auto" }}>
+      <div style={{ width: "90%", margin: "0 auto" }}>
         <Search
           hint="Tìm nhanh tên học sinh ..."
           getKeyword={getKeywordHandler}
@@ -81,7 +102,7 @@ const ListPerson = (props) => {
       )}
       {/* Actions xác thực mảng người được chọn để trả về comp trên */}
       <ActionBar
-        description="Chọn xong phải bấm nút chốt nhé --->"
+        description={hintAction}
         action1="Chốt"
         doAction1={getArrResultHandler}
       />

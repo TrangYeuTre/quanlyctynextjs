@@ -1,17 +1,16 @@
-import ThemGvPage from "../../../components/giaovien/ThemGv";
 import ConnectMongoDb from "../../../helper/connectMongodb";
 import { ObjectId } from "mongodb";
 
-const SuaGiaoVienRoute = (props) => {
+const GanLichChoHocTroCuaGiaoVienDuocChonRoute = (props) => {
   const { giaoVien } = props;
-  //Trả
-  return <ThemGvPage renderMode="sua" dataGiaoVien={giaoVien} />;
+  console.log(giaoVien);
+  return <h1>Trang gán lịch học trò</h1>;
 };
 
 //SSG lấy data học sinh cần sửa
 export async function getStaticProps(context) {
   //Lấy phần id
-  const giaoVienId = context.params.suaGiaoVienId;
+  const giaoVienId = context.params.giaoVienId;
   let db, client;
   //Kết nối db
   try {
@@ -31,18 +30,59 @@ export async function getStaticProps(context) {
     //Chuyển id thành string
     let giaoVienConvert = new Object();
     for (let prop in giaoVienGot) {
+      //Đổi id về string
       if (prop.toString() === "_id") {
         //xử lý phần id
         giaoVienConvert.id = giaoVienGot[prop].toString();
-      } else if (
+      }
+      //Xử lý đổi mảng hocTroCaNhan có id về string luôn
+      if (prop.toString() === "hocTroCaNhan") {
+        const curHocTroCaNhan = giaoVienGot[prop];
+        let arrHocTroCaNhanConvert = [];
+        if (curHocTroCaNhan.length > 0) {
+          arrHocTroCaNhanConvert = curHocTroCaNhan.map((item) => {
+            return { hocSinhId: item.hocSinhId.toString() };
+          });
+        }
+        giaoVienConvert[prop] = arrHocTroCaNhanConvert;
+      }
+      //Xử lý đổi mảng lịch dạy cá nâhn có các phần id về string dumgf
+      if (prop.toString() === "lichDayCaNhan") {
+        const curLichDayCaNhan = giaoVienGot[prop];
+        let arrLichDayCaNhanConvert = [];
+        if (curLichDayCaNhan.length > 0) {
+          console.log("run ?");
+          arrLichDayCaNhanConvert = curLichDayCaNhan.map((item) => {
+            const curArrThu = item.arrThu;
+            const curArrHocSinh = item.arrHocSinh;
+            const curId = item._id;
+            const arrThuConvert = curArrThu.map((i) => {
+              return { thu: i.thu };
+            });
+            const arrHocSinhConvert = curArrHocSinh.map((i) => {
+              return { hocSinhId: i.hocSinhId.toString() };
+            });
+            return {
+              id: curId.toString(),
+              arrThu: arrThuConvert,
+              arrHocSinh: arrHocSinhConvert,
+            };
+          });
+        }
+        //Gán cuối
+        giaoVienConvert[prop] = arrLichDayCaNhanConvert;
+      }
+      // xử lý phần prop còn lại
+      if (
+        prop.toString() !== "_id" &&
         prop.toString() !== "hocTroCaNhan" &&
-        prop.toString() !== "hocTroNhom" &&
         prop.toString() !== "lichDayCaNhan"
       ) {
-        // xử lý phần prop còn lại
+        //xử lý phần id
         giaoVienConvert[prop] = giaoVienGot[prop];
       }
     }
+    console.log(giaoVienConvert);
     client.close();
     //Trả thôi
     return {
@@ -79,7 +119,7 @@ export async function getStaticPaths() {
     const arrPaths = arrGiaoVienIds.map((id) => {
       return {
         params: {
-          suaGiaoVienId: id,
+          giaoVienId: id,
         },
       };
     });
@@ -97,5 +137,4 @@ export async function getStaticPaths() {
     };
   }
 }
-
-export default SuaGiaoVienRoute;
+export default GanLichChoHocTroCuaGiaoVienDuocChonRoute;

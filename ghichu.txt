@@ -4,4 +4,15 @@
 - Áp db vào thực tế luôn để test trực tiếp cho sát - ok xong load danh sách hs rồi - done
 - Fetch thêm hs lỗi con mẹ gì rồi- fix done
 - Load trang sửa học sinh nào - done
-- Fetch xóa học sinh nào - 
+- Fetch xóa học sinh nào - done
+
+------ Tiếp theo xây phần giáo viên nào
+- Thêm logic load danh sách giáo viên từ db thôi nào - done
+- Thêm logic fetch thêm giáo viên mới nào - done
+- Thêm logic sửa giáo viên nào - done
+- Thêm logic xóa giáo viên nào - done
+
+-- Mục giáo viên phu trách
+    - Load ds giáo viên và học sinh cá nhân ssg - done;
+    - Chốt : magnr hs được chọn cho giáo viên để thêm - done
+    - Build logic chọn thứ cho học trò để tạo lich dạy cho giáo viên -- buil page redner cho route hs-phu-trach/[giaoVienId]

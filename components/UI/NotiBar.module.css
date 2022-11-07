@@ -2,21 +2,30 @@
   display: block;
   width: 100;
   padding: 1rem;
-  /* border-radius: 0.8rem; */
   color: var(--mauNen--);
   background-color: var(--mauMh3--);
   transition: all 0.3s;
   font-size: 1.6rem;
   text-align: center;
+  animation: fadeIn ease 2s;
 }
 .error {
   display: block;
   width: 100;
   padding: 1rem;
-  /* border-radius: 0.8rem; */
   color: var(--mauNen--);
   background-color: var(--mauMh4--);
   transition: all 0.3s;
   font-size: 1.6rem;
   text-align: center;
+  animation: fadeIn ease 2s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

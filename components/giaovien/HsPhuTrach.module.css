@@ -9,7 +9,7 @@
   gap: 2rem;
 }
 .control {
-  border-bottom: 4px dashed var(--mauMh3--);
+  /* border-bottom: 4px dashed var(--mauMh3--); */
   padding-bottom: 1rem;
   display : flex;
   flex-direction: column;

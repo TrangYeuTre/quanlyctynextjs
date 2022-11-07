@@ -4,7 +4,28 @@ import { ObjectId } from "mongodb";
 const handler = async (req, res) => {
   const { method, body } = req;
   //Des sở bộ cho tính năng thêm mới học sinh
-  const { lopHoc, hocPhiCaNhan, hocPhiNhom } = body;
+  const {
+    lopHoc,
+    hocPhiCaNhan,
+    hocPhiNhom,
+    tenHocSinh,
+    shortName,
+    ngaySinh,
+    soPhutHocMotTiet,
+  } = body;
+  //Xử lý trả lỗi ngay nếu thiếu các thông tin quan trọng nhé, bỏ phần lớp để bên dưới xử lý sau
+  if (
+    !tenHocSinh ||
+    tenHocSinh === "" ||
+    !shortName ||
+    shortName === "" ||
+    !ngaySinh ||
+    +soPhutHocMotTiet === 0
+  ) {
+    return res
+      .status(422)
+      .json({ thongbao: "Lỗi: phải cung cấp đủ các ô có dấu * nhé" });
+  }
   //Xử lý biến cá nhân và nhóm
   let canhan = null;
   let nhom = null;

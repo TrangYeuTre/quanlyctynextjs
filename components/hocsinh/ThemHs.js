@@ -95,7 +95,7 @@ const ThemHsPage = (props) => {
     setTimeout(() => {
       notiCtx.clearNoti();
       clearInput();
-    }, 5000);
+    }, process.env.DELAY_TIME_NOTI);
     notiCtx.pushNoti({
       status: statusCode,
       message: dataRes.thongbao,
@@ -136,7 +136,7 @@ const ThemHsPage = (props) => {
         router.push("/hoc-sinh/ds-ca-nhan");
       }
       clearInput();
-    }, 3000);
+    }, process.env.DELAY_TIME_NOTI);
     notiCtx.pushNoti({
       status: statusCode,
       message: dataRes.thongbao,
