@@ -8,7 +8,14 @@ const ListPerson = (props) => {
   //Lấy mảng người xuống render --> Mục tiêu của comp này là trả lại lên trên mảng tương ứng với ngươjf được chọn
   //Ghi chú : vẫn trả lại lên trên mảng full với những người có isSelected, không phải mảng filter ra người isSelectd nhé
   //arrPeopleSelected là mảng truyền xuống để đánh người đã được chọn sẵn nếu có
-  const { arrPeople, getArrResult, arrPeopleSelected, hintAction } = props;
+  //doSubAction dùng cho trang gán học trò cho giáo viên -> next đến trang lịch cho học trò ko send req
+  const {
+    arrPeople,
+    getArrResult,
+    arrPeopleSelected,
+    hintAction,
+    doSubAction,
+  } = props;
   //State mảng người
   const [arrPeopleRender, setArrPeopleRender] = useState([]);
   //Lấy keywords lên từ Search để lọc
@@ -34,6 +41,10 @@ const ListPerson = (props) => {
   //CB chính trả lại kết quả
   const getArrResultHandler = () => {
     getArrResult(arrPeopleRender);
+  };
+  //Cb khi ds học trò không đổi không cần cập nhật thì next đến trang lịch học trò
+  const toLichHocTroHandler = () => {
+    doSubAction();
   };
   //Side effect lọc lại mảng theo search đẻ rende ra
   useEffect(() => {
@@ -105,6 +116,8 @@ const ListPerson = (props) => {
         description={hintAction}
         action1="Chốt"
         doAction1={getArrResultHandler}
+        action2="Té"
+        doAction2={toLichHocTroHandler}
       />
     </div>
   );

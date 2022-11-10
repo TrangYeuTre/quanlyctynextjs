@@ -24,27 +24,27 @@ const handler = async (req, res) => {
       .status(500)
       .json({ thongbao: "Lỗi kết nối đến mongodb rồi.", statusCode: 500 });
   }
-  //Tiến hành update lại mảng học trò cá nhân cho giáo viên thoi
-  try {
-    await db
-      .collection("giaoviens")
-      .updateOne(
-        { _id: ObjectId(idGiaoVien) },
-        { $set: { hocTroCaNhan: arrHocSinhChon } }
-      );
-    client.close();
-    return res
-      .status(201)
-      .json({
+  if (method === "PUT") {
+    //Tiến hành update lại mảng học trò cá nhân cho giáo viên thoi
+    try {
+      await db
+        .collection("giaoviens")
+        .updateOne(
+          { _id: ObjectId(idGiaoVien) },
+          { $set: { hocTroCaNhan: arrHocSinhChon } }
+        );
+      client.close();
+      return res.status(201).json({
         thongbao:
           "Cập nhật thành công. Đợi một chút nó tự chuyển trang, đừng bấm gì có thể gây lỗi nhé.",
       });
-  } catch (err) {
-    client.close();
-    return res
-      .status(500)
-      .json({ thongbao: "Lỗi cập nhật học trò cho giáo viên." });
-  }
+    } catch (err) {
+      client.close();
+      return res
+        .status(500)
+        .json({ thongbao: "Lỗi cập nhật học trò cho giáo viên." });
+    }
+  } //end if put
 };
 
 export default handler;

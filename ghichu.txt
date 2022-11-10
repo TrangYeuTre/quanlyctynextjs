@@ -15,4 +15,4 @@
 -- Mục giáo viên phu trách
     - Load ds giáo viên và học sinh cá nhân ssg - done;
     - Chốt : magnr hs được chọn cho giáo viên để thêm - done
-    - Build logic chọn thứ cho học trò để tạo lich dạy cho giáo viên -- buil page redner cho route hs-phu-trach/[giaoVienId]
+    - Sửa lại cái giao diên chốt lịch hs, sau đo fetch data cập nhật lihcj giáo viên nhé

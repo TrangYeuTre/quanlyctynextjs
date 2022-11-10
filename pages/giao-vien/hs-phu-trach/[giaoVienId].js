@@ -1,10 +1,33 @@
 import ConnectMongoDb from "../../../helper/connectMongodb";
 import { ObjectId } from "mongodb";
+// import HocSinhPhuTrachPage from "../../../components/giaovien/HsPhuTrach";
+import GanLichChoHsPage from "../../../components/giaovien/GanLichChoHs";
+import { useEffect, useState } from "react";
 
 const GanLichChoHocTroCuaGiaoVienDuocChonRoute = (props) => {
-  const { giaoVien } = props;
-  console.log(giaoVien);
-  return <h1>Trang gán lịch học trò</h1>;
+  const { giaoVien, arrHocSinhCaNhan } = props;
+  //State lư giáo viên
+  const [gv, setGv] = useState({});
+  //Side effect load
+  useEffect(() => {
+    let gvClone = { ...giaoVien };
+    //Lọc lại mảng học trò cho giáo viên để thêm shortName
+    let arrHocTroCaNhanRemake = [];
+    const curHocTroCaNhan = gvClone.hocTroCaNhan;
+    if (curHocTroCaNhan.length > 0) {
+      curHocTroCaNhan.forEach((i) => {
+        const indexHsMatched = arrHocSinhCaNhan.findIndex(
+          (hs) => hs.id === i.hocSinhId
+        );
+        if (indexHsMatched !== -1) {
+          arrHocTroCaNhanRemake.push(arrHocSinhCaNhan[indexHsMatched]);
+        }
+      });
+    }
+    gvClone.hocTroCaNhan = arrHocTroCaNhanRemake;
+    setGv(gvClone);
+  }, [giaoVien, arrHocSinhCaNhan]);
+  return <GanLichChoHsPage giaoVien={gv} />;
 };
 
 //SSG lấy data học sinh cần sửa
@@ -18,6 +41,24 @@ export async function getStaticProps(context) {
     db = dbGot;
     client = clientGot;
   } catch (err) {
+    return {
+      notFound: true,
+    };
+  }
+  let arrHocSinhCaNhan = [];
+  //Lấy về mảng học sinh cá nhân đê render phần chọn cho trang lịch học trò
+  try {
+    const arrHocSinhCaNhanGot = await db
+      .collection("hocsinhs")
+      .find({ lopHoc: { $in: ["canhan"] } })
+      .toArray();
+
+    arrHocSinhCaNhan = arrHocSinhCaNhanGot.map((hs) => {
+      return { id: hs._id.toString(), shortName: hs.shortName };
+    });
+  } catch (err) {
+    console.log(err);
+    client.close();
     return {
       notFound: true,
     };
@@ -51,7 +92,6 @@ export async function getStaticProps(context) {
         const curLichDayCaNhan = giaoVienGot[prop];
         let arrLichDayCaNhanConvert = [];
         if (curLichDayCaNhan.length > 0) {
-          console.log("run ?");
           arrLichDayCaNhanConvert = curLichDayCaNhan.map((item) => {
             const curArrThu = item.arrThu;
             const curArrHocSinh = item.arrHocSinh;
@@ -82,12 +122,12 @@ export async function getStaticProps(context) {
         giaoVienConvert[prop] = giaoVienGot[prop];
       }
     }
-    console.log(giaoVienConvert);
     client.close();
     //Trả thôi
     return {
       props: {
         giaoVien: giaoVienConvert,
+        arrHocSinhCaNhan,
       },
       revalidate: 10,
     };

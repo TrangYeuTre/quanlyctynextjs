@@ -73,3 +73,16 @@ export const navItems = () => {
   ];
   return ARR_NAV_ITEMS;
 };
+
+export const arrThu = () => {
+  const ARR_THU = [
+    { id: "mon", value: "mon", name: "Hai", isSelected: false },
+    { id: "tue", value: "tue", name: "Ba", isSelected: false },
+    { id: "wed", value: "wed", name: "Tư", isSelected: false },
+    { id: "thu", value: "thu", name: "Năm", isSelected: false },
+    { id: "fri", value: "fri", name: "Sáu", isSelected: false },
+    { id: "sat", value: "sat", name: "Bảy", isSelected: false },
+    { id: "sun", value: "sun", name: "Chủ nhật", isSelected: false },
+  ];
+  return ARR_THU;
+};
