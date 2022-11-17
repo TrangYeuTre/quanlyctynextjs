@@ -36,7 +36,6 @@ export async function getStaticProps(context) {
         giaoVienConvert.id = giaoVienGot[prop].toString();
       } else if (
         prop.toString() !== "hocTroCaNhan" &&
-        prop.toString() !== "hocTroNhom" &&
         prop.toString() !== "lichDayCaNhan"
       ) {
         // xử lý phần prop còn lại

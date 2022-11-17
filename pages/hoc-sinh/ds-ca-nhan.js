@@ -26,7 +26,10 @@ export async function getStaticProps() {
   }
   // Lấy về mảng học sinh
   try {
-    const arrHocSinhGot = await db.collection("hocsinhs").find().toArray();
+    const arrHocSinhGot = await db
+      .collection("hocsinhs")
+      .find({lopHoc:{$in:['canhan']}})
+      .toArray();
     const arrHocSinhConvertId = arrHocSinhGot.map((item) => {
       return {
         id: item._id.toString(),
@@ -43,25 +46,17 @@ export async function getStaticProps() {
         diaChi: item.diaChi,
       };
     });
-    //Filter lại học sinh cá nhân thôi
-    let arrFilterCaNhan = [];
-    for (let i = 0; i < arrHocSinhConvertId.length; i++) {
-      const curHs = arrHocSinhConvertId[i];
-      const indexHsCaNhan = curHs.lopHoc.findIndex((i) => i === "canhan");
-      if (indexHsCaNhan !== -1) {
-        arrFilterCaNhan.push(curHs);
-      }
-    }
     //Đóng client
     client.close();
     //Trả
     return {
       props: {
-        arrHocSinh: arrFilterCaNhan,
+        arrHocSinh: arrHocSinhConvertId,
       },
       revalidate: 10,
     };
   } catch (err) {
+    console.log(err)
     client.close();
     return { notFound: true };
   }

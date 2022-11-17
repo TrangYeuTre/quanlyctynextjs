@@ -5,7 +5,8 @@ import GanLichChoHsPage from "../../../components/giaovien/GanLichChoHs";
 import { useEffect, useState } from "react";
 
 const GanLichChoHocTroCuaGiaoVienDuocChonRoute = (props) => {
-  const { giaoVien, arrHocSinhCaNhan } = props;
+  const { giaoVien, arrHocSinhCaNhan, arrHocTroCaNhan, arrLichDayCaNhan } =
+    props;
   //State lư giáo viên
   const [gv, setGv] = useState({});
   //Side effect load
@@ -13,7 +14,7 @@ const GanLichChoHocTroCuaGiaoVienDuocChonRoute = (props) => {
     let gvClone = { ...giaoVien };
     //Lọc lại mảng học trò cho giáo viên để thêm shortName
     let arrHocTroCaNhanRemake = [];
-    const curHocTroCaNhan = gvClone.hocTroCaNhan;
+    const curHocTroCaNhan = arrHocTroCaNhan;
     if (curHocTroCaNhan.length > 0) {
       curHocTroCaNhan.forEach((i) => {
         const indexHsMatched = arrHocSinhCaNhan.findIndex(
@@ -26,8 +27,14 @@ const GanLichChoHocTroCuaGiaoVienDuocChonRoute = (props) => {
     }
     gvClone.hocTroCaNhan = arrHocTroCaNhanRemake;
     setGv(gvClone);
-  }, [giaoVien, arrHocSinhCaNhan]);
-  return <GanLichChoHsPage giaoVien={gv} />;
+  }, [giaoVien, arrHocSinhCaNhan, arrHocTroCaNhan]);
+  return (
+    <GanLichChoHsPage
+      giaoVien={gv}
+      arrHocTroCaNhan={arrHocTroCaNhan}
+      arrLichDayCaNhan={arrLichDayCaNhan}
+    />
+  );
 };
 
 //SSG lấy data học sinh cần sửa
@@ -57,86 +64,119 @@ export async function getStaticProps(context) {
       return { id: hs._id.toString(), shortName: hs.shortName };
     });
   } catch (err) {
-    console.log(err);
     client.close();
     return {
       notFound: true,
     };
   }
   //Lấy về giáo viên theo id nào
+  let giaoVien = new Object();
+  let arrHocTroCaNhan = [];
+  let arrLichDayCaNhan = [];
+  //Xử lý lấy giáo viên và 2 mảng cần tương tác học trò cá nhân và lịch dạy cá nhân
   try {
     const giaoVienGot = await db
       .collection("giaoviens")
       .findOne({ _id: ObjectId(giaoVienId) });
-    //Chuyển id thành string
-    let giaoVienConvert = new Object();
-    for (let prop in giaoVienGot) {
-      //Đổi id về string
-      if (prop.toString() === "_id") {
-        //xử lý phần id
-        giaoVienConvert.id = giaoVienGot[prop].toString();
-      }
-      //Xử lý đổi mảng hocTroCaNhan có id về string luôn
-      if (prop.toString() === "hocTroCaNhan") {
-        const curHocTroCaNhan = giaoVienGot[prop];
-        let arrHocTroCaNhanConvert = [];
-        if (curHocTroCaNhan.length > 0) {
-          arrHocTroCaNhanConvert = curHocTroCaNhan.map((item) => {
-            return { hocSinhId: item.hocSinhId.toString() };
-          });
-        }
-        giaoVienConvert[prop] = arrHocTroCaNhanConvert;
-      }
-      //Xử lý đổi mảng lịch dạy cá nâhn có các phần id về string dumgf
-      if (prop.toString() === "lichDayCaNhan") {
-        const curLichDayCaNhan = giaoVienGot[prop];
-        let arrLichDayCaNhanConvert = [];
-        if (curLichDayCaNhan.length > 0) {
-          arrLichDayCaNhanConvert = curLichDayCaNhan.map((item) => {
-            const curArrThu = item.arrThu;
-            const curArrHocSinh = item.arrHocSinh;
-            const curId = item._id;
-            const arrThuConvert = curArrThu.map((i) => {
-              return { thu: i.thu };
-            });
-            const arrHocSinhConvert = curArrHocSinh.map((i) => {
-              return { hocSinhId: i.hocSinhId.toString() };
-            });
-            return {
-              id: curId.toString(),
-              arrThu: arrThuConvert,
-              arrHocSinh: arrHocSinhConvert,
-            };
-          });
-        }
-        //Gán cuối
-        giaoVienConvert[prop] = arrLichDayCaNhanConvert;
-      }
-      // xử lý phần prop còn lại
-      if (
-        prop.toString() !== "_id" &&
-        prop.toString() !== "hocTroCaNhan" &&
-        prop.toString() !== "lichDayCaNhan"
-      ) {
-        //xử lý phần id
-        giaoVienConvert[prop] = giaoVienGot[prop];
-      }
-    }
-    client.close();
-    //Trả thôi
+    //Lấy về id và shortName của giáo viên xài thôi
+    giaoVien.id = giaoVienGot._id.toString();
+    giaoVien.shortName = giaoVienGot.shortName;
+    //Lấy về mảng học trò cá nhan của giáo viên thôi
+    arrHocTroCaNhan = giaoVienGot.hocTroCaNhan;
+    //Xử lý mảng lịch cá nhân
+    arrLichDayCaNhan = giaoVienGot.lichDayCaNhan;
+    //Trả lại props
     return {
       props: {
-        giaoVien: giaoVienConvert,
+        giaoVien,
+        arrHocTroCaNhan,
+        arrLichDayCaNhan,
         arrHocSinhCaNhan,
       },
       revalidate: 10,
     };
   } catch (err) {
+    console.log(err);
     client.close();
     return {
       notFound: true,
     };
   }
+  //Bản này có thể bỏ nè, lấy bản trên
+  // try {
+  //   const giaoVienGot = await db
+  //     .collection("giaoviens")
+  //     .findOne({ _id: ObjectId(giaoVienId) });
+  //   //Chuyển id thành string
+  //   let giaoVienConvert = new Object();
+  //   for (let prop in giaoVienGot) {
+  //     //Đổi id về string
+  //     if (prop.toString() === "_id") {
+  //       //xử lý phần id
+  //       giaoVienConvert.id = giaoVienGot[prop].toString();
+  //     }
+  //     //Xử lý đổi mảng hocTroCaNhan có id về string luôn
+  //     if (prop.toString() === "hocTroCaNhan") {
+  //       const curHocTroCaNhan = giaoVienGot[prop];
+  //       let arrHocTroCaNhanConvert = [];
+  //       if (curHocTroCaNhan.length > 0) {
+  //         arrHocTroCaNhanConvert = curHocTroCaNhan.map((item) => {
+  //           return { hocSinhId: item.hocSinhId.toString() };
+  //         });
+  //       }
+  //       giaoVienConvert[prop] = arrHocTroCaNhanConvert;
+  //     }
+  //     //Xử lý đổi mảng lịch dạy cá nâhn có các phần id về string dumgf
+  //     if (prop.toString() === "lichDayCaNhan") {
+  //       const curLichDayCaNhan = giaoVienGot[prop];
+  //       let arrLichDayCaNhanConvert = [];
+  //       if (curLichDayCaNhan.length > 0) {
+  //         arrLichDayCaNhanConvert = curLichDayCaNhan.map((item) => {
+  //           const curArrThu = item.arrThu;
+  //           const curArrHocSinh = item.arrHocSinh;
+  //           // const curId = item._id;
+  //           const arrThuConvert = curArrThu.map((i) => {
+  //             return { thu: i.thu };
+  //           });
+  //           const arrHocSinhConvert = curArrHocSinh.map((i) => {
+  //             return { hocSinhId: i.hocSinhId.toString() };
+  //           });
+  //           return {
+  //             arrThu: arrThuConvert,
+  //             arrHocSinh: arrHocSinhConvert,
+  //           };
+  //         });
+  //       }
+  //       //Gán cuối
+  //       giaoVienConvert[prop] = arrLichDayCaNhanConvert;
+  //     }
+  //     // xử lý phần prop còn lại
+  //     if (
+  //       prop.toString() !== "_id" &&
+  //       prop.toString() !== "hocTroCaNhan" &&
+  //       prop.toString() !== "lichDayCaNhan"
+  //     ) {
+  //       //xử lý phần id
+  //       giaoVienConvert[prop] = giaoVienGot[prop];
+  //     }
+  //   }
+  //   client.close();
+  //   //Trả thôi
+  //   return {
+  //     props: {
+  //       giaoVien: giaoVienConvert,
+  //       arrHocSinhCaNhan,
+  //     },
+  //     revalidate: 10,
+  //   };
+  // } catch (err) {
+  //   console.log(err);
+
+  //   client.close();
+  //   return {
+  //     notFound: true,
+  //   };
+  // }
 }
 
 // SSP lấy dah sách hs đẻ render satic

@@ -69,16 +69,18 @@ const HocSinhPhuTrachPage = (props) => {
   const notiCtx = useContext(NotiContext);
   const giaoVienCtx = useContext(GiaoVienContext);
   const giaoVienDuocChonId = giaoVienCtx.giaoVienSelectedId;
+  console.log(giaoVienDuocChonId)
 
   //State mảng học trò đã có của giáo viên được chọn trước đó, đây cũng là mảng chính load học trò của giáo viên
   const [arrHocTroDefault, setArrHocTroDefault] = useState([]);
 
   //Cb lấy mảng hs phụ trách, cập nhật học trò cho giáo viên luôn
   const setArrHocSinhPhuTrachHandler = async (arr) => {
+    console.log(arr);
     //Arr truyền lên lúc này vẫn là arrFull học sinh, ta chỉ lọc lại học sinh được chọn đẻ fetch update magnr học trò cá nhân cho giáo viên
     const arrFilterHsDuocChon = arr.filter((hs) => hs.isSelected);
     const arrHocSinhDuocChon = arrFilterHsDuocChon.map((item) => {
-      return { hocSinhId: item.id.toString() };
+      return { hocSinhId: item.id.toString(), shortName: item.shortName };
     });
     //Tổng hợp lại data submit
     const dataSubmit = {

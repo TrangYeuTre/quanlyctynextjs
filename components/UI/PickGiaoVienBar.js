@@ -8,13 +8,17 @@ const PickGiaoVienBar = (props) => {
   const giaoVienDuocChonId = giaoVienCtx.giaoVienSelectedId;
   //Cần mảng giáo viên cấu trúc như sau : {idGiaoVien,shortName, isSelected }
   //Như vậy cần dùng useContext để tương tác lưu giáo viên được pick từ próp truyền xuống
-  const { arrGiaoVien } = props;
+  const { arrGiaoVien, layIdGiaoVien } = props;
   //State quyết định mảng giáo viên render
   const [arrGiaoVienRender, setArrGiaoVienRender] = useState([]);
   //Callback xử lý chọn giáo viên
   const pickGiaoVienHandler = (id) => {
     //Push id lưu lên ctx
     giaoVienCtx.chonGiaoVien(id);
+    //Truyền id này lên comp mẹ nếu có
+    if (layIdGiaoVien) {
+      layIdGiaoVien(id);
+    }
   };
   //Xử lý side effect xem giáo viên đang được chọn
   useEffect(() => {

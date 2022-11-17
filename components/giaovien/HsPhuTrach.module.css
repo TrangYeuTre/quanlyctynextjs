@@ -3,14 +3,12 @@
 }
 .bigArea {
   grid-column: 2/-1;
-  padding: 1rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;
 }
 .control,
 .lichContainer {
-  /* border-bottom: 4px dashed var(--mauMh3--); */
   padding-bottom: 1rem;
   display: flex;
   flex-direction: column;
@@ -20,13 +18,13 @@
 .lichContainer {
   padding-left: 1rem;
   display: flex;
-}
-.lichArea {
-  padding: 1rem;
-  padding-left: 0;
-  border-radius: 1rem;
   background-color: var(--mauNen--);
   box-shadow: 5px 5px 10px lightgray;
+  margin: 2rem;
+  border-radius: 1rem;
+}
+.lichArea {
+  padding-left: 0;
   border-left: 4px dashed var(--mauMh3--);
 }
 .chonThu,
@@ -39,11 +37,13 @@
 .tags {
   list-style: none;
   gap: 1rem;
-  padding: 1rem;
+  padding: 0 1rem;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  margin: 0.5rem;
 }
+
 .tag {
   padding: 5px 1.5rem 5px 1.8rem;
   border-top-right-radius: 1rem;
@@ -75,4 +75,10 @@
   background-color: var(--mauMh1--);
   border: 2px solid var(--mauMh1--);
   color: var(--mauNen--);
+}
+
+/* Css phần lịch giáo viên */
+.listLich {
+  display: block;
+  width: 100%;
 }

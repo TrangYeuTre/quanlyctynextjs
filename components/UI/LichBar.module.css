@@ -1,0 +1,33 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: var(--mauNen--);
+  border: 2px solid var(--mauMh1--);
+  font-size: 1.2rem;
+  box-shadow: 5px 5px 10px lightgray;
+}
+.dates,
+.students {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  padding: 1rem;
+  border-bottom: 2px solid var(--mauMh1--);
+}
+.dates {
+  background-color: #e6dbf2;
+}
+.actions {
+  padding: 0.2rem 1rem;
+  text-align: center;
+  background-color: var(--mauMh4--);
+  color: var(--mauNen--);
+  cursor: pointer;
+  transition: all 0.3s;
+  opacity: 0.7;
+}
+.actions:hover {
+  background-color: gray;
+}

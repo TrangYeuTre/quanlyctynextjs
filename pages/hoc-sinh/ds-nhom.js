@@ -28,7 +28,10 @@ export async function getStaticProps() {
   }
   // Lấy về mảng học sinh
   try {
-    const arrHocSinhGot = await db.collection("hocsinhs").find().toArray();
+    const arrHocSinhGot = await db
+      .collection("hocsinhs")
+      .find({ lopHoc: { $in: ["nhom"] } })
+      .toArray();
     const arrHocSinhConvertId = arrHocSinhGot.map((item) => {
       return {
         id: item._id.toString(),
@@ -45,21 +48,12 @@ export async function getStaticProps() {
         diaChi: item.diaChi,
       };
     });
-    //Filter lại học sinh cá nhân thôi
-    let arrFilterNhom = [];
-    for (let i = 0; i < arrHocSinhConvertId.length; i++) {
-      const curHs = arrHocSinhConvertId[i];
-      const indexHsNhom = curHs.lopHoc.findIndex((i) => i === "nhom");
-      if (indexHsNhom !== -1) {
-        arrFilterNhom.push(curHs);
-      }
-    }
     //Đóng client
     client.close();
     //Trả
     return {
       props: {
-        arrHocSinh: arrFilterNhom,
+        arrHocSinh: arrHocSinhConvertId,
       },
       revalidate: 10,
     };

@@ -56,7 +56,6 @@ const ThemGvPage = (props) => {
       diaChi: diaChiRef.current.value,
       thongTinCoBan: thongTinCoBanRef.current.value,
       hocTroCaNhan: [],
-      hocTroNhom: [],
       lichDayCaNhan: [],
     };
     //Tiến hành fetch thôi

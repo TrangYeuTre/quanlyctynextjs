@@ -20,9 +20,7 @@ export const sortArtByLastShortName = (arrIn) => {
   for (let j = 0; j < arrLastNameSorted.length; j++) {
     const curId = arrLastNameSorted[j].id;
     //Tìm
-    const indexItemMatched = arrClone.findIndex(
-      (item) => item.id.toString() === curId.toString()
-    );
+    const indexItemMatched = arrClone.findIndex((item) => item.id === curId);
     if (indexItemMatched !== -1) {
       //Tìm thấy thì xử lý đẩy vào mảng kết quả
       arrResult.push(arrClone[indexItemMatched]);
@@ -46,4 +44,19 @@ export const convertInputDateFormat = (dateIn) => {
   }
   const newDateFormat = `${newDate.getFullYear()}-${month}-${date}`;
   return newDateFormat;
+};
+
+//Xuất thư label ra tên tiếng việt
+export const convertThuLabelRaTen = (label) => {
+  const arrMau = [
+    { label: "mon", name: "Hai" },
+    { label: "tue", name: "Ba" },
+    { label: "wed", name: "Tư" },
+    { label: "thu", name: "Năm" },
+    { label: "fri", name: "Sáu" },
+    { label: "sat", name: "Bảy" },
+    { label: "sun", name: "Chủ nhật" },
+  ];
+  const result = arrMau.find((i) => i.label === label).name;
+  return result;
 };

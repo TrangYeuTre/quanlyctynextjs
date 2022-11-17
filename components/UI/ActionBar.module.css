@@ -1,5 +1,4 @@
 .container {
-  /* padding: 1rem; */
   border-radius: 1rem;
   box-shadow: 3px 3px 10px 3px lightgray inset;
   align-items: center;
@@ -10,9 +9,10 @@
   width: 95%;
   margin: 0 auto;
   border: 1px solid lightgray;
+  font-size: 1rem !important;
 }
 .description {
-  padding: 0 1rem 0 2rem;
+  padding: 0 1rem;
   color: gray;
 }
 .actions {
