@@ -1,7 +1,15 @@
 import classes from "./ActionBar.module.css";
 
 const ActionBar = (props) => {
-  const { action1, action2, doAction1, doAction2, description } = props;
+  const {
+    action1,
+    action2,
+    doAction1,
+    doAction2,
+    description,
+    disAction1,
+    disAction2,
+  } = props;
   //Cb
   const action1Handler = () => {
     doAction1();
@@ -17,12 +25,26 @@ const ActionBar = (props) => {
       </div>
       <div className={classes.actions}>
         {action1 && (
-          <div className={classes.action1} onClick={action1Handler}>
+          <div
+            className={
+              !disAction1
+                ? classes.action1
+                : `${classes.action1} ${classes.disabled}`
+            }
+            onClick={!disAction1 ? action1Handler : null}
+          >
             {action1}
           </div>
         )}
         {action2 && (
-          <div className={classes.action2} onClick={action2Handler}>
+          <div
+            className={
+              !disAction2
+                ? classes.action2
+                : `${classes.action2} ${classes.disabled}`
+            }
+            onClick={!disAction2 ? action2Handler : null}
+          >
             {action2}
           </div>
         )}

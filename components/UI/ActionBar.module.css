@@ -37,3 +37,8 @@
 .action2:hover {
   color: var(--mauNut--);
 }
+.disabled {
+  background-color: gray;
+  color: var(--mauNen--);
+  cursor: not-allowed;
+}
