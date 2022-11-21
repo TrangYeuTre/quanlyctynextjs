@@ -12,6 +12,7 @@
 .students {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   gap: 1.5rem;
   padding: 1rem;
   border-bottom: 2px solid var(--mauMh1--);
@@ -19,7 +20,7 @@
 .dates {
   background-color: #e6dbf2;
 }
-.actions {
+.subBtn {
   padding: 0.2rem 1rem;
   text-align: center;
   background-color: var(--mauMh4--);
@@ -28,6 +29,25 @@
   transition: all 0.3s;
   opacity: 0.7;
 }
-.actions:hover {
+.xoaBtn {
+  background-color: var(--mauMh4--);
+  color: var(--mauNen--);
+}
+.editBtn {
+  background-color: var(--mauMh3--);
+  color: var(--mauNen--);
+}
+.subBtn:hover {
   background-color: gray;
+}
+
+/* Phần này dùng cho LopNhomBar */
+.actionsContainer {
+  width: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+}
+.actionsContainer > * {
+  width: 50%;
 }

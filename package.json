@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "test": "vitest --run --reporter verbose",
+    "test:watch": "vitest",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -17,6 +19,7 @@
   },
   "devDependencies": {
     "eslint": "8.26.0",
-    "eslint-config-next": "13.0.1"
+    "eslint-config-next": "13.0.1",
+    "vitest": "^0.25.2"
   }
 }

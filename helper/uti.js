@@ -60,3 +60,26 @@ export const convertThuLabelRaTen = (label) => {
   const result = arrMau.find((i) => i.label === label).name;
   return result;
 };
+
+//View tiền vnđ
+export const viewSplitMoney = (num) => {
+  if (!num) {
+    return 0;
+  }
+  let result = num.toString();
+  // 1.000.000.000
+  if (result.length > 3 && result.length < 7) {
+    result = `${result.substring(0, result.length - 3)}.${result.substr(
+      result.length - 3,
+      3
+    )}`;
+    return result;
+  }
+  if (result.length > 6 && result.length < 10) {
+    result = `${result.substring(0, result.length - 6)}.${result.substr(
+      result.length - 6,
+      3
+    )}.${result.substr(result.length - 3, 3)}`;
+    return result;
+  }
+};

@@ -8,7 +8,7 @@ const LichBar = (props) => {
   const { data, doXoaLich } = props;
   //Cb xóa
   const xoaLichHandler = (id) => {
-    doXoaLich(id)
+    doXoaLich(id);
   };
   //Trả
   return (
@@ -33,7 +33,10 @@ const LichBar = (props) => {
             ))}
           </div>
         )}
-        <div className={classes.actions} onClick={xoaLichHandler.bind(0,data.lichId)}>
+        <div
+          className={`${classes.subBtn} ${classes.delBtn}`}
+          onClick={xoaLichHandler.bind(0, data.lichId)}
+        >
           <h3>Xóa</h3>
         </div>
       </div>

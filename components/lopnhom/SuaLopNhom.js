@@ -7,7 +7,8 @@ import NotiContext from "../../context/notiContext";
 import ActionBar from "../UI/ActionBar";
 import { useRouter } from "next/router";
 
-const ThemLopNhomPage = (props) => {
+const SuaLopNhomPage = (props) => {
+  //Lấy data sửa
   const router = useRouter();
   //Ctx thông báo
   const notiCtx = useContext(NotiContext);
@@ -16,7 +17,34 @@ const ThemLopNhomPage = (props) => {
   const arrGiaoVienChon = chonNguoiCtx.arrGiaoVien;
   const arrHocSinhChon = chonNguoiCtx.arrHocSinh;
   //Cần từ props mảng học sinh nhóm và giáo viên ở đây
-  const { arrHocSinhNhom, arrGiaoVien } = props;
+  const { arrHocSinhNhom, arrGiaoVien, lopNhom } = props;
+  //Từ lớp nhóm lấy 2 mảng học sinh nhóm và giáo viên nhớm đã tồn tại
+  const { giaoVienLopNhom, hocSinhLopNhom } = lopNhom;
+  //Chạy lặp từng id của 2 mảng trên để đánh lại isSelected của mảng chính
+  //Đánh lại isSelected của hs nhóm
+  if (hocSinhLopNhom) {
+    hocSinhLopNhom.forEach((hocsinh) => {
+      const hsNhomMatched = arrHocSinhNhom.find(
+        (i) => i.id === hocsinh.hocSinhId
+      );
+      if (hsNhomMatched) {
+        hsNhomMatched.isSelected = true;
+      }
+    });
+  }
+  console.log(arrHocSinhNhom);
+  //Đánh lại isSelected của giáo viên
+  if (giaoVienLopNhom) {
+    giaoVienLopNhom.forEach((giaovien) => {
+      const giaoVienMatched = arrGiaoVien.find(
+        (i) => i.id === giaovien.giaoVienId
+      );
+      if (giaoVienMatched) {
+        giaoVienMatched.isSelected = true;
+      }
+    });
+  }
+
   //Ref lấy tên
   const tenLopNhomRef = useRef();
   //Nếu arr giáo viên / hs trên chọn người trên ctx có tồn tại thì lấy mảng này render
@@ -30,7 +58,7 @@ const ThemLopNhomPage = (props) => {
   }
 
   //CB chính submit thêm lớp nhóm
-  const themLopNhomHandler = async () => {
+  const suaLopNhomHandler = async () => {
     //Lấy tên, phần này nếu tên rỗng thì api trả lại lỗi
     const tenLopNhom = tenLopNhomRef.current.value;
 
@@ -47,6 +75,7 @@ const ThemLopNhomPage = (props) => {
       };
     });
     const arrHocSinhRenderFilter = arrHocSinhRender.filter((i) => i.isSelected);
+
     const arrHocSinhLopNhom = arrHocSinhRenderFilter.map((hs) => {
       return {
         hocSinhId: hs.id,
@@ -54,13 +83,14 @@ const ThemLopNhomPage = (props) => {
       };
     });
     const dataSubmit = {
+      lopNhomId: lopNhom.lopNhomId,
       tenLopNhom,
       giaoVienLopNhom: arrGiaoVienLopNhom,
       hocSinhLopNhom: arrHocSinhLopNhom,
     };
     //Chạy submit
     const response = await fetch("/api/lopNhom", {
-      method: "POST",
+      method: "PUT",
       body: JSON.stringify(dataSubmit),
       headers: { "Content-Type": "application/json" },
     });
@@ -70,14 +100,14 @@ const ThemLopNhomPage = (props) => {
     setTimeout(() => {
       notiCtx.clearNoti();
       if (statusCode === 200 || statusCode == 201) {
-        router.reload();
+        router.replace("/lop-nhom/ds-lop-nhom");
       }
     }, process.env.DELAY_TIME_NOTI);
     window.scrollTo(0, 0);
     notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
   //Cb Hủy thêm
-  const huyThemLopNhomHandler = () => {
+  const huySuaLopNhomHandler = () => {
     console.log("Hủy thêm");
   };
   //Xử lý biến tĩnh quyết định có được chốt không
@@ -95,7 +125,13 @@ const ThemLopNhomPage = (props) => {
         {" "}
         <div className={classes.controls}>
           <label htmlFor="tenLopNhom">Thêm tên lớp nhóm:</label>
-          <input type="text" id="tenLopNhom" ref={tenLopNhomRef} required />
+          <input
+            type="text"
+            id="tenLopNhom"
+            ref={tenLopNhomRef}
+            defaultValue={lopNhom.tenLopNhom}
+            required
+          />
         </div>
         <div className={classes.controls}>
           <h3>Chọn giáo viên dạy lớp nhóm</h3>
@@ -107,10 +143,10 @@ const ThemLopNhomPage = (props) => {
         </div>
         <div className={classes.controls}>
           <ActionBar
-            action1="Chốt"
+            action1="Sửa"
             action2="Té"
-            doAction1={themLopNhomHandler}
-            doAction2={huyThemLopNhomHandler}
+            doAction1={suaLopNhomHandler}
+            doAction2={huySuaLopNhomHandler}
             description="Phải chọn giáo viên và học sinh mới được Chốt nhé."
             disAction1={disChot}
           />
@@ -120,4 +156,4 @@ const ThemLopNhomPage = (props) => {
   );
 };
 
-export default ThemLopNhomPage;
+export default SuaLopNhomPage;
