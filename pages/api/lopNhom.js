@@ -77,6 +77,29 @@ const handler = async (req, res) => {
       return res.status(500).json({ thongbao: "Sửa lớp nhóm lỗi." });
     }
   }
+  //Xóa lớp nhóm
+  if (method === "DELETE") {
+    //Lấy id lớp nhóm
+    const lopNhomId = body;
+    //Nếu không có id lớp nhom trả lỗi
+    if (!lopNhomId) {
+      client.close();
+      return res
+        .status(422)
+        .json({ thongbao: "Lỗi thiếu lớp nhóm id để xóa." });
+    }
+    //Tiến hành xóa
+    try {
+      await db
+        .collection("lopnhoms")
+        .findOneAndDelete({ _id: ObjectId(lopNhomId) });
+      client.close();
+      return res.status(201).json({ thongbao: "Xóa lớp nhóm thành công." });
+    } catch (err) {
+      client.close();
+      return res.status(500).json({ thongbao: "Xóa lớp nhóm lỗi." });
+    }
+  } //End if delete
 };
 
 export default handler;

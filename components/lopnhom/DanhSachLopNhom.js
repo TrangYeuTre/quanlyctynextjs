@@ -2,13 +2,31 @@ import classes from "./DsLopNhom.module.css";
 import Card from "../UI/Card";
 import LopNhomBar from "../UI/LopNhomBar";
 import { useRouter } from "next/router";
+import { useContext } from "react";
+import NotiContext from "../../context/notiContext";
 
 const DanhSachLopNhomPage = (props) => {
   const router = useRouter();
+  //Ctx thông báo
+  const notiCtx = useContext(NotiContext);
+  //Lấy data từ props
   const { arrLopNhom } = props;
   //Cb xóa lớp nhóm
-  const xoaLopNhomHandler = (id) => {
-    console.log(id);
+  const xoaLopNhomHandler = async (id) => {
+    const response = await fetch("/api/lopNhom", {
+      method: "DELETE",
+      body: JSON.stringify(id),
+      headers: { "Content-Type": "application/json" },
+    });
+    const statusCode = response.status;
+    const dataGot = await response.json();
+    //Đẩy thông báo
+    setTimeout(() => {
+      notiCtx.clearNoti();
+      router.reload();
+    }, process.env.DELAY_TIME_NOTI);
+    window.scrollTo(0, 0);
+    notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
   //Cb sửa lớp nhom
   const suaLopNhomHandler = (id) => {
