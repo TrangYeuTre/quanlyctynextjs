@@ -1,0 +1,44 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.chonNgay {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+.thuLabel {
+  padding: 0.2rem 0.5rem;
+  border-radius: 5px;
+  background-color: var(--mauMh4--);
+  color: var(--mauNen--);
+}
+.btnChuaChot {
+  padding: 0.3rem 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--mauNen--);
+  color: var(--mauMh3--);
+  border: var(--mauMh3--) 1px solid;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1.4rem;
+}
+.btnChuaChot:hover {
+  background-color: var(--mauMh3--);
+  color: var(--mauNen--);
+  border: var(--mauMh3--) 1px solid;
+}
+.btnDaChot {
+  font-size: 1.4rem;
+  padding: 0.3rem 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--mauMh3--);
+  color: var(--mauNen--);
+  border: var(--mauMh3--) 1px solid;
+  cursor: pointer;
+  transition: all 0.2s;
+}

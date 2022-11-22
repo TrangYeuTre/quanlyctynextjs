@@ -44,7 +44,6 @@ body {
   --mauMh4--: #c73926;
 }
 
-
 /* Css chung cho input,select,textarea */
 input,
 select,
@@ -65,6 +64,9 @@ select:focus,
 textarea:focus {
   background-color: #c9e6e8;
   border: 2px solid var(--mauNut--);
+}
+label {
+  color : #4f4f4f;
 }
 /* Tạo css nút chính  */
 .btn {
@@ -121,4 +123,9 @@ textarea:focus {
 button:disabled {
   text-decoration: line-through;
   cursor: not-allowed;
+}
+
+.ghichu {
+  color: gray;
+  font-size: 1rem !important;
 }

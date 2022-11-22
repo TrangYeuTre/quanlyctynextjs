@@ -46,6 +46,21 @@ export const convertInputDateFormat = (dateIn) => {
   return newDateFormat;
 };
 
+//Lấy thứ từ ngày
+export const layTenThuTuNgay = (dateIn) => {
+  const objTen = {
+    Mon: "Hai",
+    Tue: "Ba",
+    Wed: "Tư",
+    Thu: "Năm",
+    Fri: "Sáu",
+    Sat: "Bảy",
+    Sun: "Cn",
+  };
+  const result = new Date(dateIn).toLocaleString("en-GB", { weekday: "short" });
+  return objTen[result];
+};
+
 //Xuất thư label ra tên tiếng việt
 export const convertThuLabelRaTen = (label) => {
   const arrMau = [
