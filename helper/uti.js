@@ -61,6 +61,11 @@ export const layTenThuTuNgay = (dateIn) => {
   return objTen[result];
 };
 
+//Lấy label thứ từ ngày
+export const laylabelThuTuNgay = (dateIn) => {
+  const result = new Date(dateIn).toLocaleString("en-GB", { weekday: "short" });
+  return result;
+};
 //Xuất thư label ra tên tiếng việt
 export const convertThuLabelRaTen = (label) => {
   const arrMau = [
@@ -97,4 +102,49 @@ export const viewSplitMoney = (num) => {
     )}.${result.substr(result.length - 3, 3)}`;
     return result;
   }
+};
+
+//Xóa phần tử trừng trong mảng theo hocSinhId phục vụ cho thằng bên dưới
+export const xoaItemHocSinhTrungTrongMang = (arr) => {
+  let objChua = {};
+  //Chuyển arr thành obj
+  arr.forEach((item) => {
+    objChua[item.id] = item.id;
+  });
+  //Chạy lặp trong obj và xử lý lại thôi
+  let arrResult = [];
+  for (let key in objChua) {
+    const itemFound = arr.find((i) => i.id === key);
+    if (itemFound) {
+      arrResult.push(itemFound);
+    }
+  }
+  return arrResult;
+};
+//Support cho comp Diểm danh cá nhân
+export const locMangHsDayChinh = (arrLichDayCaNhan, labelThuNgayDiemDanh) => {
+  //Lọc lại mảng này theo théu
+  let arrLichDayCaNhanByThu = [];
+  if (arrLichDayCaNhan.length > 0) {
+    arrLichDayCaNhanByThu = arrLichDayCaNhan.filter((item) =>
+      item.arrThu.find((i) => i.thu === labelThuNgayDiemDanh)
+    );
+  }
+  //Lấy mảng học trò theo thứ đã lọc thôi
+  let arrHocTroDaChon = [];
+  if (arrLichDayCaNhanByThu.length > 0) {
+    arrLichDayCaNhanByThu.forEach((item) => {
+      arrHocTroDaChon = [...item.arrHocSinh];
+    });
+  }
+  //Thêm isSelected cho mảng
+  let arrHocTroDaChonTrue = arrHocTroDaChon.map((item) => {
+    return { id: item.hocSinhId, shortName: item.shortName, isSelected: true };
+  });
+  //Nếu có học sinh trùng thì xóa
+  let arrHocTroDaChonLocTrung =
+    xoaItemHocSinhTrungTrongMang(arrHocTroDaChonTrue);
+  //Ok thì push thằng này lên ctx chọn người để dùng
+  // console.log(arrHocTroDaChonLocTrung);
+  return arrHocTroDaChonLocTrung;
 };

@@ -35,7 +35,7 @@ const ChonNguoi = (props) => {
   //Side effect load mảng người để render
   useEffect(() => {
     setArrPeopleRender(sortArtByLastShortName(arrPeople));
-  }, [arrPeople]);
+  }, [arrPeople, chonNguoiCtx, type]);
   //Trả
   if (arrPeople.length > 0) {
     return (

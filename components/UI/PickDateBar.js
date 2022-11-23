@@ -8,10 +8,11 @@ const PickDateBar = (props) => {
   //State ngày được chọn để điểm danh
   const [ngayDiemDanh, setNgayDiemDanh] = useState(new Date());
   //State ui cho nút chốt
-  const [isChot, setChot] = useState(false);
+  const [isChot, setChot] = useState(true);
   //Cb đổi ngày điểm danh
   const thayDoiNgayDiemDanhHandler = (e) => {
     setNgayDiemDanh(new Date(e.target.value));
+    setChot(false);
   };
   //Cb chốt hay không
   const setChotHandler = () => {
@@ -20,6 +21,10 @@ const PickDateBar = (props) => {
   };
   return (
     <div className={classes.container}>
+      <h3 className="h3GachChan">Chọn ngày</h3>
+      <p className="ghichu">
+        Mặc định là ngày hôm nay, muốn thay đổi thì chọn lại nhé.
+      </p>
       <div className={classes.chonNgay}>
         <label>Thứ</label>
         <div className={classes.thuLabel}>{layTenThuTuNgay(ngayDiemDanh)}</div>

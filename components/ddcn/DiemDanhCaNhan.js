@@ -2,10 +2,11 @@ import classes from "./DiemDanhCaNhan.module.css";
 import Card from "../UI/Card";
 import Layout28 from "../layout/layout-2-8";
 import PickGiaoVienBar from "../UI/PickGiaoVienBar";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import GiaoVienContext from "../../context/giaoVienContext";
 import { convertInputDateFormat, layTenThuTuNgay } from "../../helper/uti";
 import PickDateBar from "../UI/PickDateBar";
+import DayChinh from "./DayChinh";
 
 const DiemDanhCaNhanPage = (props) => {
   const { arrGiaoVien } = props;
@@ -19,35 +20,38 @@ const DiemDanhCaNhanPage = (props) => {
   const layNgayHandler = (date) => {
     setNgayDiemDanh(new Date(date));
   };
-  console.log(convertInputDateFormat(ngayDiemDanh));
-  //Side effect thiết lập ngày lần đầu là hôm nay
+  //Lọc lại data giáo viên được chọn để truyền xuống phần chọn hóc sinh điểm danh chính
+  const dataGiaoVienDuocChon = arrGiaoVien.find(
+    (giaovien) => giaovien.id === giaoVienChonId
+  );
+
   return (
     <Card>
       <Layout28>
         <div className="smallArea">
           <PickGiaoVienBar arrGiaoVien={arrGiaoVien} />
         </div>
-        <div className="bigArea">
-          <h1>Trang điểm danh cá nhân đây</h1>
-          <div className={classes.controls}>
-            <p className="ghichu">
-              Mặc định là ngày hôm nay, muốn thay đổi thì chọn lại nhé.
-            </p>
-            <PickDateBar getNgayDuocChon={layNgayHandler} />
-            {/* <div className={classes.chonNgay}>
-              <label>Thứ</label>
-              <div className={classes.thuLabel}>
-                {layTenThuTuNgay(ngayDiemDanh)}
+        {giaoVienChonId && (
+          <div className="bigArea">
+            <h1>Trang điểm danh cá nhân đây</h1>
+            <div className={classes.controls}>
+              <PickDateBar getNgayDuocChon={layNgayHandler} />
+            </div>
+            {dataGiaoVienDuocChon && (
+              <div className={classes.controls}>
+                <DayChinh
+                  dataGiaoVien={dataGiaoVienDuocChon}
+                  ngayDiemDanh={ngayDiemDanh}
+                />
               </div>
-              <label>Ngày</label>
-              <input
-                type="date"
-                value={convertInputDateFormat(ngayDiemDanh)}
-                onChange={thayDoiNgayDiemDanhHandler}
-              />
-            </div> */}
+            )}
           </div>
-        </div>
+        )}
+        {!giaoVienChonId && (
+          <div className="bigArea">
+            <h3>Chọn giáo viên để thao tác tiếp</h3>
+          </div>
+        )}
       </Layout28>
     </Card>
   );

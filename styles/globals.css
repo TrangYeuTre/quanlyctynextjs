@@ -66,7 +66,7 @@ textarea:focus {
   border: 2px solid var(--mauNut--);
 }
 label {
-  color : #4f4f4f;
+  color: #4f4f4f;
 }
 /* Tạo css nút chính  */
 .btn {
@@ -128,4 +128,11 @@ button:disabled {
 .ghichu {
   color: gray;
   font-size: 1rem !important;
+}
+.h3GachChan::after {
+  content: "";
+  display: block;
+  padding-bottom: .6rem;
+  border-bottom: 1px dashed var(--mauMh3--);
+  width: 20%;
 }

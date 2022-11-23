@@ -1,7 +1,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 .chonNgay {
   display: flex;
@@ -9,7 +9,6 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 1.5rem;
-  margin-top: 1rem;
 }
 .thuLabel {
   padding: 0.2rem 0.5rem;

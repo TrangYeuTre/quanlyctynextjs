@@ -1,9 +1,17 @@
 import DiemDanhCaNhanPage from "../../components/ddcn/DiemDanhCaNhan";
 import ConnectMongo from "../../helper/connectMongodb";
+import GiaoVienProvider from "../../context/giaoVienProvider";
+import ChonNguoiProvider from "../../context/chonNguoiProvider";
 
 const DiemDanhCaNhanRoute = (props) => {
   const { arrGiaoVien } = props;
-  return <DiemDanhCaNhanPage arrGiaoVien={arrGiaoVien} />;
+  return (
+    <GiaoVienProvider>
+      <ChonNguoiProvider>
+        <DiemDanhCaNhanPage arrGiaoVien={arrGiaoVien} />
+      </ChonNguoiProvider>
+    </GiaoVienProvider>
+  );
 };
 
 //SSG
@@ -30,7 +38,8 @@ export async function getStaticProps() {
       return {
         id: gv._id.toString(),
         shortName: gv.shortName,
-        gioiTinh: gv.gioiTinh,
+        hocTroCaNhan: gv.hocTroCaNhan,
+        lichDayCaNhan: gv.lichDayCaNhan,
       };
     });
     arrGiaoVien = arrGiaoVienConvert;
