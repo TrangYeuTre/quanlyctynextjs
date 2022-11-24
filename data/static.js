@@ -37,7 +37,7 @@ export const navItems = () => {
       children: [
         { id: "c-1", route: "/diem-danh", name: "Điểm danh" },
         { id: "c-2", route: "/day-the", name: "Dạy thế" },
-        { id: "c-3", route: "/day-bu", name: "Dạy bù" },
+        // { id: "c-3", route: "/day-bu", name: "Dạy bù" },
         { id: "c-4", route: "/thong-ke-giao-vien", name: "Thống kê giáo viên" },
         { id: "c-5", route: "/thong-ke-hoc-sinh", name: "Thống kê học sinh" },
       ],

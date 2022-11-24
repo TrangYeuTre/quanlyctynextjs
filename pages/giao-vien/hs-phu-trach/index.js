@@ -57,10 +57,11 @@ export async function getStaticProps() {
       .collection("hocsinhs")
       .find({ lopHoc: { $in: ["canhan"] } })
       .toArray();
-    const arrHocSinhConvert = arrHocSinhGot.map((gv) => {
+    const arrHocSinhConvert = arrHocSinhGot.map((hs) => {
       return {
-        id: gv._id.toString(),
-        shortName: gv.shortName,
+        id: hs._id.toString(),
+        shortName: hs.shortName,
+        soPhutHocMotTiet: hs.soPhutHocMotTiet,
         isSelected: false,
       };
     });

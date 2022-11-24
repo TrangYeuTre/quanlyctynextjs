@@ -99,6 +99,7 @@ const GanLichChoHsPage = (props) => {
         return {
           hocSinhId: i.id,
           shortName: i.shortName,
+          soPhutHocMotTiet: i.soPhutHocMotTiet,
           isSelected: i.isSelected,
         };
       });
@@ -114,7 +115,11 @@ const GanLichChoHsPage = (props) => {
         return { thu: i.id };
       }),
       arrHocSinh: arrHsDuocChon.map((i) => {
-        return { hocSinhId: i.hocSinhId, shortName: i.shortName };
+        return {
+          hocSinhId: i.hocSinhId,
+          shortName: i.shortName,
+          soPhutHocMotTiet: i.soPhutHocMotTiet,
+        };
       }),
     };
     console.log(dataSubmit);
@@ -147,7 +152,6 @@ const GanLichChoHsPage = (props) => {
     });
   }
   let arrHocTroRender = arrHocTro;
-  console.log(arrHocTroRender);
   if (arrHsDuocChon.length > 0) {
     arrHsDuocChon.forEach((hs) => {
       const indexMatched = arrHocTroRender.findIndex(
@@ -164,6 +168,7 @@ const GanLichChoHsPage = (props) => {
       id: i.hocSinhId ? i.hocSinhId : i.id,
       shortName: i.shortName,
       isSelected: i.isSelected,
+      soPhutHocMotTiet: i.soPhutHocMotTiet,
     };
   });
   return (

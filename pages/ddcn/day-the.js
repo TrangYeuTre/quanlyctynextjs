@@ -1,14 +1,14 @@
-import DiemDanhCaNhanPage from "../../components/ddcn/DiemDanhCaNhan";
 import ConnectMongo from "../../helper/connectMongodb";
+import DiemDanhDayThePage from "../../components/ddcn/DiemDanhDayThe";
 import GiaoVienProvider from "../../context/giaoVienProvider";
 import ChonNguoiProvider from "../../context/chonNguoiProvider";
 
-const DiemDanhCaNhanRoute = (props) => {
+const DiemDanhDayTheRoute = (props) => {
   const { arrGiaoVien } = props;
   return (
     <GiaoVienProvider>
       <ChonNguoiProvider>
-        <DiemDanhCaNhanPage arrGiaoVien={arrGiaoVien} />
+        <DiemDanhDayThePage arrGiaoVien={arrGiaoVien} />
       </ChonNguoiProvider>
     </GiaoVienProvider>
   );
@@ -55,4 +55,4 @@ export async function getStaticProps() {
     },
   };
 }
-export default DiemDanhCaNhanRoute;
+export default DiemDanhDayTheRoute;

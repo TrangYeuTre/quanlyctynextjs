@@ -62,7 +62,7 @@ const ChonNguoi = (props) => {
   } else {
     return (
       <div className={classes.container}>
-        <h3>Danh sách trống</h3>
+        <p style={{padding:'1rem'}}>Danh sách trống</p>
       </div>
     );
   }
