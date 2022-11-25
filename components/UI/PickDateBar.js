@@ -9,7 +9,7 @@ import {
 
 const PickDateBar = (props) => {
   //Dợi props hàm truyền ngày được chọn lên thôi
-  const { getNgayDuocChon, hint, limitPreNThisMonth } = props;
+  const { getNgayDuocChon, hint, title, limitPreNThisMonth } = props;
   //State ngày được chọn để điểm danh
   const [ngayDiemDanh, setNgayDiemDanh] = useState(new Date());
   //Lấy ngày đầu của tháng trước và ngày cuối của tháng sau để litmit input chọn ngày -> dùng để lọc thống kê ddcn của giáo viên
@@ -29,7 +29,7 @@ const PickDateBar = (props) => {
   };
   return (
     <div className={classes.container}>
-      <h3 className="h3GachChan">Chọn ngày</h3>
+      <h4 className="h3GachChan">{title ? title : "Chọn ngày"}</h4>
       <p className="ghichu">
         {hint
           ? hint

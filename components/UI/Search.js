@@ -1,6 +1,7 @@
 import classes from "./Search.module.css";
 import { useState, useEffect } from "react";
 import { BsSearch } from "react-icons/bs";
+import { MdOutlineClear } from "react-icons/md";
 
 const Search = (props) => {
   //Mong đợi
@@ -10,6 +11,10 @@ const Search = (props) => {
   //Cb
   const setKeywordHandler = (e) => {
     setKeyword(e.target.value);
+  };
+  //Cb
+  const clearInputHandler = () => {
+    setKeyword("");
   };
   //Side effect truyn value lên
   useEffect(() => {
@@ -32,6 +37,9 @@ const Search = (props) => {
       />
       <div className={classes.icon}>
         <BsSearch size="1.4rem" style={{ color: "gray" }} />
+      </div>
+      <div className={classes.clearIcon} onClick={clearInputHandler}>
+        <MdOutlineClear size="1.8rem" className={classes.iconClear} />
       </div>
     </div>
   );

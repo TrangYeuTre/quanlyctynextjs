@@ -7,6 +7,8 @@ const ChonNguoiProvider = (props) => {
   const [arrGiaoVien, setArrGiaoVien] = useState([]);
   //State mảng giáo viên và học sinh
   const [arrHocSinh, setArrHocSinh] = useState([]);
+  //State lưu id của một người được chọn
+  const [nguoiDuocChonId, setNguoiDuocChon] = useState(null);
   //Cb
   const chonGiaoVienHandler = (arr) => {
     setArrGiaoVien(arr);
@@ -14,13 +16,18 @@ const ChonNguoiProvider = (props) => {
   const chonHocSinhHandler = (arr) => {
     setArrHocSinh(arr);
   };
+  const chonMotNguoiHandler = (id) => {
+    setNguoiDuocChon(id);
+  };
 
   //Obj contenxt
   const valueObj = {
     arrGiaoVien: arrGiaoVien,
     arrHocSinh: arrHocSinh,
+    nguoiDuocChonId: nguoiDuocChonId,
     chonGiaoVien: chonGiaoVienHandler,
     chonHocSinh: chonHocSinhHandler,
+    chonMotNguoi: chonMotNguoiHandler,
   };
 
   return (

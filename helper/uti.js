@@ -1,4 +1,3 @@
-
 //Sort lại mảng theo phần tên của shortname, phương pháp dưới hơi dài nhưng tối ưu theo O(n)
 export const sortArtByLastShortName = (arrIn) => {
   //Mảng arrIn có dạng [{id,shortName, và các props khác}]
@@ -209,3 +208,13 @@ export const getFirstLastDateOfPrevMonth = (timeIn) => {
   };
 };
 
+//Lọc lại mảng người với mảng đầu vào và keyword, với dk lọc theo shortName
+export const locShortNameTheoKeyword = (arrIn, key) => {
+  if (!key || key === "") {
+    return arrIn;
+  }
+  let arrResult = arrIn.filter((item) =>
+    item.shortName.trim().toLowerCase().includes(key.toLowerCase())
+  );
+  return arrResult;
+};

@@ -19,7 +19,7 @@ const DayChinh = (props) => {
     arrHsTangCuongRender = arrHsTangCuongCtx;
   }
 
-  //Xử lý mảng học sinh nghỉ khi bỏ chọn
+  //Xử lý mảng học sinh nghỉ khi bỏ chọn ở mảng chính
   let arrHocSinhNghi = [];
   if (arrHocSinhCtx) {
     arrHocSinhNghi = arrHocSinhCtx.filter((hocsinh) => !hocsinh.isSelected);
@@ -45,6 +45,7 @@ const DayChinh = (props) => {
     // setHocTroDayChinhTheoNgay(arrHsChonTrue);
     chonNguoiCtx.chonHocSinh(arrHsChonTrue);
   }, [labelThuNgayDiemDanh, dataGiaoVien]);
+  console.log(arrHocSinhNghi);
   return (
     <div className={classes.container}>
       {/* Vùng chọn hs dạy chính */}
@@ -62,11 +63,17 @@ const DayChinh = (props) => {
       </p>
       <h4>Chọn học sinh học chính / nghỉ</h4>
       <p className="ghichu">
-        Mặc định học trò của giáo viên đảm nhận đã được chọn. Khi bỏ chọn một học sinh tương ứng học sinh đó nghỉ.
+        Mặc định học trò của giáo viên đảm nhận đã được chọn. Khi bỏ chọn một
+        học sinh tương ứng học sinh đó nghỉ.
       </p>
       <ChonNguoi arrPeople={arrHocSinhCtx} type="hocsinh" />
       {/* Vùng học sinh nghỉ */}
       <h4>Học sinh nghỉ</h4>
+      <p className="ghichu">
+        Khi bỏ chọn học sinh ở trên sẽ được tự động chuyển vào danh sách nghỉ.
+        LƯU Ý: trường hợp học sinh không nghỉ cũng không học thì chịu khó vào
+        Thống Kê Giáo Viên và xóa tay học sinh nghỉ.
+      </p>
       <div className={classes.dsNghi}>
         <ul className={classes.tags}>
           {arrHocSinhNghi.length === 0 && (

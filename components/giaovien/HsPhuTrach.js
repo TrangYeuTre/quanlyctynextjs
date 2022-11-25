@@ -8,57 +8,6 @@ import { useState, useContext, useEffect, Fragment } from "react";
 import GiaoVienContext from "../../context/giaoVienContext";
 import NotiContext from "../../context/notiContext";
 import { useRouter } from "next/router";
-// import { arrThu } from "../../data/static";
-// import { sortArtByLastShortName } from "../../helper/uti";
-
-//Tạo một cái comp mini để render nội dung phần chọn lịch cho học trò
-// const ChonItemPage = (props) => {
-//   const { arrItems, getArrResult, type } = props;
-//   //State mảng trả lại
-//   const [arrResult, setArrResult] = useState([]);
-//   //Cb xử lý chọn
-//   const chonItemHandler = (id) => {
-//     //Clone lại mảng arrItems
-//     const arrItemsClone = [...arrItems];
-//     //Tìm kiếm trong mảng item cần đổi isSelected
-//     const indexItemMatched = arrItemsClone.findIndex((i) => i.id === id);
-//     if (indexItemMatched !== -1) {
-//       arrItemsClone[indexItemMatched].isSelected =
-//         !arrItemsClone[indexItemMatched].isSelected;
-//       setArrResult(arrItemsClone);
-//     }
-//   };
-
-//   //Side effect thiết lập mảng render
-//   useEffect(() => {
-//     setArrResult(arrItems);
-//     getArrResult(arrResult);
-//   }, [arrItems, arrResult, getArrResult]);
-//   //Tách lấy mảng học trò của giáo viên
-//   return (
-//     <div className={classes.lichContainer}>
-//       <h3>{type === "thu" ? "Chọn thứ" : "Chọn học sinh cho thứ đã chọn"}</h3>
-//       <ul className={classes.tags}>
-//         {arrResult.length > 0 &&
-//           arrResult.map((item) => {
-//             let finalStyle = classes.tag;
-//             if (item.isSelected) {
-//               finalStyle = `${classes.tag} ${classes.tagActive}`;
-//             }
-//             return (
-//               <li
-//                 className={finalStyle}
-//                 key={item.id}
-//                 onClick={chonItemHandler.bind(0, item.id)}
-//               >
-//                 {type === "thu" ? item.name : item.shortName}
-//               </li>
-//             );
-//           })}
-//       </ul>
-//     </div>
-//   );
-// };
 
 //Comp chính
 const HocSinhPhuTrachPage = (props) => {

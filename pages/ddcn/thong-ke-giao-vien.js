@@ -7,7 +7,6 @@ import {
   getFirstLastDateOfThisMonth,
 } from "../../helper/uti";
 import { useState, useEffect } from "react";
-// import { ISODate } from "mongodb";
 
 const ThongKeGiaoVienRoute = (props) => {
   const { arrGiaoVien, arrDiemDanhCaNhanFilter } = props;
@@ -90,7 +89,6 @@ export async function getStaticProps() {
         },
       })
       .toArray();
-    console.log(arrDdcn);
     //Convert id
     arrDdcn.forEach((item) => (item._id = item._id.toString()));
     arrDiemDanhCaNhanFilter = arrDdcn;

@@ -347,7 +347,7 @@ export const getDataSubmitSuaNgayDiemDanh = (
   let dataSubmit = {
     ngayDiemDanhId: ngayDiemDanhId,
     hocSinhId: hocSinhId,
-    shortName : shortName,
+    shortName: shortName,
     type: typeDd,
   };
   if (
@@ -398,4 +398,36 @@ export const getDataSubmitSuaNgayDiemDanh = (
     };
   }
   return dataSubmit;
+};
+
+//PHÂN NAY THONG KE HOC SINH
+export const getArrDataDdcnThangHocSinhRender = (
+  arrDdcn,
+  ngayLoc,
+  hocSinhChonId
+) => {
+  //Tạo mảng chưa
+  let arrResult = [];
+  //Thag lọc
+  const locMonth = new Date(ngayLoc).getMonth();
+  //Lọc theo tháng
+  const arrFilterMonth = arrDdcn.filter(
+    (item) => new Date(item.ngayDiemDanh).getMonth() === locMonth
+  );
+  //Lọc theo id học sinh chọn
+  const arrFilterByHocSinh = arrFilterMonth.filter(
+    (item) => item[hocSinhChonId] !== undefined
+  );
+  //Đẩy kết quả
+  arrFilterByHocSinh.forEach((item) => {
+    arrResult.push({
+      ngayDiemDanh: item.ngayDiemDanh,
+      gvShortName: item.shortName,
+      type: item[hocSinhChonId].type,
+      soPhutHocMotTiet: item[hocSinhChonId].soPhutHocMotTiet || null,
+    });
+  });
+  //sort lại theo ngày
+  arrResult.sort((a, b) => (new Date(a) < new Date(b) ? -1 : 1));
+  return arrResult;
 };

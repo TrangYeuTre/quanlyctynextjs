@@ -4,8 +4,8 @@
   position: relative;
 }
 .container input {
-  font-size: 1.2rem;
-  padding : .5rem 1rem;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
   border-radius: 1rem;
   width: 60%;
   margin: 0 auto;
@@ -13,6 +13,19 @@
 }
 .icon {
   position: absolute;
-  left:22%;
-  top:.5rem;
+  left: 22%;
+  top: 0.5rem;
+}
+.clearIcon {
+  position: absolute;
+  right: 22%;
+  top: 0.3rem;
+}
+.iconClear {
+  color: var(--mauMh3--);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.iconClear:hover {
+  color: var(--mauMh4--);
 }

@@ -9,7 +9,6 @@ const SuaNgayDiemDanhCuaHocSinhPage = (props) => {
   const { data, arrGiaoVien, tatTrangSua } = props;
   const router = useRouter();
   const notiCtx = useContext(NotiContext);
-  console.log(arrGiaoVien);
   //Des ra các prop chung
   //2 props quan trọng : ngayDiemDanhId để tìm trực tiếp obj trên db đẻ sửa, hocSInhId để tìm học sinh trong obj đéo để sửa
   const {
