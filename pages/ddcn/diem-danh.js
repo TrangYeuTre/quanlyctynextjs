@@ -2,13 +2,23 @@ import DiemDanhCaNhanPage from "../../components/ddcn/DiemDanhCaNhan";
 import ConnectMongo from "../../helper/connectMongodb";
 import GiaoVienProvider from "../../context/giaoVienProvider";
 import ChonNguoiProvider from "../../context/chonNguoiProvider";
-
+import { useEffect, useState } from "react";
 const DiemDanhCaNhanRoute = (props) => {
   const { arrGiaoVien } = props;
+  //State loading
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (arrGiaoVien) {
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+  }, [arrGiaoVien]);
   return (
     <GiaoVienProvider>
       <ChonNguoiProvider>
-        <DiemDanhCaNhanPage arrGiaoVien={arrGiaoVien} />
+        {loading && <h1>Đang load ...</h1>}
+        {!loading && <DiemDanhCaNhanPage arrGiaoVien={arrGiaoVien} />}
       </ChonNguoiProvider>
     </GiaoVienProvider>
   );

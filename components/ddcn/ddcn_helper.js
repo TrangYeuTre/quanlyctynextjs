@@ -302,51 +302,100 @@ export const getObjSubmitDayThe = (
 
 //PHẦN NÀY CHO THÔNG KÊ GIÁO VIÊN
 
-//Lọc lại mảng dd dạy chính và thế trong 2 tháng của gv
-export const layArrTkDayChinhVaDayTheCuaGv = (
+//Lọc lại mảng theo giáo viên id và this month
+export const getArrDdcnByGvNThisMonth = (
+  arrDiemDanhCaNhan,
   giaoVienChonId,
-  arrDiemDanhCaNhan
+  ngayDiemDanh
 ) => {
-  //Dựa vào mảng ddcn và giáo viên được chọn, lọc lại mảng ddcn của giáo viên trong 2 tháng prev và cur
-  let arrDdChinhCuaGvDuocChon = [];
-  if (giaoVienChonId) {
-    arrDdChinhCuaGvDuocChon = arrDiemDanhCaNhan.filter(
-      (giaovien) =>
-        giaovien.giaoVienId === giaoVienChonId && !giaovien.giaoVienDayTheId
-    );
+  //Lọc lại mảng điểm danh theo giaoVienId được chọn và ngay được chọn
+  let arrDiemDanhCaNhanByGvNDate = [];
+  //Đầu tiên là lọc lại theo idGiaoVien
+  const arrFilterByGiaoVienId = arrDiemDanhCaNhan.filter(
+    (item) => item.giaoVienId === giaoVienChonId
+  );
+  //LỌc tiếp theo tháng đang được chọn
+  const curMonth = new Date(ngayDiemDanh).getMonth();
+  const arrFilterByThisMonth = arrFilterByGiaoVienId.filter(
+    (item) => new Date(item.ngayDiemDanh).getMonth() === curMonth
+  );
+  if (arrFilterByThisMonth.length > 0) {
+    arrDiemDanhCaNhanByGvNDate = arrFilterByThisMonth;
   }
-  let arrDayTheCuaGvDuocChon = [];
-  if (giaoVienChonId) {
-    arrDayTheCuaGvDuocChon = arrDiemDanhCaNhan.filter(
-      (giaovien) => giaovien.giaoVienDayTheId === giaoVienChonId
-    );
-  }
-  return {
-    arrDdChinhCuaGvDuocChon,
-    arrDayTheCuaGvDuocChon,
-  };
+  //Sort lại mảng theo ngày điểm danh
+  arrDiemDanhCaNhanByGvNDate.sort((a, b) =>
+    new Date(a.ngayDiemDanh) < new Date(b.ngayDiemDanh) ? -1 : 1
+  );
+  return arrDiemDanhCaNhanByGvNDate;
 };
-//Lọc lại 2 mảng trên theo ngày đuọc chọn
-export const locArrTkChinhVaTheTheoNgay = (
-  ngayDiemDanh,
-  arrDdChinhCuaGvDuocChon,
-  arrDayTheCuaGvDuocChon
+
+//HELPER CHO TRANG SỬA NGÀY ĐIỂM DÁNH CỦA HOC SINH
+export const getDataSubmitSuaNgayDiemDanh = (
+  ngayDiemDanhId,
+  hocSinhId,
+  typeDd,
+  timeHocMotTiet,
+  gvDayTheId,
+  arrGiaoVien,
+  gvDayBuId,
+  ngayNghiTruocDo,
+  ngayDayBu,
+  heSoHoanTien,
+  shortName
 ) => {
-  const filterMonth = new Date(ngayDiemDanh).getMonth();
-  let arrDdChinhTheoNgay = [];
-  if (arrDdChinhCuaGvDuocChon) {
-    arrDdChinhTheoNgay = arrDdChinhCuaGvDuocChon.filter(
-      (item) => new Date(item.ngayDiemDanh).getMonth() === filterMonth
-    );
-  }
-  let arrDdDayTheTheoNgay = [];
-  if (arrDayTheCuaGvDuocChon) {
-    arrDdDayTheTheoNgay = arrDayTheCuaGvDuocChon.filter(
-      (item) => new Date(item.ngayDiemDanh).getMonth() === filterMonth
-    );
-  }
-  return {
-    arrDdChinhTheoNgay,
-    arrDdDayTheTheoNgay,
+  //Tổng hợp data submit tùy theo loại điểm danh
+  let dataSubmit = {
+    ngayDiemDanhId: ngayDiemDanhId,
+    hocSinhId: hocSinhId,
+    shortName : shortName,
+    type: typeDd,
   };
+  if (
+    typeDd === "dayChinh" ||
+    typeDd === "dayTangCuong" ||
+    typeDd === "dayThe" ||
+    typeDd === "dayBu"
+  ) {
+    dataSubmit = {
+      ...dataSubmit,
+      soPhutHocMotTiet: timeHocMotTiet,
+    };
+  }
+  if (typeDd === "dayThe") {
+    //Tra cái shortName
+    let gvdtShortName = "";
+    const gvMatched = arrGiaoVien.find(
+      (giaovien) => giaovien.id === gvDayTheId
+    );
+    if (gvMatched) {
+      gvdtShortName = gvMatched.shortName;
+    }
+    dataSubmit = {
+      ...dataSubmit,
+      giaoVienDayTheId: gvDayTheId,
+      giaoVienDayTheShortName: gvdtShortName ? gvdtShortName : null,
+    };
+  }
+  if (typeDd === "dayBu") {
+    //Tra cái shortname
+    let gvdbShortname = "";
+    const gvMatched = arrGiaoVien.find((giaovien) => giaovien.id === gvDayBuId);
+    if (gvMatched) {
+      gvdbShortname = gvMatched.shortName;
+    }
+    dataSubmit = {
+      ...dataSubmit,
+      giaoVienDayBuId: gvDayBuId,
+      giaoVienDayBuShortName: gvdbShortname ? gvdbShortname : null,
+      ngayNghiCanBu: ngayNghiTruocDo,
+      ngayDayBu: ngayDayBu,
+    };
+  }
+  if (typeDd === "nghi") {
+    dataSubmit = {
+      ...dataSubmit,
+      heSoHoanTien: heSoHoanTien,
+    };
+  }
+  return dataSubmit;
 };

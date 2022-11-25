@@ -3,24 +3,35 @@
   flex-direction: column;
   border-radius: 1rem;
   overflow: hidden;
-  background-color: var(--mauNen--);
   border: 2px solid gray;
   font-size: 1.2rem;
   box-shadow: 5px 5px 10px lightgray;
 }
-.dates,
+.head {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border-bottom: 2px solid gray;
+}
+.date {
+  justify-content: center;
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 70%;
+}
 .students {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 1.5rem;
-  padding: 1rem;
+  padding: 1.5rem 1rem;
   border-bottom: 2px solid gray;
-}
-.dates {
-  background-color: #e6dbf2;
+  background-color: rgb(77, 77, 77);
 }
 .subBtn {
+  width: 30%;
   padding: 0.2rem 1rem;
   text-align: center;
   background-color: var(--mauMh4--);
@@ -30,9 +41,36 @@
   opacity: 0.7;
 }
 .delBtn {
-  background-color: var(--mauMh4--);
+  background-color: gray;
   color: var(--mauNen--);
 }
 .delBtn:hover {
   opacity: 0.5;
+}
+
+.hsItem {
+  padding: 5px 1rem;
+  border-radius: 5px;
+  color: var(--mauNen--);
+  border: 2px solid var(--mauNen--);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.hsItem:hover {
+  opacity: 0.8;
+}
+.dayChinh {
+  background-color: var(--mauNut--);
+}
+.dayThe {
+  background-color: var(--mauMh2--);
+}
+.dayTangCuong {
+  background-color: var(--mauMh1--);
+}
+.dayBu {
+  background-color: rgb(36, 145, 255);
+}
+.nghi {
+  background-color: var(--mauMh4--);
 }

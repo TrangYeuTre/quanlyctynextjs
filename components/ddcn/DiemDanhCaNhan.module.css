@@ -9,7 +9,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 .dsNghi {
   width: 100%;
@@ -68,4 +68,67 @@
   display: flex;
   flex-direction: row;
   gap: 1.5rem;
+}
+
+/* Phần lịch giáo viên */
+.listLich {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+/* Tạo màu ghi chú các ngày */
+.ghiChuMau,
+.nodeItem {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+  opacity : .9;
+}
+.ghiChuMau {
+  padding: 0.5rem;
+  color: #fff;
+  background-color: rgb(55, 55, 55);
+  border-radius: 1rem;
+  font-size: 1rem;
+}
+.nodeItem {
+  gap: 1rem;
+  flex-wrap: nowrap;
+  align-items: center;
+  padding: 0.3rem;
+  border: 1px solid #fff;
+  border-radius: 5px;
+}
+.dayChinh {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: var(--mauNut--);
+}
+.dayThe {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: var(--mauMh2--);
+}
+.dayTangCuong {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: var(--mauMh1--);
+}
+.dayBu {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: rgb(36, 145, 255);
+}
+.nghi {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: var(--mauMh4--);
 }

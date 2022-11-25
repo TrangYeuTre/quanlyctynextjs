@@ -8,7 +8,7 @@ const PickGiaoVienBar = (props) => {
   const giaoVienDuocChonId = giaoVienCtx.giaoVienSelectedId;
   //Cần mảng giáo viên cấu trúc như sau : {idGiaoVien,shortName, isSelected }
   //Như vậy cần dùng useContext để tương tác lưu giáo viên được pick từ próp truyền xuống
-  const { arrGiaoVien, layIdGiaoVien } = props;
+  const { arrGiaoVien, layIdGiaoVien, disAll } = props;
   //State quyết định mảng giáo viên render
   const [arrGiaoVienRender, setArrGiaoVienRender] = useState([]);
   //Callback xử lý chọn giáo viên
@@ -50,6 +50,10 @@ const PickGiaoVienBar = (props) => {
         arrGiaoVienRender.map((gv) => {
           //Xử lý css gv đã được chọn
           let finalStyle = classes.tag;
+          if (disAll) {
+            finalStyle = `${classes.tag} ${classes.tagDis}`;
+          }
+
           if (gv.isSelected) {
             finalStyle = `${classes.tag} ${classes.tagSelected}`;
           }
@@ -57,7 +61,7 @@ const PickGiaoVienBar = (props) => {
             <div
               key={gv.id}
               className={finalStyle}
-              onClick={pickGiaoVienHandler.bind(0, gv.id)}
+              onClick={!disAll ? pickGiaoVienHandler.bind(0, gv.id) : null}
             >
               <p>{gv.shortName}</p>
             </div>

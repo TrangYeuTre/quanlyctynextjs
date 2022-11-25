@@ -41,3 +41,6 @@
   box-shadow: none;
   width: 100%;
 }
+.tagDis {
+  cursor: not-allowed;
+}

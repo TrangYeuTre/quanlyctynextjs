@@ -23,7 +23,17 @@ const handler = async (req, res) => {
   //Xử lý điểm danh
   if (method === "POST") {
     try {
-      await db.collection("diemdanhcanhans").insertOne(body);
+      // Tìm ngày dd đã tồn tại chưa, nếu chưa thì thêm mới/ không thì đè lên
+      const ngayDiemDanhExist = await db
+        .collection("diemdanhcanhans")
+        .findOne({ ngayDiemDanh: ngayDiemDanh });
+      if (!ngayDiemDanhExist) {
+        await db.collection("diemdanhcanhans").insertOne(body);
+      } else {
+        await db
+          .collection("diemdanhcanhans")
+          .replaceOne({ ngayDiemDanh: ngayDiemDanh }, body);
+      }
       client.close();
       return res
         .status(200)
