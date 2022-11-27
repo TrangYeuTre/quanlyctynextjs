@@ -1,4 +1,4 @@
-import ConnectMongoDb from "../../helper/connectMongodb";
+import ConnectMongoDb from "../../../helper/connectMongodb";
 import { ObjectId } from "mongodb";
 
 const handler = async (req, res) => {

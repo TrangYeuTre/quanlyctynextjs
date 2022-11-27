@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { viewSplitMoney } from "../../helper/uti";
 
 const LopNhomBar = (props) => {
-  const { data, doXoaLopNhom, doSuaLopNhom } = props;
+  const { data, doXoaLopNhom, doSuaLopNhom, id } = props;
   //Cb xóa
   const xoaLopNhomHandler = (id) => {
     doXoaLopNhom(id);
@@ -18,7 +18,7 @@ const LopNhomBar = (props) => {
   //Trả
   return (
     data && (
-      <div className={classes.container}>
+      <div className={classes.container} id={id}>
         <div className={classes.dates}>
           <h3>{data.tenLopNhom}</h3>
         </div>

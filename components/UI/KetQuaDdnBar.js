@@ -3,7 +3,7 @@ import { BsFillCalendarCheckFill } from "react-icons/bs";
 import { FaChalkboardTeacher } from "react-icons/fa";
 
 const KetQuaDdnBar = (props) => {
-  const { data, xoaNgayDiemDanhNhom } = props;
+  const { data, xoaNgayDiemDanhNhom, id } = props;
   const { ngayDiemDanh } = data;
   //View lại ngày điể mdanh
   const ngayView = new Date(ngayDiemDanh).getDate() || null;
@@ -23,7 +23,7 @@ const KetQuaDdnBar = (props) => {
     xoaNgayDiemDanhNhom(id);
   };
   return (
-    <div className={classes.container}>
+    <div className={classes.container} id={id}>
       {/* Phần thông tin */}
       <div className={classes.infos}>
         <div className={classes.sexNam}>

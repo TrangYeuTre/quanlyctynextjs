@@ -4,6 +4,7 @@ import LopNhomBar from "../UI/LopNhomBar";
 import { useRouter } from "next/router";
 import { useContext } from "react";
 import NotiContext from "../../context/notiContext";
+import {removeDomItem} from '../../helper/uti'
 
 const DanhSachLopNhomPage = (props) => {
   const API_LOPNHOM_ROUTE = "/api/lopnhom/lopNhom";
@@ -24,9 +25,10 @@ const DanhSachLopNhomPage = (props) => {
     //Đẩy thông báo
     setTimeout(() => {
       notiCtx.clearNoti();
-      router.reload();
+      if (statusCode == 200 || statusCode === 201) {
+        removeDomItem(id)
+      }
     }, process.env.DELAY_TIME_NOTI);
-    window.scrollTo(0, 0);
     notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
   //Cb sửa lớp nhom
@@ -43,6 +45,7 @@ const DanhSachLopNhomPage = (props) => {
           arrLopNhom.map((lopnhom) => (
             <LopNhomBar
               key={lopnhom.id}
+              id={lopnhom.id}
               data={lopnhom}
               doXoaLopNhom={xoaLopNhomHandler}
               doSuaLopNhom={suaLopNhomHandler}

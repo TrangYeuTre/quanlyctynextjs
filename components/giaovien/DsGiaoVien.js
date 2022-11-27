@@ -2,7 +2,7 @@ import Card from "../UI/Card";
 import { useEffect, useState } from "react";
 import PersonBar from "../UI/PersonBar";
 import Search from "../UI/Search";
-import { sortArtByLastShortName } from "../../helper/uti";
+import { sortArtByLastShortName, removeDomItem } from "../../helper/uti";
 import classes from "../hocsinh/DsHocSinh.module.css";
 import { useContext } from "react";
 import NotiContext from "../../context/notiContext";
@@ -36,7 +36,7 @@ const DanhSachGiaoVienPage = (props) => {
     setTimeout(() => {
       notiCtx.clearNoti();
       if ((statusCode === 200) | (statusCode === 201)) {
-        router.reload();
+        removeDomItem(id)
       }
     }, process.env.DELAY_TIME_NOTI);
     window.scrollTo(0, 0);

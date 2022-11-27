@@ -12,7 +12,7 @@ const ItemNgayDdcn = (props) => {
     chuyenGiaoDienSua(data);
   };
   return (
-    <li className={classes.container}>
+    <li className={classes.container} id={_id}>
       <div className={classes.head}>
         <div className={`${classes.headItem} ${classes.date}`}>
           {ngayDiemDanh}
@@ -50,7 +50,7 @@ const ItemNgayDdcn = (props) => {
               onClick={suaNgayHocCuaHsHandler.bind(0, {
                 ...hocsinh,
                 ngayDiemDanhId: _id,
-                ngayDiemDanh : ngayDiemDanh,
+                ngayDiemDanh: ngayDiemDanh,
               })}
             >
               {hocsinh.shortName}{" "}

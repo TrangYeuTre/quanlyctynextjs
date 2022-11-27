@@ -5,15 +5,14 @@ import PickLopNhomBar from "../UI/PickLopNhomBar";
 import PickDateBar from "../UI/PickDateBar";
 import { useState, Fragment, useContext } from "react";
 import { layTenLopNhom, layMangDdnRender } from "./ddn_helper";
+import { removeDomItem } from "../../helper/uti";
 import NotiContext from "../../context/notiContext";
-import { useRouter } from "next/router";
 import KetQuaDdnBar from "../UI/KetQuaDdnBar";
 
 const KetQuaDiemDanhNhomPage = (props) => {
   const API_DDN_ROUTE = "/api/ddn/diemDanhNhom";
   const { arrLopNhom, arrDdnFitler } = props;
 
-  const router = useRouter();
   const notiCtx = useContext(NotiContext);
 
   //State kiểm soát id lớp nhóm được chọn
@@ -49,10 +48,9 @@ const KetQuaDiemDanhNhomPage = (props) => {
     setTimeout(() => {
       notiCtx.clearNoti();
       if ((statusCode === 200) | (statusCode === 201)) {
-        router.reload();
+        removeDomItem(id);
       }
     }, process.env.DELAY_TIME_NOTI);
-    window.scrollTo(0, 0);
     notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
 
@@ -95,6 +93,7 @@ const KetQuaDiemDanhNhomPage = (props) => {
                   arrDdnRender.map((item) => (
                     <KetQuaDdnBar
                       key={item.id}
+                      id={item.id}
                       data={item}
                       xoaNgayDiemDanhNhom={xoaNgayDdnHandler}
                     />

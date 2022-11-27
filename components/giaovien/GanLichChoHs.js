@@ -74,9 +74,11 @@ const GanLichChoHsPage = (props) => {
   const arrThuGot = arrThu();
   let arrHocTro = [];
   if (giaoVien && arrHocTroCaNhan && arrHocTroCaNhan.length > 0) {
-    const arrPlus = arrHocTroCaNhan.map((gv) => {
+    const arrPlus = arrHocTroCaNhan.map((hocsinh) => {
       return {
-        ...gv,
+        id: hocsinh.hocSinhId,
+        shortName: hocsinh.shortName,
+        soPhutHocMotTiet: hocsinh.soPhutHocMotTiet,
         isSelected: false,
       };
     });
@@ -122,7 +124,6 @@ const GanLichChoHsPage = (props) => {
         };
       }),
     };
-    console.log(dataSubmit);
     //Tiến hành fetch nào
     const response = await fetch("/api/giaovien/lichChoHocSinhCuaGiaoVien", {
       method: "POST",

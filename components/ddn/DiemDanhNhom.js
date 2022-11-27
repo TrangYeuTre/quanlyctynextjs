@@ -30,6 +30,8 @@ const DiemDanhNhomPage = (props) => {
 
   //State kiểm soát id lớp nhóm được chọn
   const [lopNhomChonId, setLopNhomChonId] = useState();
+  //Tạo một state dis actons1 của ActionBar, khi bấm nút thêm thì dis nó, đến khi res thành công mới mở lại
+  const [disChot, setDisChot] = useState(false);
   //Lấy tên lớp nhóm chọn
   const tenLopNhomChon = layTenLopNhom(arrLopNhom, lopNhomChonId);
   //State kiểm soát ngày được chọn để điểm danh
@@ -60,6 +62,7 @@ const DiemDanhNhomPage = (props) => {
   }
   //Cb chính ddn
   const diemDanhNhomHandler = async () => {
+    setDisChot(true);
     //Lấy data submit
     const dataSubmit = layObjSubmit(
       ngayChon,
@@ -67,7 +70,6 @@ const DiemDanhNhomPage = (props) => {
       lopNhomChonId,
       tenLopNhomChon
     );
-    console.log(dataSubmit)
     //Fetch
     const response = await fetch(API_DDN_ROUTE, {
       method: "POST",
@@ -79,9 +81,7 @@ const DiemDanhNhomPage = (props) => {
     //Đẩy thông báo
     setTimeout(() => {
       notiCtx.clearNoti();
-      if (statusCode === 200 || statusCode === 201) {
-        router.reload();
-      }
+      setDisChot(false);
     }, process.env.DELAY_TIME_NOTI);
     window.scrollTo(0, 0);
     notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
@@ -114,6 +114,7 @@ const DiemDanhNhomPage = (props) => {
                 <h4>Chọn giáo viên điểm danh nhóm</h4>
                 <ChonNguoi arrPeople={arrGiaoVienRender} type="giaovien" />
                 <ActionBar
+                  disAction1={disChot}
                   action1="Chốt"
                   action2="Té"
                   doAction1={diemDanhNhomHandler}

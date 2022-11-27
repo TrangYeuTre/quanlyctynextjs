@@ -3,6 +3,7 @@ import Layout28 from "../layout/layout-2-8";
 import PickGiaoVienBar from "../UI/PickGiaoVienBar";
 import classes from "./HsPhuTrach.module.css";
 import { useContext, Fragment, useState, useEffect } from "react";
+import { removeDomItem } from "../../helper/uti";
 import GiaoVienContext from "../../context/giaoVienContext";
 import LichBar from "../UI/LichBar";
 import NotiContext from "../../context/notiContext";
@@ -30,9 +31,10 @@ const LichGiaoVienPage = (props) => {
       //Đẩy thông báo
       setTimeout(() => {
         notiCtx.clearNoti();
-        router.reload();
+        if (statusCode === 200 || statusCode == 201) {
+          removeDomItem(id);
+        }
       }, process.env.DELAY_TIME_NOTI);
-      window.scrollTo(0, 0);
       notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
     }
   };
@@ -63,6 +65,7 @@ const LichGiaoVienPage = (props) => {
               giaoVienChon.lichDayCaNhan.map((lich) => (
                 <LichBar
                   key={lich.lichId}
+                  id={lich.lichId}
                   data={lich}
                   doXoaLich={xoaLichHandler}
                 />

@@ -32,7 +32,11 @@ const DateDataBar = (props) => {
     finalStyle = `${classes.hsItem} ${classes.nghi}`;
   }
   return (
-    <div key={ngayDiemDanh} className={finalStyle}>
+    <div
+      key={ngayDiemDanh}
+      className={finalStyle}
+      style={{ cursor: "not-allowed" }}
+    >
       <p>
         {new Date(ngayDiemDanh).getDate()} -- {gvShortName} --{" "}
         {`(${soPhutHocMotTiet || null})'`}
@@ -90,7 +94,7 @@ const ThongKeHocSinhPage = (props) => {
           2022"
           />
         </div>
-        <div className={classes.control} style={{borderBottom:'none'}}>
+        <div className={classes.control} style={{ borderBottom: "none" }}>
           <ul className={classes.ghiChuMau}>
             <div className={classes.nodeItem}>
               <p>Dạy chính</p>

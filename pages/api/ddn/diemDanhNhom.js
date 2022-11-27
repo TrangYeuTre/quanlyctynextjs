@@ -10,12 +10,11 @@ const handler = async (req, res) => {
     db = dbGot;
     client = clientGot;
   } catch (err) {
-    res.status(500).json({ thongbao: "Lỗi kết nối đến db." });
+    return res.status(500).json({ thongbao: "Lỗi kết nối đến db." });
   }
   //Thêm mới điêm danh nhóm
   if (method === "POST") {
     const { ngayDiemDanh, tenLopNhom, lopNhomId } = body;
-    console.log(ngayDiemDanh, tenLopNhom, lopNhomId);
     //Check data submit
     if (
       !ngayDiemDanh ||
@@ -44,7 +43,7 @@ const handler = async (req, res) => {
       //Thêm mới thôi
       await db.collection("diemdanhnhoms").insertOne(body);
       client.close();
-      res.status(200).json({ thongbao: "Điểm danh nhóm thành công." });
+      return res.status(200).json({ thongbao: "Điểm danh nhóm thành công." });
     } catch (err) {
       client.close();
       return res.status(500).json({

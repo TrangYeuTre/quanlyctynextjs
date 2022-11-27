@@ -5,7 +5,8 @@ import PickGiaoVienBar from "../UI/PickGiaoVienBar";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
 import { getArrDdcnByGvNThisMonth } from "./ddcn_helper";
-import ChonNguoiContext from "../../context/chonNguoiContext";
+// import ChonNguoiContext from "../../context/chonNguoiContext";
+import { removeDomItem } from "../../helper/uti";
 import GiaoVienContext from "../../context/giaoVienContext";
 import NotiContext from "../../context/notiContext";
 import PickDateBar from "../UI/PickDateBar";
@@ -52,10 +53,9 @@ const ThongKeGiaoVienPage = (props) => {
     setTimeout(() => {
       notiCtx.clearNoti();
       if (statusCode === 200 || statusCode === 201) {
-        router.reload();
+        removeDomItem(ngayDiemDanhId);
       }
     }, process.env.DELAY_TIME_NOTI);
-    window.scrollTo(0, 0);
     notiCtx.pushNoti({
       status: statusCode,
       message: dataRes.thongbao,

@@ -5,7 +5,7 @@ import { convertThuLabelRaTen } from "../../helper/uti";
 import { useEffect, useState } from "react";
 
 const LichBar = (props) => {
-  const { data, doXoaLich } = props;
+  const { data, doXoaLich, id } = props;
   //Cb xóa
   const xoaLichHandler = (id) => {
     doXoaLich(id);
@@ -13,7 +13,7 @@ const LichBar = (props) => {
   //Trả
   return (
     data && (
-      <div className={classes.container}>
+      <div className={classes.container} id={id}>
         {data.arrThu.length > 0 && (
           <div className={classes.dates}>
             <BsFillCalendarCheckFill

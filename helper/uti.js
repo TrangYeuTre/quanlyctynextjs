@@ -116,7 +116,6 @@ export const getFirstLastDateOfNextMonth = (timeIn) => {
   let firstDateOfNextMonth, lastDateOfNextMonth;
   //Lấy tháng sau, sẽ có tường hợp tháng cuối năm tháng sau sẽ nhảy thành thagns 1 --> xử lý if
   if (curMonth === 11) {
-    // console.log("run");
     //Tháng sau là tháng 1 năm mới
     nextMonth = 1;
     nextYear = curYear + 1;
