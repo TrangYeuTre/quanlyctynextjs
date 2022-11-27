@@ -4,6 +4,7 @@ import { laylabelThuTuNgay, layTenThuTuNgay } from "../../helper/uti";
 import { locMangHsDayChinh } from "./ddcn_helper";
 import { useEffect, useContext } from "react";
 import ChonNguoiContext from "../../context/chonNguoiContext";
+import NgayChot from "../UI/NgayChot";
 
 const DayChinh = (props) => {
   //Lấy data giáo viên về đã
@@ -50,17 +51,7 @@ const DayChinh = (props) => {
     <div className={classes.container}>
       {/* Vùng chọn hs dạy chính */}
       <h3 className="h3GachChan">Dạy chính</h3>
-      <h4>Ngày đã chốt điểm danh</h4>
-      <p className={classes.warning}>
-        Thứ: <span>{layTenThuTuNgay(ngayDiemDanh)}</span> --- Ngày:{" "}
-        <span>
-          {new Date(ngayDiemDanh).toLocaleString("en-GB", {
-            day: "numeric",
-            month: "numeric",
-            year: "numeric",
-          })}
-        </span>
-      </p>
+      <NgayChot ngayDiemDanh={ngayDiemDanh} />
       <h4>Chọn học sinh học chính / nghỉ</h4>
       <p className="ghichu">
         Mặc định học trò của giáo viên đảm nhận đã được chọn. Khi bỏ chọn một

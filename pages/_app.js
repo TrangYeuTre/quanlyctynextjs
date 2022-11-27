@@ -1,15 +1,13 @@
 import "../styles/globals.css";
 import MainLayout from "../components/layout/mainLayout";
 import NotiProvider from "../context/notiProvider";
-import { getFirstLastDateOfPrevMonth } from "../helper/uti";
+import NextNProgress from "nextjs-progressbar";
 
 function MyApp({ Component, pageProps }) {
-  // const { firstDateOfPrevMonth, lastDateOfPrevMonth } =
-  //   getFirstLastDateOfPrevMonth('2022-1-20');
-  // console.log(firstDateOfPrevMonth, lastDateOfPrevMonth);
   return (
     <NotiProvider>
       <MainLayout>
+        <NextNProgress color={"var(--mauMh1--)"} height={10} />
         <Component {...pageProps} />
       </MainLayout>
     </NotiProvider>

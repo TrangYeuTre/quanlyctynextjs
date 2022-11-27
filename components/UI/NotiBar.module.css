@@ -1,6 +1,6 @@
 .success {
   display: block;
-  width: 100;
+  width: 100%;
   padding: 1rem;
   color: var(--mauNen--);
   background-color: var(--mauMh3--);
@@ -8,10 +8,13 @@
   font-size: 1.6rem;
   text-align: center;
   animation: fadeIn ease 2s;
+  position: fixed;
+  top: 0;
+  z-index: 6;
 }
 .error {
   display: block;
-  width: 100;
+  width: 100%;
   padding: 1rem;
   color: var(--mauNen--);
   background-color: var(--mauMh4--);
@@ -19,6 +22,9 @@
   font-size: 1.6rem;
   text-align: center;
   animation: fadeIn ease 2s;
+  position: fixed;
+  top: 0;
+  z-index: 6;
 }
 
 @keyframes fadeIn {

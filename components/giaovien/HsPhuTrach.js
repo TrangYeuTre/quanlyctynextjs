@@ -40,7 +40,7 @@ const HocSinhPhuTrachPage = (props) => {
       arrHocSinhChon: arrHocSinhDuocChon,
     };
     //Fetch lên db để cập nhật mảng hocTroCaNhan cho giáo viên
-    const response = await fetch("/api/hocSinhPhuTrachChoGiaoVien", {
+    const response = await fetch("/api/giaovien/hocSinhPhuTrachChoGiaoVien", {
       method: "PUT",
       body: JSON.stringify(dataSubmit),
       headers: { "Content-Type": "application/json" },

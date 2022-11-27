@@ -8,6 +8,8 @@ import { useContext } from "react";
 import NotiContext from "../../context/notiContext";
 import { useRouter } from "next/router";
 const DanhSachGiaoVienPage = (props) => {
+  const API_GIAOVIEN_ROUTE = "/api/giaovien/giaoVien"
+
   const notiCtx = useContext(NotiContext);
   const router = useRouter();
   //Lấy về từ props
@@ -24,7 +26,7 @@ const DanhSachGiaoVienPage = (props) => {
 
   //Cb xóa giáo viên
   const delGiaoVienHandler = async (id) => {
-    const response = await fetch("/api/giaoVien", {
+    const response = await fetch(API_GIAOVIEN_ROUTE, {
       method: "DELETE",
       body: JSON.stringify(id),
       headers: { "Content-Type": "application/json" },

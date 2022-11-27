@@ -20,7 +20,7 @@ const LichGiaoVienPage = (props) => {
   //Cb async xóa lịch
   const xoaLichHandler = async (id) => {
     if (id && giaoVienDuocChonId) {
-      const response = await fetch("/api/lichChoHocSinhCuaGiaoVien", {
+      const response = await fetch("/api/giaovien/lichChoHocSinhCuaGiaoVien", {
         method: "DELETE",
         body: JSON.stringify({ lichId: id, giaoVienId: giaoVienDuocChonId }),
         headers: { "Content-Type": "application/json" },

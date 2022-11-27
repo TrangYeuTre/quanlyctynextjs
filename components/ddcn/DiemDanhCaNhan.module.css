@@ -52,16 +52,6 @@
   left: 10px;
   box-shadow: 2px 2px 5px gray inset;
 }
-.warning {
-  padding: 0.2rem 0.6rem;
-  border-radius: 0.3rem;
-  background-color: var(--mauMh4--);
-  color: var(--mauNen--);
-  width: fit-content;
-  opacity: 0.4;
-  font-size: 1rem;
-  cursor: not-allowed;
-}
 
 /* Phần css cho dạy thế */
 .control {

@@ -1,3 +1,4 @@
+import $ from "jquery";
 //Sort lại mảng theo phần tên của shortname, phương pháp dưới hơi dài nhưng tối ưu theo O(n)
 export const sortArtByLastShortName = (arrIn) => {
   //Mảng arrIn có dạng [{id,shortName, và các props khác}]
@@ -217,4 +218,12 @@ export const locShortNameTheoKeyword = (arrIn, key) => {
     item.shortName.trim().toLowerCase().includes(key.toLowerCase())
   );
   return arrResult;
+};
+
+//Xóa dom item - phục vụ giao diện sau khi xóa một phần tử khỏi phải reload lại
+export const removeDomItem = (itemId) => {
+  if (!itemId) {
+    return;
+  }
+  $(`#${itemId}`).fadeOut(700);
 };

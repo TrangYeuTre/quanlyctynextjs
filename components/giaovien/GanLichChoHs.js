@@ -124,7 +124,7 @@ const GanLichChoHsPage = (props) => {
     };
     console.log(dataSubmit);
     //Tiến hành fetch nào
-    const response = await fetch("/api/lichChoHocSinhCuaGiaoVien", {
+    const response = await fetch("/api/giaovien/lichChoHocSinhCuaGiaoVien", {
       method: "POST",
       body: JSON.stringify(dataSubmit),
       headers: { "Content-Type": "application/json" },

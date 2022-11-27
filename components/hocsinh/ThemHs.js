@@ -9,10 +9,12 @@ import { useRouter } from "next/router";
 import { BsCheckLg } from "react-icons/bs";
 
 const ThemHsPage = (props) => {
+  //Tạo biến fetch api 
+  const HS_API_ROUTE = '/api/hocsinh/hocSinh'
+  //
   const notiCtx = useContext(NotiContext);
   const notiData = notiCtx.noti;
   const router = useRouter();
-  console.log(notiData);
   //Mong đợi mode dể render tương ứngmessage
   const { renderMode, dataHocSinh } = props;
   //Ref value cho input
@@ -84,7 +86,7 @@ const ThemHsPage = (props) => {
       thongTinCoBan: thongTinCoBanRef.current.value,
     };
     //FETCH HERE
-    const response = await fetch("/api/hocSinh", {
+    const response = await fetch(HS_API_ROUTE, {
       method: "POST",
       body: JSON.stringify(dataSubmit),
       headers: { "Content-Type": "application/json" },
@@ -122,7 +124,7 @@ const ThemHsPage = (props) => {
       thongTinCoBan: thongTinCoBanRef.current.value,
     };
     //FETCH HERE
-    const response = await fetch("/api/hocSinh", {
+    const response = await fetch(HS_API_ROUTE, {
       method: "PUT",
       body: JSON.stringify(dataSubmit),
       headers: { "Content-Type": "application/json" },

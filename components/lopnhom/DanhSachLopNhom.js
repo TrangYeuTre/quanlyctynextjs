@@ -6,6 +6,7 @@ import { useContext } from "react";
 import NotiContext from "../../context/notiContext";
 
 const DanhSachLopNhomPage = (props) => {
+  const API_LOPNHOM_ROUTE = "/api/lopnhom/lopNhom";
   const router = useRouter();
   //Ctx thông báo
   const notiCtx = useContext(NotiContext);
@@ -13,7 +14,7 @@ const DanhSachLopNhomPage = (props) => {
   const { arrLopNhom } = props;
   //Cb xóa lớp nhóm
   const xoaLopNhomHandler = async (id) => {
-    const response = await fetch("/api/lopNhom", {
+    const response = await fetch(API_LOPNHOM_ROUTE, {
       method: "DELETE",
       body: JSON.stringify(id),
       headers: { "Content-Type": "application/json" },

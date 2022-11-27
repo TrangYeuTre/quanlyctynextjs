@@ -8,6 +8,7 @@ import ActionBar from "../UI/ActionBar";
 import { useRouter } from "next/router";
 
 const SuaLopNhomPage = (props) => {
+  const API_LOPNHOM_ROUTE = "/api/lopnhom/lopNhom";
   //Lấy data sửa
   const router = useRouter();
   //Ctx thông báo
@@ -89,7 +90,7 @@ const SuaLopNhomPage = (props) => {
       hocSinhLopNhom: arrHocSinhLopNhom,
     };
     //Chạy submit
-    const response = await fetch("/api/lopNhom", {
+    const response = await fetch(API_LOPNHOM_ROUTE, {
       method: "PUT",
       body: JSON.stringify(dataSubmit),
       headers: { "Content-Type": "application/json" },

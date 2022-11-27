@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 
 const PersonBar = (props) => {
   const router = useRouter();
+  //Láy context animation
   //Cần những thứ sau truyền xuống :  name, id, gioiTinh, currentRoute dùng đẻ trở lại trang sau khi xóa
   const { shortName, id, gioiTinh, arrLoaiLop, doDelFetch } = props;
   //Tách phần mainRoute ra để dùng cho href bên dưới
@@ -16,7 +17,7 @@ const PersonBar = (props) => {
     doDelFetch(id);
   };
   return (
-    <div className={classes.container}>
+    <div className={classes.container} id={id}>
       {/* Phần thông tin */}
       <div className={classes.infos}>
         <div className={gioiTinh == "nam" ? classes.sexNam : classes.sexNu}>

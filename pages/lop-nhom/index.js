@@ -1,11 +1,20 @@
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import Loading from "../../components/UI/Loading";
 
 const LopNhomRoute = (props) => {
   const router = useRouter();
+  //State loading
+  const [loading, setLoading] = useState(true);
+  //Side effect set loading
   useEffect(() => {
-    router.replace("/lop-nhom/them");
+    if (router.asPath && router.asPath === "/lop-nhom/them") {
+      setLoading(false);
+    } else {
+      router.replace("/lop-nhom/them");
+    }
   }, [router]);
+  return loading && <Loading />;
 };
 
 export default LopNhomRoute;

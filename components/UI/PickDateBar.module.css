@@ -13,7 +13,7 @@
 .thuLabel {
   padding: 0.2rem 0.5rem;
   border-radius: 5px;
-  background-color: var(--mauMh4--);
+  background-color: rgb(80, 182, 255);
   color: var(--mauNen--);
 }
 .btnChuaChot {

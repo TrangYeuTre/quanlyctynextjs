@@ -1,17 +1,18 @@
 import Card from "../UI/Card";
 import { useEffect, useState, useRef } from "react";
-import Link from "next/link";
 import PersonBar from "../UI/PersonBar";
 import Search from "../UI/Search";
-import { sortArtByLastShortName } from "../../helper/uti";
+import { sortArtByLastShortName, removeDomItem } from "../../helper/uti";
 import classes from "./DsHocSinh.module.css";
 import { useContext } from "react";
 import NotiContext from "../../context/notiContext";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 
 const DanhSachHocSinhPage = (props) => {
+  const HS_API_ROUTE = "/api/hocsinh/hocSinh";
+
   const notiCtx = useContext(NotiContext);
-  const router = useRouter();
+  // const router = useRouter();
   //Lấy về từ props
   const { arrHocSinhDaPhanLoai } = props;
   //State lấy keyword search
@@ -25,7 +26,7 @@ const DanhSachHocSinhPage = (props) => {
   };
   //CB xóa học sinh theo id
   const delHocSinhHandler = async (id) => {
-    const response = await fetch("/api/hocSinh", {
+    const response = await fetch(HS_API_ROUTE, {
       method: "DELETE",
       body: JSON.stringify(id),
       headers: { "Content-Type": "application/json" },
@@ -35,8 +36,12 @@ const DanhSachHocSinhPage = (props) => {
     //Đẩy thông báo
     setTimeout(() => {
       notiCtx.clearNoti();
-      router.reload();
+      if (statusCode === 200 || statusCode === 201) {
+        removeDomItem(id);
+      }
+      // router.reload();
     }, 3000);
+    // window.scrollTo(0, 0);
     notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
 

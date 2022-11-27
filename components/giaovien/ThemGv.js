@@ -9,6 +9,7 @@ import NotiContext from "../../context/notiContext";
 import { useRouter } from "next/router";
 
 const ThemGvPage = (props) => {
+  const API_GIAOVIEN_ROUTE = "/api/giaovien/giaoVien"
   const notiCtx = useContext(NotiContext);
   const router = useRouter();
   //Mong đợi mode dể render tương ứng
@@ -59,7 +60,7 @@ const ThemGvPage = (props) => {
       lichDayCaNhan: [],
     };
     //Tiến hành fetch thôi
-    const response = await fetch("/api/giaoVien", {
+    const response = await fetch(API_GIAOVIEN_ROUTE, {
       method: "POST",
       body: JSON.stringify(dataSubmit),
       headers: { "Content-Type": "application/json" },
@@ -93,7 +94,7 @@ const ThemGvPage = (props) => {
       thongTinCoBan: thongTinCoBanRef.current.value,
     };
     //Chạy fetch
-    const response = await fetch("/api/giaoVien", {
+    const response = await fetch(API_GIAOVIEN_ROUTE, {
       method: "PUT",
       body: JSON.stringify(dataSubmit),
       headers: { "Content-Type": "application/json" },
