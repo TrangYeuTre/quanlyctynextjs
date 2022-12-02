@@ -1,0 +1,16 @@
+.container {
+  width: 100%;
+  table-layout: fixed;
+}
+.labels > * {
+  padding: 0.5rem;
+  border: 1px solid var(--mauVien--);
+  background-color: var(--mauVien--);
+  color: var(--mauNen--);
+}
+.datas > * {
+  padding: 0;
+  border: 1px solid var(--mauVien--);
+  background-color: var(--mauNen--);
+  /* color: var(--mauNen--); */
+}

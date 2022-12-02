@@ -1,0 +1,41 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 1rem;
+  background-color: var(--mauNen--);
+  border-radius: 1rem;
+  font-size: 1.2rem;
+}
+.controls {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding-bottom: 1rem;
+  align-items: center;
+  border-bottom: 1px solid rgb(220, 220, 220);
+}
+.lopChuaChon {
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  color: var(--mauMh1--);
+  border: 1px solid var(--mauMh1--);
+  background-color: var(--mauNen--);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.lopChuaChon:hover {
+  color: var(--mauNen--);
+  border: 1px solid var(--mauMh1--);
+  background-color: var(--mauMh1--);
+}
+.lopDaChon {
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  color: var(--mauNen--);
+  border: 1px solid var(--mauMh1--);
+  background-color: var(--mauMh1--);
+  cursor: pointer;
+}

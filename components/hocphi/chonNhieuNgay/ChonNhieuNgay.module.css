@@ -1,0 +1,73 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 1rem;
+  background-color: var(--mauNen--);
+  border-radius: 1rem;
+}
+.controls {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding-bottom: 1rem;
+  align-items: center;
+  border-bottom: 1px solid rgb(220, 220, 220);
+}
+.itemThu {
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--mauNut--);
+  color: var(--mauNut--);
+  background-color: var(--mauNen--);
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 4px 4px 8px gray;
+}
+.itemThu:hover,
+.itemThuChon {
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--mauNut--);
+  color: var(--mauNen--);
+  background-color: var(--mauNut--);
+  cursor: pointer;
+  /* transition: all 0.2s; */
+  box-shadow: none;
+}
+
+.btn {
+  padding: 0.3rem 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--mauMh3--);
+  color: var(--mauNen--);
+  border: var(--mauMh3--) 1px solid;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1.4rem;
+}
+.btn:hover {
+  background-color: var(--mauNen--);
+  color: var(--mauMh3--);
+  border: var(--mauMh3--) 1px solid;
+}
+.canhan {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: darkred;
+}
+.nhom {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: blue;
+}
+.donghanh {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: hotpink;
+}

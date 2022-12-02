@@ -1,0 +1,10 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem;
+    border: 2px;
+    border: 4px dashed var(--mauNen--);
+    border-radius: 1rem;
+  }
+  

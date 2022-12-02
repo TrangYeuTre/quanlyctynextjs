@@ -9,8 +9,8 @@ import { useRouter } from "next/router";
 import { BsCheckLg } from "react-icons/bs";
 
 const ThemHsPage = (props) => {
-  //Tạo biến fetch api 
-  const HS_API_ROUTE = '/api/hocsinh/hocSinh'
+  //Tạo biến fetch api
+  const HS_API_ROUTE = "/api/hocsinh/hocSinh";
   //
   const notiCtx = useContext(NotiContext);
   const notiData = notiCtx.noti;
@@ -37,6 +37,12 @@ const ThemHsPage = (props) => {
   const [isNhom, setIsNhom] = useState(
     dataHocSinh ? dataHocSinh.lopHoc.find((item) => item === "nhom") : false
   );
+  const [isTangCuong, setIsTangCuong] = useState(
+    dataHocSinh
+      ? dataHocSinh.lopHoc.find((item) => item === "tangcuong")
+      : false
+  );
+
   //State cho bấm nút hay không
   const [isSubmit, setIsSubmit] = useState(false);
 
@@ -66,13 +72,21 @@ const ThemHsPage = (props) => {
   const toggleNhomHandler = () => {
     setIsNhom(!isNhom);
   };
+  //Cb đánh check
+  const toggleTangCuongHandler = () => {
+    setIsTangCuong(!isTangCuong);
+  };
 
   //Cb chính fetch thêm hs
   const themHocSinhMoiHandler = async (e) => {
     e.preventDefault();
     //Tổng hợp value đẻ submnit
     const dataSubmit = {
-      lopHoc: [isCanhan ? "canhan" : null, isNhom ? "nhom" : null],
+      lopHoc: [
+        isCanhan ? "canhan" : null,
+        isNhom ? "nhom" : null,
+        isTangCuong ? "tangcuong" : null,
+      ],
       gioiTinh: gioiTinhRef.current.value,
       tenHocSinh: tenHocSinhRef.current.value,
       shortName: shortNameRef.current.value,
@@ -96,7 +110,9 @@ const ThemHsPage = (props) => {
     //Chạy push noti
     setTimeout(() => {
       notiCtx.clearNoti();
-      clearInput();
+      if (statusCode === 200 || statusCode === 201) {
+        clearInput();
+      }
     }, process.env.DELAY_TIME_NOTI);
     notiCtx.pushNoti({
       status: statusCode,
@@ -110,7 +126,11 @@ const ThemHsPage = (props) => {
     //Tổng hợp value đẻ submnit
     const dataSubmit = {
       id: dataHocSinh.id,
-      lopHoc: [isCanhan ? "canhan" : null, isNhom ? "nhom" : null],
+      lopHoc: [
+        isCanhan ? "canhan" : null,
+        isNhom ? "nhom" : null,
+        isTangCuong ? "tangcuong" : null,
+      ],
       gioiTinh: gioiTinhRef.current.value,
       tenHocSinh: tenHocSinhRef.current.value,
       shortName: shortNameRef.current.value,
@@ -148,12 +168,12 @@ const ThemHsPage = (props) => {
   //Side effect
   useEffect(() => {
     //Xêt có được bấm submit hay không
-    if (isCanhan || isNhom) {
+    if (isCanhan || isNhom || isTangCuong) {
       setIsSubmit(true);
     } else {
       setIsSubmit(false);
     }
-  }, [isCanhan, isNhom]);
+  }, [isCanhan, isNhom, isTangCuong]);
   return (
     <Card>
       {renderMode === "them" && (
@@ -182,6 +202,19 @@ const ThemHsPage = (props) => {
                 <label>Nhóm</label>
                 <div className={classes.boxCheck} onClick={toggleNhomHandler}>
                   {isNhom && (
+                    <div className={classes.checkIcon}>
+                      <BsCheckLg />
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className={classes.control}>
+                <label>Tăng cường</label>
+                <div
+                  className={classes.boxCheck}
+                  onClick={toggleTangCuongHandler}
+                >
+                  {isTangCuong && (
                     <div className={classes.checkIcon}>
                       <BsCheckLg />
                     </div>
@@ -391,6 +424,19 @@ const ThemHsPage = (props) => {
                 <label>Nhóm</label>
                 <div className={classes.boxCheck} onClick={toggleNhomHandler}>
                   {isNhom && (
+                    <div className={classes.checkIcon}>
+                      <BsCheckLg />
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className={classes.control}>
+                <label>Tăng cường</label>
+                <div
+                  className={classes.boxCheck}
+                  onClick={toggleTangCuongHandler}
+                >
+                  {isTangCuong && (
                     <div className={classes.checkIcon}>
                       <BsCheckLg />
                     </div>

@@ -226,3 +226,19 @@ export const removeDomItem = (itemId) => {
   }
   $(`#${itemId}`).fadeOut(700);
 };
+
+//Gộp 2 mảng và xóa phần tử trùng
+export const xuLyGopLoaiLop = (loaiLopTruoc, loaiLopSau) => {
+  if (!loaiLopSau || loaiLopSau === "") {
+    return [loaiLopTruoc];
+  }
+  if (typeof loaiLopTruoc === "object") {
+    const indexItemMatched = loaiLopTruoc.findIndex(
+      (item) => item === loaiLopSau
+    );
+    if (indexItemMatched === -1) {
+      loaiLopTruoc.push(loaiLopSau);
+    }
+  }
+  return [loaiLopTruoc];
+};

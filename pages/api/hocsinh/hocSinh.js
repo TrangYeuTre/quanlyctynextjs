@@ -31,6 +31,7 @@ const handler = async (req, res) => {
   //Xử lý biến cá nhân và nhóm
   let canhan = null;
   let nhom = null;
+  let tangcuong = null;
   if (method !== "DELETE") {
     const caNhanMatched = lopHoc.findIndex((i) => i === "canhan");
     if (caNhanMatched !== -1) {
@@ -39,6 +40,10 @@ const handler = async (req, res) => {
     const nhomMatched = lopHoc.findIndex((i) => i === "nhom");
     if (nhomMatched !== -1) {
       nhom = true;
+    }
+    const tangcuongMatched = lopHoc.findIndex((i) => i === "tangcuong");
+    if (tangcuongMatched !== -1) {
+      tangcuong = true;
     }
   }
   //Tạo biến chứa client và database
@@ -59,7 +64,7 @@ const handler = async (req, res) => {
   //Xử lý thêm hs mới
   if (method === "POST") {
     //Kiểm tra nếu chưa chọn cá nhân và nhóm
-    if (!canhan && !nhom) {
+    if (!canhan && !nhom && !tangcuong) {
       client.close();
       return res
         .status(422)

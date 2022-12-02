@@ -17,7 +17,11 @@ const ChonNguoiProvider = (props) => {
     setArrHocSinh(arr);
   };
   const chonMotNguoiHandler = (id) => {
-    setNguoiDuocChon(id);
+    if (nguoiDuocChonId === id) {
+      setNguoiDuocChon(null);
+    } else {
+      setNguoiDuocChon(id);
+    }
   };
 
   //Obj contenxt

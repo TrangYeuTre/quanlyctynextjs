@@ -1,0 +1,38 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+.container:hover {
+  background-color: #c6faff;
+}
+.dis {
+  cursor: not-allowed;
+  background-color: gray;
+  text-align: center;
+}
+.canhan {
+  padding: 5px;
+  border-radius: 5px;
+  background-color: red;
+  color: var(--mauNen--);
+  margin: 2px;
+}
+.nhom {
+  padding: 5px;
+  border-radius: 5px;
+  background-color: blue;
+  color: var(--mauNen--);
+  margin: 2px;
+}
+.donghanh {
+  padding: 5px;
+  border-radius: 5px;
+  background-color: hotpink;
+  color: var(--mauNen--);
+  margin: 2px;
+}
