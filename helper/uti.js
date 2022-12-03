@@ -87,6 +87,9 @@ export const viewSplitMoney = (num) => {
     return 0;
   }
   let result = num.toString();
+  if (result.length <= 3) {
+    return result;
+  }
   // 1.000.000.000
   if (result.length > 3 && result.length < 7) {
     result = `${result.substring(0, result.length - 3)}.${result.substr(

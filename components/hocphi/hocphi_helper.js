@@ -9,3 +9,14 @@ export const layArrHocSinhRender = (keySearch, arrHocSinh) => {
   );
   return arrResult;
 };
+
+//Lấy thông tin học phí cá nhân và nhóm của hs để tính phí
+export const layHocPhiCaNhanNhomCuaHocSinh = (arrHocSinh, hocSinhChonId) => {
+  let result = { hpCaNhan: 0, hpNhom: 0 };
+  const hsMatched = arrHocSinh.find((item) => item.id === hocSinhChonId);
+  if (hsMatched) {
+    result.hpCaNhan = hsMatched.hocPhiCaNhan;
+    result.hpNhom = hsMatched.hocPhiNhom;
+  }
+  return result;
+};

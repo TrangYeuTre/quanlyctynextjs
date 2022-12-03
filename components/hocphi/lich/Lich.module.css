@@ -1,3 +1,11 @@
+.overall {
+  padding: 1rem;
+  background-color: var(--mauNen--);
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
 .container {
   width: 100%;
   table-layout: fixed;

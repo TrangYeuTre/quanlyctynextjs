@@ -2,10 +2,10 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  padding: 1rem;
   border: 2px;
-  border: 4px dashed var(--mauNen--);
   border-radius: 1rem;
+  background-color: var(--mauNen--);
+  padding: 1rem;
 }
 .controls {
   display: flex;
@@ -15,4 +15,5 @@
   padding-bottom: 1rem;
   align-items: center;
   border-bottom: 1px solid rgb(220, 220, 220);
+  color: var(--mauMh3--);
 }

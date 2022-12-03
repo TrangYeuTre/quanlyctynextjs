@@ -5,10 +5,14 @@ import Search from "../UI/Search";
 import PickDateBar from "../UI/PickDateBar";
 import ChonNguoiContext from "../../context/chonNguoiContext";
 import { useState, useContext } from "react";
-import { layArrHocSinhRender } from "./hocphi_helper";
+import {
+  layArrHocSinhRender,
+  layHocPhiCaNhanNhomCuaHocSinh,
+} from "./hocphi_helper";
 import Lich from "./lich/Lich";
 import ChonNhieuNgay from "./chonNhieuNgay/ChonNhieuNGay";
 import SuaNgayTrongLich from "./lich/SuaNgay";
+import TinhTienTam from "./TinhTienTam";
 import { xuLyGopLoaiLop } from "../../helper/uti";
 
 const HocPhiTinhPage = (props) => {
@@ -16,6 +20,11 @@ const HocPhiTinhPage = (props) => {
   //Láy ctx chọn người đẻ lấy học sinh được chọn
   const chonNguoiCtx = useContext(ChonNguoiContext);
   const hocSinhChonId = chonNguoiCtx.nguoiDuocChonId;
+  //Lấy thong tin học phí cùa học sinh để tính tiền
+  const { hpCaNhan, hpNhom } = layHocPhiCaNhanNhomCuaHocSinh(
+    arrHocSinh,
+    hocSinhChonId
+  );
   //State lấy keyword từ search để lọc
   const [keySearch, setKeySearch] = useState();
   //State lấy ngày được chọn
@@ -24,6 +33,8 @@ const HocPhiTinhPage = (props) => {
   const [dataNgayChon, setDataNgayChon] = useState({});
   //State lấy data ngày sửa để sửa lại lịch
   const [arrDataNgaySua, setArrDataNgaySua] = useState([]);
+  //State lấy data thống kê lịch cuối cùng
+  const [thongKeLich, setThongkeLich] = useState({});
   //State ẩn / hiện phần chọn cho đỡ rối
   const [hideChonHs, setShowChonHs] = useState(false);
   const toggleAnHienChonHs = () => {
@@ -140,6 +151,10 @@ const HocPhiTinhPage = (props) => {
     //Cập nhật lại
     setArrDataNgaySua(preArrDataNgaySua);
   };
+  //CB lấy data thống kê cuối cùng của lịch
+  const getDataThongKeLich = (data) => {
+    setThongkeLich(data);
+  };
   //Lọc lại mảng hs theo key để render
   const arrHocSinhRender = layArrHocSinhRender(keySearch, arrHocSinh);
 
@@ -180,7 +195,7 @@ const HocPhiTinhPage = (props) => {
           <PickDateBar
             getNgayDuocChon={layNgayChonHandler}
             hint="Bị khóa chỉ chọn được ngày trong tháng hiện tại nhé.Ví dụ: chọn ngày 20/11/2022 có nghĩa là tính học phí cho tháng 12/2022"
-            // limitCurMonth={true}
+            limitCurMonth={true}
           />
         </div>
       )}
@@ -219,6 +234,13 @@ const HocPhiTinhPage = (props) => {
           arrDataNgaySua={arrDataNgaySua}
           dataNhieuNgayChon={dataNhieuNgayChon}
           showNgaySua={showSuaNgayChonHandler}
+          layDataThongKe={getDataThongKeLich}
+        />
+        <h4>Kết quả tính tạm</h4>
+        <TinhTienTam
+          thongKeLich={thongKeLich}
+          hpCaNhan={hpCaNhan}
+          hpNhom={hpNhom}
         />
       </div>
     </Card>
