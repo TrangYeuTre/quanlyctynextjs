@@ -58,6 +58,9 @@ export const navItems = () => {
       children: [
         { id: "c-1", route: "/tinh", name: "Tính học phí tháng mới" },
         { id: "c-2", route: "/ket-qua", name: "Kết quả tính" },
+        { id: "c-3", route: "/dau-vao", name: "Thông tin đầu vào" },
+        { id: "c-4", route: "/tinh-toan", name: "Tính" },
+        { id: "c-5", route: "/sua", name: "Sửa" },
       ],
     },
     {

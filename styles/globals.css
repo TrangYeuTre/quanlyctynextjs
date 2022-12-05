@@ -124,6 +124,16 @@ button:disabled {
   text-decoration: line-through;
   cursor: not-allowed;
 }
+.btn-sub {
+  background-color: var(--mauNen--);
+  border: 1px solid var(--mauMh3--);
+  color: var(--mauMh3--);
+}
+.btn-sub:hover {
+  background-color: var(--mauMh3--);
+  border: 1px solid var(--mauMh3--);
+  color: var(--mauNen--);
+}
 
 .ghichu {
   color: gray;
@@ -132,7 +142,7 @@ button:disabled {
 .h3GachChan::after {
   content: "";
   display: block;
-  padding-bottom: .6rem;
+  padding-bottom: 0.6rem;
   border-bottom: 1px dashed var(--mauMh3--);
   width: 20%;
 }

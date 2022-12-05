@@ -157,7 +157,7 @@ export const themDataChonNhieuNgayVaoLich = (
 //Xư lý với mảng cuối đã áp data, khi có data của ngày được sửa -> tim và sửa lại ngày đó
 export const suaDataNgayTrongLich = (arrDatesWithData, arrDataNgaySua) => {
   const arrClone = [...arrDatesWithData];
-  if (arrDataNgaySua.length === 0) {
+  if (!arrDataNgaySua || arrDataNgaySua.length === 0) {
     return arrClone;
   }
   // console.log(arrClone);

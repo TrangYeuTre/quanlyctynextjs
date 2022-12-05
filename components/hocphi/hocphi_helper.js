@@ -20,3 +20,22 @@ export const layHocPhiCaNhanNhomCuaHocSinh = (arrHocSinh, hocSinhChonId) => {
   }
   return result;
 };
+
+//Tra id học sinh để lấy thông tin cơ bản
+export const layThongTinHocSinhTuId = (arrHocSinh, hocSinhId) => {
+  let result = { shortName: "" };
+  const hsMatched = arrHocSinh.find((item) => item.id === hocSinhId);
+  if (hsMatched) {
+    result.shortName = hsMatched.shortName;
+  }
+  return result;
+};
+
+//Convert ngày về dạng view 11/11/1111
+export const chuyenNgayView = (date) => {
+  return new Date(date).toLocaleString("en-GB", {
+    day: "numeric",
+    month: "numeric",
+    year: "numeric",
+  });
+};

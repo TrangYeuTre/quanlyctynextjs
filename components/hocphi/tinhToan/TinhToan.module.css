@@ -1,0 +1,18 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+  border: 2px;
+  border: 4px dashed var(--mauNen--);
+  border-radius: 1rem;
+}
+.controls {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding-bottom: 1rem;
+  align-items: center;
+  border-bottom: 1px solid rgb(220, 220, 220);
+}

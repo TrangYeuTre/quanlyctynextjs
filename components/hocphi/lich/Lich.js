@@ -22,14 +22,14 @@ const Lich = (props) => {
     arrDataNgaySua,
     layDataThongKe,
   } = props;
-  //Từ ngày chọn lấy tháng tiếp theo để render lịch
-  const thoiGianThangSau = layThoiGianThangTiepTheo(ngayChon);
-  //Lấy ngày cuối tháng và thứ ngày đầu tháng sau
+  //Từ ngày chọn format lại date để render ngay tháng này
+  const thoiGianThangNay = new Date(ngayChon);
+  //Lấy ngày cuối tháng và thứ ngày đầu tháng
   const { ngayCuoiThang, thuNgayDauThang, title } =
-    layNgayCuoiThangVaThuNgayDauThang(thoiGianThangSau);
+    layNgayCuoiThangVaThuNgayDauThang(thoiGianThangNay);
   //Lấy arr 42 ngày ban đầu
   const arrDatesInit = taoInitArr42Ngay();
-  //Lấy mảng lịch tháng sau để render
+  //Lấy mảng lịch tháng này để render
   const arrDatesRender = loadLichRender(
     arrDatesInit,
     ngayCuoiThang,
@@ -70,7 +70,7 @@ const Lich = (props) => {
           borderBottom: "1px solid gray",
         }}
       >
-        Lịch tháng: <span style={{ color: "var(--mauMh4--)" }}>{title}</span>
+        Lịch tháng: <span style={{ color: "var(--mauMh1--)" }}>{title}</span>
       </h4>
       <div className={classes.overall}>
         <table className={classes.container}>

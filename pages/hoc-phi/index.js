@@ -8,10 +8,10 @@ const HocPhiRoute = (props) => {
   const [loading, setLoading] = useState(true);
   //Side effect set loading
   useEffect(() => {
-    if (router.asPath && router.asPath === "/hoc-phi/tinh") {
+    if (router.asPath && router.asPath === "/hoc-phi/dau-vao") {
       setLoading(false);
     } else {
-      router.replace("/hoc-phi/tinh");
+      router.replace("/hoc-phi/dau-vao");
     }
   }, [router]);
   return loading && <Loading />;
