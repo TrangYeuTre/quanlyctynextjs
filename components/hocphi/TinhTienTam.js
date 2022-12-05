@@ -29,6 +29,7 @@ const TinhTienTam = (props) => {
     setHpCn(hpCaNhan);
     setHpN(hpNhom);
   }, [hpCaNhan, hpNhom]);
+  console.log(thongKeLich)
   return (
     <Fragment>
       {Object.keys(thongKeLich).length === 0 && (
@@ -36,58 +37,72 @@ const TinhTienTam = (props) => {
       )}
       {Object.keys(thongKeLich).length > 0 && (
         <div className={classes.container}>
-          {/* Cá nhân */}
-          <p style={{ fontWeight: "bold" }}>Cá nhân</p>
-          <div className={classes.controls}>
-            <label>Số ngày:</label>
-            <p>{thongKeLich.canhan || 0}</p>
-            <label>Học phí:</label>
-            <input
-              step="1000"
-              type="number"
-              style={{ width: "7rem" }}
-              value={hpCn || 0}
-              onChange={getHpCaNhanHandler}
-            />
-            <label>Thành tiền</label>
-            <p>{viewSplitMoney(tienCaNhan)} đ</p>{" "}
-          </div>
-          {/* Nhóm */}
-          <p style={{ fontWeight: "bold" }}>Nhóm</p>
-          <div className={classes.controls}>
-            <label>Số ngày:</label>
-            <p>{thongKeLich.nhom || 0}</p>
-            <label>Học phí:</label>
-            <input
-              step="1000"
-              type="number"
-              style={{ width: "7rem" }}
-              value={hpN || 0}
-              onChange={getHpNhomHandler}
-            />
-            <label>Thành tiền</label>
-            <p>{viewSplitMoney(tienNhom)} đ</p>{" "}
-          </div>
-          {/* Đòng hành */}
-          <p style={{ fontWeight: "bold" }}>Đồng hành</p>
-          <div className={classes.controls}>
-            <label>Số ngày:</label>
-            <p>{thongKeLich.donghanh || 0}</p>
-            <label>Học phí:</label>
-            <input
-              step="1000"
-              type="number"
-              style={{ width: "7rem" }}
-              value={hpDh || 0}
-              onChange={getHpDongHanhHandler}
-            />
-            <label>Thành tiền</label>
-            <p>{viewSplitMoney(tienDongHanh)} đ</p>{" "}
-          </div>
+          {thongKeLich.canhan > 0 && (
+            <Fragment>
+              {/* Cá nhân */}
+              <p style={{ fontWeight: "bold" }}>Cá nhân</p>
+              <div className={classes.controls}>
+                <label>Số ngày:</label>
+                <p>{thongKeLich.canhan || 0}</p>
+                <label>Học phí:</label>
+                <input
+                  step="1000"
+                  type="number"
+                  style={{ width: "7rem" }}
+                  value={hpCn || 0}
+                  onChange={getHpCaNhanHandler}
+                />
+                <label>Thành tiền</label>
+                <p>+ {viewSplitMoney(tienCaNhan)} đ</p>
+              </div>
+            </Fragment>
+          )}
+          {thongKeLich.nhom > 0 && (
+            <Fragment>
+              {/* Nhóm */}
+              <p style={{ fontWeight: "bold" }}>Nhóm</p>
+              <div className={classes.controls}>
+                <label>Số ngày:</label>
+                <p>{thongKeLich.nhom || 0}</p>
+                <label>Học phí:</label>
+                <input
+                  step="1000"
+                  type="number"
+                  style={{ width: "7rem" }}
+                  value={hpN || 0}
+                  onChange={getHpNhomHandler}
+                />
+                <label>Thành tiền</label>
+                <p>+ {viewSplitMoney(tienNhom)} đ</p>
+              </div>
+            </Fragment>
+          )}
+
+          {thongKeLich.donghanh > 0 && (
+            <Fragment>
+              {/* Đòng hành */}
+              <p style={{ fontWeight: "bold" }}>Đồng hành</p>
+              <div className={classes.controls}>
+                <label>Số ngày:</label>
+                <p>{thongKeLich.donghanh || 0}</p>
+                <label>Học phí:</label>
+                <input
+                  step="1000"
+                  type="number"
+                  style={{ width: "7rem" }}
+                  value={hpDh || 0}
+                  onChange={getHpDongHanhHandler}
+                />
+                <label>Thành tiền</label>
+                <p>+ {viewSplitMoney(tienDongHanh)} đ</p>
+              </div>
+            </Fragment>
+          )}
+
           {/* Tổng tiền */}
           <div className={classes.controls}>
             <label>
-              Tổng tiền tạm tính:{" "}
+              Tổng tiền tạm tính:
               <span style={{ color: "var(--mauMh4--)", fontWeight: "bold" }}>
                 {viewSplitMoney(tienTong)} đ{" "}
               </span>

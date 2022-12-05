@@ -39,3 +39,56 @@ export const chuyenNgayView = (date) => {
     year: "numeric",
   });
 };
+
+//Xử lý từ mảng ddcn tháng trước lấy về , chuyển thành thông tin cần đê tính
+export const xuLyLayThongTinDdcnThangTruoc = (
+  arrIn,
+  hocSinhId,
+  hocPhiCaNhan
+) => {
+  if (!arrIn || arrIn.length === 0 || !hocSinhId || !hocPhiCaNhan) {
+    return {};
+  }
+  //Chạy lặp
+  //Tạo một mảng chứa
+  let arrHandler = [];
+  //Xử lý đầu tiên là tìm theo id của học sinh
+  arrIn.forEach((item) => {
+    if (item[hocSinhId]) {
+      arrHandler.push({
+        ...item[hocSinhId],
+        hocSinhId: hocSinhId,
+        ngayDiemDanh: item.ngayDiemDanh,
+      });
+    }
+  });
+  //Cuối cùng là filter lại 3 mảng riêng biệt
+  let arrNghiKhongBu = [];
+  let arrNghiCoBu = [];
+  let arrTangCuong = [];
+  if (arrHandler.length > 0) {
+    arrNghiKhongBu = arrHandler.filter((item) => item.type === "nghi");
+    arrNghiCoBu = arrHandler.filter((item) => item.type === "nghi dayBu");
+    arrTangCuong = arrHandler.filter((item) => item.type === "dayTangCuong");
+  }
+  //Tính toán ngày
+  let tongNgayNghiKhongBu = arrNghiKhongBu.length;
+  // let tongNgayNghiCoBu = arrNghiCoBu.length;
+  let tongNgayTangCuong = arrTangCuong.length;
+
+  //Tính tiền
+  const tienNghiKhongBu = tongNgayNghiKhongBu * hocPhiCaNhan;
+  // const tienNghiCoBu = tongNgayNghiCoBu * hocPhiCaNhan;
+  const tienTangCuong = tongNgayTangCuong * hocPhiCaNhan;
+  //Trả thôi
+  return {
+    arrNghiKhongBu,
+    arrNghiCoBu,
+    arrTangCuong,
+    // tongNgayNghiCoBu,
+    tongNgayNghiKhongBu,
+    tongNgayTangCuong,
+    tienNghiKhongBu,
+    tienTangCuong,
+  };
+};

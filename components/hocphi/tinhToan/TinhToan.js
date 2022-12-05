@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import {
   layHocPhiCaNhanNhomCuaHocSinh,
   layThongTinHocSinhTuId,
+  xuLyLayThongTinDdcnThangTruoc,
 } from "../hocphi_helper";
 import Lich from "../lich/Lich";
 import ChonNhieuNgay from "../chonNhieuNgay/ChonNhieuNGay";
@@ -163,6 +164,13 @@ const TinhToanHocPhiPage = (props) => {
     };
     fetchGetDdcnThangTruoc();
   }, []);
+  //Từ mảng ddcn tháng trước của hs fetch về -> xử lý lại để lấy các thông số nghỉ, tăng cuòng
+  const dataDdcnThangTruoc = xuLyLayThongTinDdcnThangTruoc(
+    arrDdcnThangTruoc,
+    hocSinhChonId,
+    hpCaNhan
+  );
+  console.log(dataDdcnThangTruoc);
   return (
     <Card>
       <h3 style={{ textAlign: "center" }}>

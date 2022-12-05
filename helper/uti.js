@@ -84,7 +84,7 @@ export const convertThuLabelRaTen = (label) => {
 //View tiền vnđ
 export const viewSplitMoney = (num) => {
   if (!num) {
-    return 0;
+    return null;
   }
   let result = num.toString();
   if (result.length <= 3) {
