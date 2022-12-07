@@ -19,7 +19,7 @@ const TinhTienTam = (props) => {
     tienNghiKhongBuKoPhep,
     tienTangCuong,
   } = props;
-  console.log(arrNghiKhongBuCoPhep);
+  // console.log(arrNghiKhongBuCoPhep);
   //State quan sát học phí của 3 loại lớp
   const [hpCn, setHpCn] = useState();
   const [hpN, setHpN] = useState();

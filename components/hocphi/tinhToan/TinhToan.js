@@ -188,10 +188,14 @@ const TinhToanHocPhiPage = (props) => {
         body: JSON.stringify(dataSubmit),
         headers: { "Content-Type": "application/json" },
       });
-      const statusCode = response.status;
+      // const statusCode = response.status;
       const dataGot = await response.json();
       const arrDdcnThangTruoc = dataGot.data;
-      setArrDdcnThangTruoc(arrDdcnThangTruoc);
+      if (arrDdcnThangTruoc) {
+        setArrDdcnThangTruoc(arrDdcnThangTruoc);
+      } else {
+        setArrDdcnThangTruoc([]);
+      }
     };
     fetchGetDdcnThangTruoc();
   }, [hocSinhChonId, thangTinh]);

@@ -61,10 +61,7 @@ export const navItems = () => {
       id: "i-7",
       route: "/luong",
       name: "Lương giáo viên",
-      children: [
-        { id: "c-1", route: "/tinh", name: "Tính lương" },
-        { id: "c-2", route: "/ket-qua", name: "Kết quả tính" },
-      ],
+      children: [{ id: "c-1", route: "/dau-vao", name: "Xử lý đầu vào" }],
     },
     { id: "i-8", route: "/auth/logout", name: "Logout" },
   ];

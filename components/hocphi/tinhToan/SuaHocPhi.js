@@ -206,7 +206,9 @@ const SuaHocPhiPage = (props) => {
       });
       const dataGot = await response.json();
       const dataNhieuNgayChon = dataGot.data.dataNhieuNgayChon;
-      setNhieuNgayChon(dataNhieuNgayChon);
+      if (dataNhieuNgayChon) {
+        setNhieuNgayChon(dataNhieuNgayChon);
+      }
     };
     fetchGetDdcnThangTruoc();
     fetchGetDataHocPhiSua();

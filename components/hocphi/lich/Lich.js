@@ -27,7 +27,7 @@ const Lich = (props) => {
   //Lấy ngày cuối tháng và thứ ngày đầu tháng
   const { ngayCuoiThang, thuNgayDauThang, title } =
     layNgayCuoiThangVaThuNgayDauThang(thoiGianThangNay);
-    console.log(ngayChon)
+    // console.log(ngayChon)
   //Lấy arr 42 ngày ban đầu
   const arrDatesInit = taoInitArr42Ngay();
   //Lấy mảng lịch tháng này để render
