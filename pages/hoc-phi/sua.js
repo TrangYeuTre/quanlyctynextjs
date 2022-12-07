@@ -1,21 +1,19 @@
-import TinhToanHocPhiPage from "../../../components/hocphi/tinhToan/TinhToan";
 import { useRouter } from "next/router";
-import ConnectMongoDb from "../../../helper/connectMongodb";
+import ConnectMongoDb from "../../helper/connectMongodb";
+import SuaHocPhiPage from "../../components/hocphi/tinhToan/SuaHocPhi";
 
-const TinhToanHocPhiRoute = (props) => {
+const SuaHocPhiRoute = (props) => {
   const { arrHocSinh } = props;
   const router = useRouter();
   const hocSinhId = router.query.hocSinhId;
   const thangTinh = router.query.thangTinh;
-  console.log(thangTinh)
 
   return (
-    <TinhToanHocPhiPage
+    <SuaHocPhiPage
       hocSinhId={hocSinhId}
       thangTinh={thangTinh}
       arrHocSinh={arrHocSinh}
     />
-    // <h1>Ok ok</h1>
   );
 };
 
@@ -68,4 +66,4 @@ export async function getStaticProps() {
   }
 }
 
-export default TinhToanHocPhiRoute;
+export default SuaHocPhiRoute;

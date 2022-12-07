@@ -134,7 +134,7 @@ const HocPhiDauVaoPage = (props) => {
             </button>
           )}
           {!hocSinhChonId && (
-            <btn
+            <button
               type="button"
               style={{
                 margin: "2rem auto",
@@ -145,7 +145,7 @@ const HocPhiDauVaoPage = (props) => {
               className="btn btn-ghost"
             >
               Chọn học sinh và ngày để chốt
-            </btn>
+            </button>
           )}
         </Fragment>
       )}
@@ -183,7 +183,9 @@ const HocPhiDauVaoPage = (props) => {
                   <span style={{ color: "var(--mauMh4--)" }}>đã được</span> tính
                   phí, ấn vào nút bên để sửa nếu muốn
                 </label>
-                <Link href="#">
+                <Link
+                  href={`/hoc-phi/sua?hocSinhId=${hocSinhChonId}&thangTinh=${viewNextMonth}`}
+                >
                   <div className="btn btn-sub">Sửa phí</div>
                 </Link>
               </div>
@@ -207,6 +209,7 @@ const HocPhiDauVaoPage = (props) => {
                 </Link>
               </div>
             )}
+
             {kqLoc.dataPhiDaTonTai && kqLoc.dataPhiDaTonTai !== "none" && (
               <div className={classes.controls}>
                 <label>
@@ -218,7 +221,9 @@ const HocPhiDauVaoPage = (props) => {
                   <span style={{ color: "var(--mauMh4--)" }}>đã được</span> tính
                   phí, ấn vào nút bên để tính
                 </label>
-                <Link href="#">
+                <Link
+                  href={`/hoc-phi/sua?hocSinhId=${hocSinhChonId}&thangTinh=${viewThisMonth}`}
+                >
                   <div className="btn btn-sub">Sửa phí</div>
                 </Link>
               </div>

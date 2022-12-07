@@ -47,7 +47,18 @@ export const xuLyLayThongTinDdcnThangTruoc = (
   hocPhiCaNhan
 ) => {
   if (!arrIn || arrIn.length === 0 || !hocSinhId || !hocPhiCaNhan) {
-    return {};
+    return {
+      arrNghiKhongBuCoPhep: [],
+      arrNghiKhongBuKoPhep: [],
+      arrNghiCoBu: [],
+      arrTangCuong: [],
+      tongNgayNghiCoBu: 0,
+      tongNgayTangCuong: 0,
+      tienNghiCoBu: 0,
+      tienNghiKhongBuCoPhep: 0,
+      tienNghiKhongBuKoPhep: 0,
+      tienTangCuong: 0,
+    };
   }
   //Chạy lặp
   //Tạo một mảng chứa
@@ -63,32 +74,56 @@ export const xuLyLayThongTinDdcnThangTruoc = (
     }
   });
   //Cuối cùng là filter lại 3 mảng riêng biệt
-  let arrNghiKhongBu = [];
+  let arrNghiKhongBuCoPhep = [];
+  let arrNghiKhongBuKoPhep = [];
   let arrNghiCoBu = [];
   let arrTangCuong = [];
   if (arrHandler.length > 0) {
-    arrNghiKhongBu = arrHandler.filter((item) => item.type === "nghi");
+    arrNghiKhongBuCoPhep = arrHandler.filter(
+      (item) => item.type === "nghi" && +item.heSoHoanTien === 1
+    );
+    arrNghiKhongBuKoPhep = arrHandler.filter(
+      (item) => item.type === "nghi" && +item.heSoHoanTien !== 1
+    );
+
     arrNghiCoBu = arrHandler.filter((item) => item.type === "nghi dayBu");
     arrTangCuong = arrHandler.filter((item) => item.type === "dayTangCuong");
   }
   //Tính toán ngày
-  let tongNgayNghiKhongBu = arrNghiKhongBu.length;
-  // let tongNgayNghiCoBu = arrNghiCoBu.length;
+  let tongNgayNghiCoBu = arrNghiCoBu.length;
   let tongNgayTangCuong = arrTangCuong.length;
+  let tongNgayNghiKhongBuCoPhep = arrNghiKhongBuCoPhep.length;
 
   //Tính tiền
-  const tienNghiKhongBu = tongNgayNghiKhongBu * hocPhiCaNhan;
-  // const tienNghiCoBu = tongNgayNghiCoBu * hocPhiCaNhan;
+  const tienNghiCoBu = tongNgayNghiCoBu * hocPhiCaNhan;
   const tienTangCuong = tongNgayTangCuong * hocPhiCaNhan;
+  const tienNghiKhongBuCoPhep = tongNgayNghiKhongBuCoPhep * hocPhiCaNhan;
+  let tienNghiKhongBuKoPhep = 0;
+  if (arrNghiKhongBuKoPhep.length > 0) {
+    arrNghiKhongBuKoPhep.forEach(
+      (item) => (tienNghiKhongBuKoPhep += item.heSoHoanTien * hocPhiCaNhan)
+    );
+  }
   //Trả thôi
   return {
-    arrNghiKhongBu,
+    arrNghiKhongBuCoPhep,
+    arrNghiKhongBuKoPhep,
     arrNghiCoBu,
     arrTangCuong,
-    // tongNgayNghiCoBu,
-    tongNgayNghiKhongBu,
+    tongNgayNghiCoBu,
     tongNgayTangCuong,
-    tienNghiKhongBu,
+    tienNghiCoBu,
+    tienNghiKhongBuCoPhep,
+    tienNghiKhongBuKoPhep,
     tienTangCuong,
   };
+};
+
+//Xử lý chuyển tháng chọn dạng 11/2022 về dạng dùng được đugns chuẩn js yyyy-mm-dd
+export const chuyenThangViewThanhNgay = (thangView) => {
+  if (!thangView) {
+    return;
+  }
+  const arrSplit = thangView.split("/");
+  return `${arrSplit[1]}-${arrSplit[0]}-01`;
 };

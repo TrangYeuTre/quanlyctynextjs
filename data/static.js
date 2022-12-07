@@ -55,13 +55,7 @@ export const navItems = () => {
       id: "i-6",
       route: "/hoc-phi",
       name: "Học phí học sinh",
-      children: [
-        { id: "c-1", route: "/tinh", name: "Tính học phí tháng mới" },
-        { id: "c-2", route: "/ket-qua", name: "Kết quả tính" },
-        { id: "c-3", route: "/dau-vao", name: "Thông tin đầu vào" },
-        { id: "c-4", route: "/tinh-toan", name: "Tính" },
-        { id: "c-5", route: "/sua", name: "Sửa" },
-      ],
+      children: [{ id: "c-3", route: "/dau-vao", name: "Xử lý đầu vào" }],
     },
     {
       id: "i-7",

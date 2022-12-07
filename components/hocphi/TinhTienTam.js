@@ -4,11 +4,34 @@ import { useState, useEffect } from "react";
 import { viewSplitMoney } from "../../helper/uti";
 
 const TinhTienTam = (props) => {
-  const { thongKeLich, hpCaNhan, hpNhom } = props;
+  const {
+    thongKeLich,
+    hpCaNhan,
+    hpNhom,
+    arrNghiKhongBuCoPhep,
+    arrNghiKhongBuKoPhep,
+    arrNghiCoBu,
+    arrTangCuong,
+    tongNgayNghiCoBu,
+    tongNgayTangCuong,
+    tienNghiCoBu,
+    tienNghiKhongBuCoPhep,
+    tienNghiKhongBuKoPhep,
+    tienTangCuong,
+  } = props;
+  console.log(arrNghiKhongBuCoPhep);
   //State quan sát học phí của 3 loại lớp
   const [hpCn, setHpCn] = useState();
   const [hpN, setHpN] = useState();
   const [hpDh, setHpDh] = useState(300000);
+  //Cb format view lại cho ngày
+  const formatViewNgay = (date) => {
+    return new Date(date).toLocaleString("en-GB", {
+      day: "numeric",
+      month: "numeric",
+      year: "numeric",
+    });
+  };
   //Cb onChange quan sát thay đổi của các input
   const getHpCaNhanHandler = (e) => {
     setHpCn(e.target.value);
@@ -23,13 +46,18 @@ const TinhTienTam = (props) => {
   const tienCaNhan = thongKeLich.canhan * hpCn;
   const tienNhom = thongKeLich.nhom * hpN;
   const tienDongHanh = thongKeLich.donghanh * hpDh;
-  const tienTong = tienCaNhan + tienNhom + tienDongHanh;
+  const tienTong =
+    tienCaNhan +
+    tienNhom +
+    tienDongHanh -
+    tienNghiKhongBuCoPhep -
+    tienNghiKhongBuKoPhep +
+    tienTangCuong;
   //Side effect load học phí lần đầu
   useEffect(() => {
     setHpCn(hpCaNhan);
     setHpN(hpNhom);
   }, [hpCaNhan, hpNhom]);
-  console.log(thongKeLich)
   return (
     <Fragment>
       {Object.keys(thongKeLich).length === 0 && (
@@ -99,11 +127,119 @@ const TinhTienTam = (props) => {
             </Fragment>
           )}
 
+          {arrNghiKhongBuCoPhep && arrNghiKhongBuCoPhep.length > 0 && (
+            <Fragment>
+              {/* Nghỉ không bù có phép, hoàn tiền full */}
+              <p style={{ fontWeight: "bold" }}>Ngày nghỉ có phép:</p>
+              <div className={classes.thangTruoc}>
+                <div className={classes.showNgay}>
+                  {arrNghiKhongBuCoPhep.map((item) => (
+                    <div
+                      key={item.ngayDiemDanh}
+                      className={classes.tagNghiKoBu}
+                    >
+                      Nghỉ : {formatViewNgay(item.ngayDiemDanh)}
+                    </div>
+                  ))}
+                </div>
+                <div className={classes.controls}>
+                  <label>Thành tiền</label>
+                  <p>- {viewSplitMoney(tienNghiKhongBuCoPhep)} đ</p>
+                </div>
+              </div>
+            </Fragment>
+          )}
+
+          {arrNghiKhongBuKoPhep && arrNghiKhongBuKoPhep.length > 0 && (
+            <Fragment>
+              {/* Nghỉ không bù không phép, hoàn tiền theo hệ số */}
+              <p style={{ fontWeight: "bold" }}>Ngày nghỉ không phép:</p>
+              <div className={classes.thangTruoc}>
+                <div className={classes.showNgay}>
+                  {arrNghiKhongBuKoPhep.map((item) => (
+                    <div
+                      key={item.ngayDiemDanh}
+                      className={classes.tagNghiKoBu}
+                    >
+                      Nghỉ : {formatViewNgay(item.ngayDiemDanh)}
+                    </div>
+                  ))}
+                </div>
+                <div className={classes.controls}>
+                  <label>Thành tiền</label>
+                  <p>- {viewSplitMoney(tienNghiKhongBuKoPhep)} đ</p>
+                </div>
+              </div>
+            </Fragment>
+          )}
+
+          {arrNghiCoBu && arrNghiCoBu.length > 0 && (
+            <Fragment>
+              {/* Nghỉ có bù, show và không tính tiền  */}
+              <p style={{ fontWeight: "bold" }}>Ngày nghỉ đã được dạy bù:</p>
+              <div className={classes.thangTruoc}>
+                <div className={classes.showNgay}>
+                  {arrNghiCoBu.map((item) => (
+                    <div
+                      key={item.ngayDiemDanh}
+                      className={classes.tagNghiKoBu}
+                      style={{ paddingRight: "0" }}
+                    >
+                      Nghỉ: {formatViewNgay(item.ngayDiemDanh)}{" "}
+                      <span
+                        style={{
+                          backgroundColor: "rgb(36, 145, 255)",
+                          padding: "8px",
+                          borderTopRightRadius: "5px",
+                          borderBottomRightRadius: "5px",
+                          borderLeft: "3px solid #fff",
+                          marginLeft: "3px",
+                        }}
+                      >
+                        Bù: {formatViewNgay(item.ngayDayBu)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div className={classes.controls}></div>
+              </div>
+            </Fragment>
+          )}
+
+          {arrTangCuong && arrTangCuong.length > 0 && (
+            <Fragment>
+              {/* Học tăng cường */}
+              <p style={{ fontWeight: "bold" }}>Ngày học tăng cường </p>
+              <div className={classes.thangTruoc}>
+                <div className={classes.showNgay}>
+                  {arrTangCuong.map((item) => (
+                    <div
+                      key={item.ngayDiemDanh}
+                      className={classes.tagTangCuong}
+                    >
+                      {formatViewNgay(item.ngayDiemDanh)}
+                    </div>
+                  ))}
+                </div>
+                <div className={classes.controls}>
+                  <label>Thành tiền</label>
+                  <p>+ {viewSplitMoney(tienTangCuong)} đ</p>
+                </div>
+              </div>
+            </Fragment>
+          )}
+
           {/* Tổng tiền */}
           <div className={classes.controls}>
             <label>
               Tổng tiền tạm tính:
-              <span style={{ color: "var(--mauMh4--)", fontWeight: "bold" }}>
+              <span
+                style={{
+                  color: "var(--mauMh4--)",
+                  fontWeight: "bold",
+                  marginLeft: "1rem",
+                }}
+              >
                 {viewSplitMoney(tienTong)} đ{" "}
               </span>
             </label>

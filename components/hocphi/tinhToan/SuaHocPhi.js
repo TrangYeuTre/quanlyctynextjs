@@ -16,7 +16,7 @@ import SuaNgayTrongLich from "../lich/SuaNgay";
 import TinhTienTam from "../TinhTienTam";
 import { convertInputDateFormat } from "../../../helper/uti";
 
-const TinhToanHocPhiPage = (props) => {
+const SuaHocPhiPage = (props) => {
   const { arrHocSinh, hocSinhId: hocSinhChonId, thangTinh } = props;
   const API_HOCPHI_ROUTE = "/api/hocphi/hocPhiThangMoi";
   const notiCtx = useContext(NotiContext);
@@ -72,6 +72,7 @@ const TinhToanHocPhiPage = (props) => {
     Sat: [],
     Sun: [],
   });
+  // console.log(dataNhieuNgayChon);
   //Cb lấy data từ lấy nhiều ngày
   const layDataNhieuNgayHandler = (data) => {
     const { type, arrThuChon, loaiLop, heso } = data;
@@ -180,7 +181,7 @@ const TinhToanHocPhiPage = (props) => {
       //Lấy data submit cái
       const dataSubmit = {
         hocSinhId: hocSinhChonId,
-        ngayTinhPhi: convertInputDateFormat(`01/${thangTinh}`),
+        ngayTinhPhi: chuyenThangViewThanhNgay(thangTinh),
       };
       //Fetch
       const response = await fetch("/api/hocphi/layDdcnThangTruoc", {
@@ -188,12 +189,27 @@ const TinhToanHocPhiPage = (props) => {
         body: JSON.stringify(dataSubmit),
         headers: { "Content-Type": "application/json" },
       });
-      const statusCode = response.status;
+      // const statusCode = response.status;
       const dataGot = await response.json();
       const arrDdcnThangTruoc = dataGot.data;
       setArrDdcnThangTruoc(arrDdcnThangTruoc);
     };
+    //Async lấy data ngày sửa học phí từ collections hocphis
+    const fetchGetDataHocPhiSua = async () => {
+      const response = await fetch("/api/hocphi/layHocPhiSua", {
+        method: "POST",
+        body: JSON.stringify({
+          hocSinhId: hocSinhChonId,
+          ngayTinhPhi: chuyenThangViewThanhNgay(thangTinh),
+        }),
+        headers: { "Content-Type": "application/json" },
+      });
+      const dataGot = await response.json();
+      const dataNhieuNgayChon = dataGot.data.dataNhieuNgayChon;
+      setNhieuNgayChon(dataNhieuNgayChon);
+    };
     fetchGetDdcnThangTruoc();
+    fetchGetDataHocPhiSua();
   }, [hocSinhChonId, thangTinh]);
   //Từ mảng ddcn tháng trước của hs fetch về -> xử lý lại để lấy các thông số nghỉ, tăng cuòng
   const {
@@ -211,9 +227,9 @@ const TinhToanHocPhiPage = (props) => {
 
   //Trả trả trả nào
   return (
-    <Card>
+    <Card isSubBg={true}>
       <h3 style={{ textAlign: "center" }}>
-        Tính phí cho học sinh{" "}
+        Sửa học phí cho học sinh{" "}
         <span style={{ color: "var(--mauMh4--)" }}>{hocSinhShortName}</span>,
         tháng <span style={{ color: "var(--mauMh4--)" }}>{thangTinh}</span>
       </h3>
@@ -277,11 +293,11 @@ const TinhToanHocPhiPage = (props) => {
           onClick={tinhPhiThangMoiHandler}
           className="btn btn-submit"
         >
-          Chốt tính phí tháng mới
+          Chốt sửa học phí
         </button>
       </CTA>
     </Card>
   );
 };
 
-export default TinhToanHocPhiPage;
+export default SuaHocPhiPage;
