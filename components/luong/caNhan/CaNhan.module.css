@@ -1,0 +1,150 @@
+.container {
+  padding: 1rem;
+  border-radius: 1rem;
+  background-color: var(--mauNen--);
+  box-shadow: 8px 8px 10px rgb(232, 231, 231);
+  margin: 1.5rem auto;
+  width: 100%;
+  font-size: 1.2rem;
+}
+.cellTitle {
+  padding: 0.7rem;
+  background-color: var(--mauTieuDe--);
+  color: var(--mauNen--);
+  border: 1px solid var(--mauTieuDe--);
+  text-align: center;
+  border-radius: 5px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1rem;
+}
+.cellData {
+  padding: 0.7rem;
+  background-color: var(--mauNen--);
+  color: var(--mauTieuDe--);
+  border: 2px solid var(--mauTieuDe--);
+  text-align: center;
+  border-radius: 5px;
+  font-size: 1.2rem;
+}
+.part1 {
+  width: 10%;
+}
+.part2 {
+  width: 20%;
+}
+.part4 {
+  width: 40%;
+}
+
+.cellNgayHoc {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.cellHeso {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  /* align-items: center; */
+}
+.cellHeso > * {
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid var(--mauMh1--);
+  color: var(--mauMh1--);
+  background-color: var(--mauNen--);
+  border-radius: 8px;
+}
+.cellHeso > *:hover,
+.hesoChon {
+  border: 1px solid var(--mauMh1--);
+  color: var(--mauNen--);
+  background-color: var(--mauMh1--);
+}
+.motNgay {
+  display: flex;
+  flex-direction: row;
+  border-radius: 8px;
+  overflow: hidden;
+  align-items: center;
+}
+
+/* Tạo màu ghi chú các ngày */
+.ghiChuMau,
+.nodeItem {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+  opacity: 0.9;
+}
+.ghiChuMau {
+  padding: 0.5rem;
+  color: #fff;
+  background-color: rgb(55, 55, 55);
+  border-radius: 1rem;
+  font-size: 1rem;
+}
+.nodeItem {
+  gap: 1rem;
+  flex-wrap: nowrap;
+  align-items: center;
+  padding: 0.3rem;
+  border: 1px solid #fff;
+  border-radius: 5px;
+}
+.dayChinh {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: var(--mauNut--);
+}
+.dayThe {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: var(--mauMh2--);
+}
+.dayTangCuong {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: var(--mauMh1--);
+}
+.dayBu {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: rgb(36, 145, 255);
+}
+.nghi {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: var(--mauMh4--);
+}
+
+/* màu cho ngày  */
+.hocChinh {
+  background-color: var(--mauNut--);
+  color: var(--mauNen--);
+}
+.hocThe {
+  background-color: var(--mauMh2--);
+  color: var(--mauNen--);
+}
+.hocTangCuong {
+  background-color: var(--mauMh1--);
+  color: var(--mauNen--);
+}
+.hocBu {
+  background-color: rgb(36, 145, 255);
+  color: var(--mauNen--);
+}
+.hocNghi {
+  background-color: var(--mauMh4--);
+  color: var(--mauNen--);
+}
