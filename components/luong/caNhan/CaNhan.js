@@ -3,13 +3,14 @@ import {
   layDataLuongCaNhanTuArrDdcn,
   layStyleNgayHocLuongCaNhan,
   tinhLaiArrLuongCaNhan,
+  tinhTongTienLuongCaNhan,
 } from "../luong_helper";
 import { viewSplitMoney } from "../../../helper/uti";
 import { useEffect, useState } from "react";
 
 const LuongCaNhan = (props) => {
   //Lấy mảng ddcn
-  const { arrDdcn, giaoVienChonData } = props;
+  const { arrDdcn, giaoVienChonData, layDataLuongCaNhan } = props;
   //State mảng data cuối cùng để render lương cá nhân
   const [arrDataLuongCaNhan, setArrDataLuongCn] = useState([]);
   //Một heler xử lý chuyển mảng ddcn về dạng thống ke theo học sinh cho giáo viên
@@ -35,6 +36,7 @@ const LuongCaNhan = (props) => {
     );
     //Set lại mảng state
     setArrDataLuongCn(arrResult);
+    layDataLuongCaNhan(arrResult);
   };
   const themHeso60 = (hocSinhId) => {
     let arrHandler = [];
@@ -56,6 +58,7 @@ const LuongCaNhan = (props) => {
     );
     //Set lại mảng state
     setArrDataLuongCn(arrResult);
+    layDataLuongCaNhan(arrResult);
   };
 
   //Xử lý lấy mảng cuối render
@@ -63,6 +66,8 @@ const LuongCaNhan = (props) => {
   if (arrDataLuongCaNhan.length > 0) {
     arrRender = arrDataLuongCaNhan;
   }
+  //Tính tổng tiền nào
+  const tongTienLuongCaNhan = tinhTongTienLuongCaNhan(arrDataLuongCaNhan);
   //Trả
   return (
     <div className={classes.container}>
@@ -189,6 +194,38 @@ const LuongCaNhan = (props) => {
               </tr>
             ))}
         </tbody>
+        {/* Dòng tổng tiền */}
+        <tfoot>
+          <tr>
+            <td
+              style={{ visibility: "hidden" }}
+              className={`${classes.cellData} ${classes.part2}`}
+            >
+              .
+            </td>
+            <td
+              style={{ visibility: "hidden" }}
+              className={`${classes.cellData} ${classes.part4}`}
+            >
+              .
+            </td>
+            <td
+              style={{ visibility: "hidden" }}
+              className={`${classes.cellData} ${classes.part1}`}
+            >
+              .
+            </td>
+            <td className={`${classes.cellData} ${classes.part1}`}>
+              Thành tiền
+            </td>
+            <td
+              style={{ color: "var(--mauMh4--)" }}
+              className={`${classes.cellData} ${classes.part2}`}
+            >
+              {viewSplitMoney(tongTienLuongCaNhan)} đ
+            </td>
+          </tr>
+        </tfoot>
       </table>
     </div>
   );

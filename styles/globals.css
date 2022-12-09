@@ -134,6 +134,16 @@ button:disabled {
   border: 1px solid var(--mauMh3--);
   color: var(--mauNen--);
 }
+.btn-sub2 {
+  background-color: var(--mauNen--);
+  border: 1px solid var(--mauMh1--);
+  color: var(--mauMh1--);
+}
+.btn-sub2:hover {
+  background-color: var(--mauMh1--);
+  border: 1px solid var(--mauMh1--);
+  color: var(--mauNen--);
+}
 
 .ghichu {
   color: gray;

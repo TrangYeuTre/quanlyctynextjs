@@ -1,0 +1,13 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--mauMh3--);
+  padding: 3px;
+  border: 1px solid var(--mauMh3--);
+  border-radius: 0.5rem;
+  gap: 1rem;
+}

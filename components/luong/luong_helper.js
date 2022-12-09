@@ -128,6 +128,27 @@ export const tinhLaiArrLuongCaNhan = (arrLuongCaNhanIn, luongCaNhan) => {
   return arrLuongCaNhanIn;
 };
 
+//Từ mảng tính thannf phần - tính tổng tiền
+export const tinhTongTienLuongCaNhan = (arrLuongCaNhan) => {
+  let tongTien = 0;
+  if (!arrLuongCaNhan || arrLuongCaNhan.length === 0) {
+    return tongTien;
+  }
+  //Map mại mảng chưa props thành tiền
+  const arrThanhTien = arrLuongCaNhan.map((item) => {
+    if (isNaN(item.thanhTien)) {
+      return 0;
+    } else {
+      return +item.thanhTien;
+    }
+  });
+  //Tính tổng tiền
+  if (arrThanhTien.length > 0) {
+    tongTien = arrThanhTien.reduce((cv, tong) => cv + tong);
+  }
+  return tongTien;
+};
+
 //Láy style ngày học thuộc loại nào tương ứng
 export const layStyleNgayHocLuongCaNhan = (ngayhoc, classes) => {
   if (ngayhoc.type === "dayChinh") {
@@ -145,4 +166,27 @@ export const layStyleNgayHocLuongCaNhan = (ngayhoc, classes) => {
   if (ngayhoc.type === "nghi") {
     return classes.hocNghi;
   }
+};
+
+//Tính tổng lương nhóm
+export const tinhTongLuongNhom = (arrDdn) => {
+  let tongLuongNhom = 0;
+  if (!arrDdn || arrDdn.length === 0) {
+    return tongLuongNhom;
+  }
+  if (arrDdn.length > 0) {
+    const arrLuongNhom = arrDdn.map((item) => +item.luongNhom);
+    tongLuongNhom = arrLuongNhom.reduce((cv, tong) => cv + tong);
+  }
+  return tongLuongNhom;
+};
+
+//Tính tổng lương phụ phí
+export const tinhTongPhuPhi = (arrPhuPhi) => {
+  let tongPhuPhi = 0;
+  if (arrPhuPhi.length > 0) {
+    const arrTienPhi = arrPhuPhi.map((item) => +item.phuPhi);
+    tongPhuPhi = arrTienPhi.reduce((cv, tong) => cv + tong);
+  }
+  return tongPhuPhi;
 };
