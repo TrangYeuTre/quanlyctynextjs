@@ -1,13 +1,15 @@
 import classes from "./LuongNhom.module.css";
 import { viewSplitMoney } from "../../../helper/uti";
 import { tinhTongLuongNhom } from "../luong_helper";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NgayBar from "../../UI/NgayBar";
 
 const LuongNhom = (props) => {
-  const { arrDdn, layDataLuongNhom } = props;
+  const { dataLuongNhom, layDataLuongNhom } = props;
   //State lấy giá trị của ô ghi chú
   const [ghiChuVal, setGhiChuVal] = useState("");
+  //State mảng lương nhóm render
+  const [arrLuongNhom, setArrLuongNhom] = useState([]);
   //Cb lấy giá trị ghi chú
   const layGiaTriGhiChuHandler = (e) => {
     setTimeout(() => {
@@ -15,11 +17,11 @@ const LuongNhom = (props) => {
     }, 2000);
   };
   //Tính tổng lương nhớm
-  const tongLuongNhom = tinhTongLuongNhom(arrDdn);
+  const tongLuongNhom = tinhTongLuongNhom(arrLuongNhom);
   //Cb thêm ghi chú cho ngày nhóm
   const themGhiChuNgayNhomHandler = (ngayDiemDanh) => {
     //Tìm trong mảng ngày tương ứng để thêm ghi chú
-    const arrDdnClone = [...arrDdn];
+    const arrDdnClone = [...arrLuongNhom];
     const ngayMatched = arrDdnClone.find(
       (item) => item.ngayDiemDanh === ngayDiemDanh
     );
@@ -27,7 +29,12 @@ const LuongNhom = (props) => {
       ngayMatched.ghiChu = ghiChuVal;
     }
     layDataLuongNhom(arrDdnClone);
+    setArrLuongNhom(arrDdnClone);
   };
+  //Side effect load data sưa lần đầu
+  useEffect(() => {
+    setArrLuongNhom(dataLuongNhom);
+  }, [dataLuongNhom]);
   return (
     <div className={classes.container}>
       <h4>Tính lương nhóm</h4>
@@ -48,9 +55,9 @@ const LuongNhom = (props) => {
         </thead>
         {/* Phần thân data */}
         <tbody>
-          {arrDdn.length > 0 &&
-            arrDdn.map((item) => (
-              <tr key={Math.random()}>
+          {arrLuongNhom.length > 0 &&
+            arrLuongNhom.map((item) => (
+              <tr key={item.ngayDiemDanh}>
                 <td className={`${classes.cellData} ${classes.part2}`}>
                   <NgayBar ngay={new Date(item.ngayDiemDanh).getDate()} />
                 </td>

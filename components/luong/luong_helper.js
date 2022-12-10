@@ -120,7 +120,7 @@ export const tinhLaiArrLuongCaNhan = (arrLuongCaNhanIn, luongCaNhan) => {
   //Chạy lăp để tính số giờ và thành tiền
   if (arrLuongCaNhanIn.length > 0) {
     arrLuongCaNhanIn.forEach((item) => {
-      item.gioTinh = (+item.tongPhut / +item.heSoTinh).toFixed(2);
+      item.gioTinh = +item.tongPhut / +item.heSoTinh;
       item.thanhTien = item.gioTinh * luongCn;
     });
   }
@@ -189,4 +189,70 @@ export const tinhTongPhuPhi = (arrPhuPhi) => {
     tongPhuPhi = arrTienPhi.reduce((cv, tong) => cv + tong);
   }
   return tongPhuPhi;
+};
+
+//Kiểm tra xem phần lương cá nhân đã được tính hết chưa
+export const kiemTraLuongCaNhanTinhChua = (arrLuongCaNhan) => {
+  let isOk = true;
+  if (!arrLuongCaNhan || arrLuongCaNhan.length === 0) {
+    isOk = false;
+    return isOk;
+  }
+  if (arrLuongCaNhan && arrLuongCaNhan.length > 0) {
+    arrLuongCaNhan.forEach((item) => {
+      // console.log(Number.isFinite(item.thanhTien));
+      if (!Number.isFinite(item.thanhTien)) {
+        isOk = false;
+      }
+    });
+  } else {
+    isOk = true;
+  }
+  return isOk;
+};
+
+//Sửa lương cá nhân, đánh hệ số lương cá nhân ban đầu
+export const danhHeSoLuongCaNhanSua = (
+  arrDataInitLuongCaNhan,
+  dataLuongCaNhan
+) => {
+  if (!dataLuongCaNhan || Object.keys(dataLuongCaNhan).length === 0) {
+    return arrDataInitLuongCaNhan;
+  }
+  //Clone lại mảng init để đánh hs, dùng mag init vì ban đầu load chưa đúng đến arrDataLuongCaNhan
+  const arrClone = [...arrDataInitLuongCaNhan];
+  //Tìm và đánh hs
+  dataLuongCaNhan.forEach((hocsinh) => {
+    const hsMatched = arrClone.find(
+      (item) => item.hocSinhId === hocsinh.hocSinhId
+    );
+    if (hsMatched) {
+      hsMatched.heSoTinh = hocsinh.heSoTinh;
+    }
+  });
+  //Chạy lặp tih lại các thông số
+
+  return arrClone;
+};
+
+//TÍnh tổng lương
+export const tinhTongLuong = (dataLuongCaNhan, dataLuongNhom, dataPhuPhi) => {
+  let tongLuongCaNhan = 0;
+  let tongLuongNhom = 0;
+  let tongPhuPhi = 0;
+  if (dataLuongCaNhan.length > 0) {
+    const arrThanhTien = dataLuongCaNhan.map((item) => +item.thanhTien);
+    tongLuongCaNhan = arrThanhTien.reduce((cv, tong) => cv + tong);
+  }
+  if (dataLuongNhom.length > 0) {
+    const arrThanhTien = dataLuongNhom.map((item) => +item.luongNhom);
+    tongLuongNhom = arrThanhTien.reduce((cv, tong) => cv + tong);
+  }
+  if (dataPhuPhi.length > 0) {
+    const arrPhuPhi = dataPhuPhi.map((item) => +item.phuPhi);
+    tongPhuPhi = arrPhuPhi.reduce((cv, tong) => cv + tong);
+  }
+  let tongLuong = tongLuongCaNhan + tongLuongNhom + tongPhuPhi;
+  tongLuong = Math.round(tongLuong / 1000) * 1000;
+  return tongLuong;
 };

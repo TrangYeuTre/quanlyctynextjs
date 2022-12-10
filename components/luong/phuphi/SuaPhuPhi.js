@@ -2,12 +2,12 @@ import classes from "./Phuphi.module.css";
 import { viewSplitMoney } from "../../../helper/uti";
 import FormThemPhuPhi from "./FormThemPhuPhi";
 import FormSuaPhuPhi from "./FormSuaPhuPhi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NgayBar from "../../UI/NgayBar";
 import { tinhTongPhuPhi } from "../luong_helper";
 
 const PhuPhi = (props) => {
-  const { layDataPhuPhi } = props;
+  const { layDataPhuPhi, dataPhuPhi } = props;
   //State view thêm/ sửa phụ phí
   const [viewThemPp, setViewThemPp] = useState(true);
   //State lấy data của ngày được sửa
@@ -48,7 +48,7 @@ const PhuPhi = (props) => {
     }
     //Sort lại mảng
     arrClone.sort((a, b) =>
-      new Date(a.ngayDiemDanh) < new Date(b.ngayDiemDanh) ? -1 : 1
+      new Date(a.ngayPhuPhi) < new Date(b.ngayPhuPhi) ? -1 : 1
     );
     //setArrPhuPhi
     setArrPhuPhi(arrClone);
@@ -93,6 +93,14 @@ const PhuPhi = (props) => {
   };
 
   const tongPhuPhi = tinhTongPhuPhi(arrPhuPhi);
+
+  //Side effect load ngày sửa phụ phí
+  useEffect(() => {
+    dataPhuPhi.sort((a, b) =>
+      new Date(a.ngayPhuPhi) < new Date(b.ngayPhuPhi) ? -1 : 1
+    );
+    setArrPhuPhi(dataPhuPhi);
+  }, [dataPhuPhi]);
 
   return (
     <div className={classes.container}>

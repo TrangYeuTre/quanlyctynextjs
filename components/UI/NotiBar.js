@@ -6,7 +6,13 @@ const NotiBar = (props) => {
   const { status, message } = props;
   //Lấy style màu
   let finalStyle = classes.success;
-  if (status === 401 || status === 400 || status === 422 || status === 500) {
+  if (
+    status === 401 ||
+    status === 400 ||
+    status === 422 ||
+    status === 500 ||
+    status === 403
+  ) {
     finalStyle = classes.error;
   }
   if (typeof window === "object") {

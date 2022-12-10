@@ -4,6 +4,7 @@ import {
   layStyleNgayHocLuongCaNhan,
   tinhLaiArrLuongCaNhan,
   tinhTongTienLuongCaNhan,
+  danhHeSoLuongCaNhanSua,
 } from "../luong_helper";
 import { viewSplitMoney } from "../../../helper/uti";
 import { useEffect, useState } from "react";
@@ -16,19 +17,30 @@ const lamTron = (num) => {
   return Math.round(num / 1000) * 1000;
 };
 
-const LuongCaNhan = (props) => {
+const SuaLuongCaNhan = (props) => {
   //Lấy mảng ddcn
-  const { arrDdcn, giaoVienChonData, layDataLuongCaNhan } = props;
+  const { arrDdcn, giaoVienChonData, layDataLuongCaNhan, dataLuongCaNhan } =
+    props;
   //State mảng data cuối cùng để render lương cá nhân
   const [arrDataLuongCaNhan, setArrDataLuongCn] = useState([]);
   //Một heler xử lý chuyển mảng ddcn về dạng thống ke theo học sinh cho giáo viên
   const arrDataInitLuongCaNhan = layDataLuongCaNhanTuArrDdcn(arrDdcn);
+  //Đánh hệ số tính cho magnr init khi có data sủa
+  const arrDataDanhHeSoInit = danhHeSoLuongCaNhanSua(
+    arrDataInitLuongCaNhan,
+    dataLuongCaNhan
+  );
+  const arrDataDanhHeSo = tinhLaiArrLuongCaNhan(
+    arrDataDanhHeSoInit,
+    giaoVienChonData.luongCaNhan
+  );
+  //Xử lý đánh hệ số cho arr init bên trên
   //Cb thêm hệ số
   const themHeso45 = (hocSinhId) => {
     let arrHandler = [];
     if (arrDataLuongCaNhan.length === 0) {
       //Lấy mảng init xử lý
-      arrHandler = [...arrDataInitLuongCaNhan];
+      arrHandler = [...arrDataDanhHeSo];
     } else {
       arrHandler = [...arrDataLuongCaNhan];
     }
@@ -42,7 +54,6 @@ const LuongCaNhan = (props) => {
       arrHandler,
       giaoVienChonData.luongCaNhan
     );
-    console.log(arrResult);
     //Set lại mảng state
     setArrDataLuongCn(arrResult);
     layDataLuongCaNhan(arrResult);
@@ -51,7 +62,7 @@ const LuongCaNhan = (props) => {
     let arrHandler = [];
     if (arrDataLuongCaNhan.length === 0) {
       //Lấy mảng init xử lý
-      arrHandler = [...arrDataInitLuongCaNhan];
+      arrHandler = [...arrDataDanhHeSo];
     } else {
       arrHandler = [...arrDataLuongCaNhan];
     }
@@ -71,12 +82,12 @@ const LuongCaNhan = (props) => {
   };
 
   //Xử lý lấy mảng cuối render
-  let arrRender = arrDataInitLuongCaNhan;
+  let arrRender = arrDataDanhHeSo;
   if (arrDataLuongCaNhan.length > 0) {
     arrRender = arrDataLuongCaNhan;
   }
   //Tính tổng tiền nào
-  const tongTienLuongCaNhan = tinhTongTienLuongCaNhan(arrDataLuongCaNhan);
+  const tongTienLuongCaNhan = tinhTongTienLuongCaNhan(arrRender);
   //Trả
   return (
     <div className={classes.container}>
@@ -242,4 +253,4 @@ const LuongCaNhan = (props) => {
   );
 };
 
-export default LuongCaNhan;
+export default SuaLuongCaNhan;

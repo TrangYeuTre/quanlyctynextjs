@@ -40,7 +40,6 @@ const TinhToanLuongRoute = (props) => {
     if (gvMatched) {
       setGvChonData(gvMatched);
     }
-    console.log(giaoVienChonData);
   }, [giaoVienId, thangTinh, arrGiaoVien, giaoVienChonData]);
 
   return (
@@ -48,6 +47,7 @@ const TinhToanLuongRoute = (props) => {
       arrDdcn={arrDdcn}
       arrDdn={arrDdn}
       giaoVienChonData={giaoVienChonData}
+      ngayDauThang={chuyenThangViewThanhNgay(thangTinh)}
     />
   );
 };

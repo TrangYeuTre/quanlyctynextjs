@@ -32,7 +32,7 @@ const handler = async (req, res) => {
       //Tìm xem obj lương tháng này tồn tại chưa
       const objLuongThangNay = await db.collection("luongs").findOne({
         giaoVienId: giaoVienId,
-        ngayTinhPhi: {
+        ngayTinhLuong: {
           $gte: firstDateOfThisMonth,
           $lte: lastDateOfThisMonth,
         },

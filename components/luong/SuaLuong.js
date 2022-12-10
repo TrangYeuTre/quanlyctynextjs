@@ -1,21 +1,21 @@
-import LuongCaNhan from "./caNhan/CaNhan";
-import LuongNhom from "./nhom/LuongNhom";
-import PhuPhi from "./phuphi/Phuphi";
+import SuaLuongCaNhan from "./caNhan/SuaCaNhan";
+import SuaPhuPhi from "./phuphi/SuaPhuPhi";
+import SuaLuongNhom from "./nhom/SuaLuongNhom";
 import { useState, useEffect, useContext } from "react";
 import Card from "../UI/Card";
 import CTA from "../UI/CTA";
 import { kiemTraLuongCaNhanTinhChua, tinhTongLuong } from "./luong_helper";
 import NotiContext from "../../context/notiContext";
 import { useRouter } from "next/router";
-import { viewSplitMoney } from "../../helper/uti";
 
-const TinhToanLuongPage = (props) => {
+const SuaLuongPage = (props) => {
   const API_LUONG_ROUTE = "/api/luong/luongThangGiaoVien";
   const router = useRouter();
   //Noti
   const notiCtx = useContext(NotiContext);
   //Lấy về data ddcn và ddn của giáo viên
-  const { arrDdcn, arrDdn, giaoVienChonData, ngayDauThang } = props;
+  const { arrDdcn, arrDdn, giaoVienChonData, ngayDauThang, dataLuongThang } =
+    props;
   //State chính xử lý xem được bấm nút chốt tính lương hay không
   const [isSubmit, setSubmit] = useState(false);
   //State lấy data lương cá nhân
@@ -40,16 +40,19 @@ const TinhToanLuongPage = (props) => {
   const chotLuongThangHandler = async () => {
     //Tổng hợp dataSubmit
     const dataSubmit = {
-      giaoVienId: giaoVienChonData.id,
-      shortName: giaoVienChonData.shortName,
-      ngayTinhLuong: ngayDauThang,
-      dataLuongCaNhan: dataLuongCaNhan,
-      dataLuongNhom: dataLuongNhom,
-      dataPhuPhi: dataPhuPhi,
+      luongThangId: dataLuongThang._id,
+      dataUpdate: {
+        giaoVienId: giaoVienChonData.id,
+        shortName: giaoVienChonData.shortName,
+        ngayTinhLuong: ngayDauThang,
+        dataLuongCaNhan: dataLuongCaNhan,
+        dataLuongNhom: dataLuongNhom,
+        dataPhuPhi: dataPhuPhi,
+      },
     };
     //fetch
     const response = await fetch(API_LUONG_ROUTE, {
-      method: "POST",
+      method: "PUT",
       body: JSON.stringify(dataSubmit),
       headers: { "Content-Type": "application/json" },
     });
@@ -75,12 +78,25 @@ const TinhToanLuongPage = (props) => {
     const arrDdnThemGhiChu = arrDdn.map((item) => {
       return { ...item, ghiChu: "", luongNhom: +giaoVienChonData.luongNhom };
     });
+    //Từ data lương cá nhân load mặc định vè để sửa đánh lại ghi chú
     //Sơrt lại theo ngày cái
     arrDdnThemGhiChu.sort((a, b) =>
       new Date(a.ngayDiemDanh) < new Date(b.ngayDiemDanh) ? -1 : 1
     );
     setDataLuongNhom(arrDdnThemGhiChu);
   }, [arrDdn, giaoVienChonData]);
+  //Side effect lần đầu loade thì load đata đã tồn tại của thagns lương sửa
+  useEffect(() => {
+    if (dataLuongThang && dataLuongThang.dataLuongCaNhan.length > 0) {
+      setDataLuongCaNhan(dataLuongThang.dataLuongCaNhan);
+    }
+    if (dataLuongThang && dataLuongThang.dataLuongNhom.length > 0) {
+      setDataLuongNhom(dataLuongThang.dataLuongNhom);
+    }
+    if (dataLuongThang && dataLuongThang.dataPhuPhi.length > 0) {
+      setDataPhuPhi(dataLuongThang.dataPhuPhi);
+    }
+  }, []);
   //Tạo một helper tính tổng lương tất cả ở đây
   const tongLuong = tinhTongLuong(dataLuongCaNhan, dataLuongNhom, dataPhuPhi);
   //Trả
@@ -92,16 +108,17 @@ const TinhToanLuongPage = (props) => {
           {giaoVienChonData.shortName}
         </span>
       </h3>
-      <LuongCaNhan
+      <SuaLuongCaNhan
         arrDdcn={arrDdcn}
         giaoVienChonData={giaoVienChonData}
+        dataLuongCaNhan={dataLuongCaNhan}
         layDataLuongCaNhan={layDataLuongCaNhanHandler}
       />
-      <LuongNhom
-        arrDdn={dataLuongNhom}
+      <SuaLuongNhom
+        dataLuongNhom={dataLuongNhom}
         layDataLuongNhom={layDataLuongNhomHandler}
       />
-      <PhuPhi layDataPhuPhi={layDataPhuPhiHandler} />
+      <SuaPhuPhi layDataPhuPhi={layDataPhuPhiHandler} dataPhuPhi={dataPhuPhi} />
       <CTA
         message={
           isSubmit
@@ -123,4 +140,4 @@ const TinhToanLuongPage = (props) => {
   );
 };
 
-export default TinhToanLuongPage;
+export default SuaLuongPage;

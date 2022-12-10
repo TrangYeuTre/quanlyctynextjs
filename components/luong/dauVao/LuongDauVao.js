@@ -22,6 +22,8 @@ const LuongDauVaoPage = (props) => {
     arrGiaoVien,
     giaoVienChonId
   );
+  //State lương tháng đã tồn tại
+  const [luongThangIdTonTai, setLuongThangIdTonTai] = useState();
   //State load ui đầu vào hay ui đã xử lý fetch data về
   const [showDauVao, setShowDauVao] = useState(true);
   //State lấy ngày chọn
@@ -63,6 +65,7 @@ const LuongDauVaoPage = (props) => {
       notiCtx.clearNoti();
       if (statusCode === 200 || statusCode === 201) {
         setShowDauVao(false);
+        setLuongThangIdTonTai(dataGot.data);
       }
     }, process.env.DELAY_TIME_NOTI);
     window.scrollTo(0, 0);
@@ -158,7 +161,11 @@ const LuongDauVaoPage = (props) => {
                   lương, ấn vào nút bên để sửa nếu muốn
                 </label>
                 <Link
-                  href={`/luong/sua?giaoVienId=${giaoVienChonId}&thangTinh=${viewThisMonth}`}
+                  href={
+                    luongThangIdTonTai
+                      ? `/luong/sua?luongThangId=${luongThangIdTonTai}&giaoVienId=${giaoVienChonId}&thangTinh=${viewThisMonth}`
+                      : null
+                  }
                 >
                   <div className="btn btn-sub">Sửa lương</div>
                 </Link>
