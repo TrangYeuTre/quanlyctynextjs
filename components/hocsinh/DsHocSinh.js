@@ -1,12 +1,12 @@
 import Card from "../UI/Card";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import PersonBar from "../UI/PersonBar";
 import Search from "../UI/Search";
 import { sortArtByLastShortName, removeDomItem } from "../../helper/uti";
 import classes from "./DsHocSinh.module.css";
 import { useContext } from "react";
 import NotiContext from "../../context/notiContext";
-// import { useRouter } from "next/router";
+import HocSinh from "../../classes/HocSinh";
 
 const DanhSachHocSinhPage = (props) => {
   const HS_API_ROUTE = "/api/hocsinh/hocSinh";
@@ -26,22 +26,21 @@ const DanhSachHocSinhPage = (props) => {
   };
   //CB xóa học sinh theo id
   const delHocSinhHandler = async (id) => {
-    const response = await fetch(HS_API_ROUTE, {
-      method: "DELETE",
-      body: JSON.stringify(id),
-      headers: { "Content-Type": "application/json" },
-    });
-    const statusCode = response.status;
-    const dataGot = await response.json();
+    const { statusCode, dataGot } = await HocSinh.xoaHocSinh(id);
+    // const response = await fetch(HS_API_ROUTE, {
+    //   method: "DELETE",
+    //   body: JSON.stringify(id),
+    //   headers: { "Content-Type": "application/json" },
+    // });
+    // const statusCode = response.status;
+    // const dataGot = await response.json();
     //Đẩy thông báo
     setTimeout(() => {
       notiCtx.clearNoti();
       if (statusCode === 200 || statusCode === 201) {
         removeDomItem(id);
       }
-      // router.reload();
     }, 3000);
-    // window.scrollTo(0, 0);
     notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
 
@@ -59,20 +58,22 @@ const DanhSachHocSinhPage = (props) => {
       setArrHocSinh(sortArtByLastShortName(arrFilter));
     }
   }, [searchKey, arrHocSinhDaPhanLoai]);
+  console.log(arrHocSinh);
   return (
     <Card>
       <div className={classes.container}>
         <Search hint="Tìm tên học sinh..." getKeyword={setSearchKeyHandler} />
-        {arrHocSinh.map((item) => (
-          <PersonBar
-            key={item.id}
-            id={item.id}
-            shortName={item.shortName}
-            gioiTinh={item.gioiTinh}
-            arrLoaiLop={item.lopHoc}
-            doDelFetch={delHocSinhHandler}
-          />
-        ))}
+        {arrHocSinh.length > 0 &&
+          arrHocSinh.map((item) => (
+            <PersonBar
+              key={item.id}
+              id={item.id}
+              shortName={item.shortName}
+              gioiTinh={item.gioiTinh}
+              arrLoaiLop={item.lopHoc}
+              doDelFetch={delHocSinhHandler}
+            />
+          ))}
       </div>
     </Card>
   );

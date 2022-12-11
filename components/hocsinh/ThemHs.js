@@ -5,16 +5,12 @@ import { useEffect, useState, useRef, Fragment, useContext } from "react";
 import NotiContext from "../../context/notiContext";
 import Link from "next/link";
 import { convertInputDateFormat } from "../../helper/uti";
-import { useRouter } from "next/router";
 import { BsCheckLg } from "react-icons/bs";
+import HocSinh from "../../classes/HocSinh";
 
 const ThemHsPage = (props) => {
-  //Tạo biến fetch api
-  const HS_API_ROUTE = "/api/hocsinh/hocSinh";
-  //
   const notiCtx = useContext(NotiContext);
   const notiData = notiCtx.noti;
-  const router = useRouter();
   //Mong đợi mode dể render tương ứngmessage
   const { renderMode, dataHocSinh } = props;
   //Ref value cho input
@@ -80,90 +76,77 @@ const ThemHsPage = (props) => {
   //Cb chính fetch thêm hs
   const themHocSinhMoiHandler = async (e) => {
     e.preventDefault();
-    //Tổng hợp value đẻ submnit
-    const dataSubmit = {
-      lopHoc: [
+    const hocSinhMoi = new HocSinh(
+      [
         isCanhan ? "canhan" : null,
         isNhom ? "nhom" : null,
         isTangCuong ? "tangcuong" : null,
       ],
-      gioiTinh: gioiTinhRef.current.value,
-      tenHocSinh: tenHocSinhRef.current.value,
-      shortName: shortNameRef.current.value,
-      ngaySinh: ngaySinhRef.current.value,
-      soPhutHocMotTiet: soPhutHocMotTietRef.current.value,
-      hocPhiCaNhan: hocPhiCaNhanRef.current.value,
-      hocPhiNhom: hocPhiNhomRef.current.value,
-      tenPhuHuynh: tenPhuHuynhRef.current.value,
-      soDienThoai: soDienThoaiRef.current.value,
-      diaChi: diaChiRef.current.value,
-      thongTinCoBan: thongTinCoBanRef.current.value,
-    };
-    //FETCH HERE
-    const response = await fetch(HS_API_ROUTE, {
-      method: "POST",
-      body: JSON.stringify(dataSubmit),
-      headers: { "Content-Type": "application/json" },
-    });
-    const statusCode = response.status;
-    const dataRes = await response.json();
-    //Chạy push noti
+      gioiTinhRef.current.value,
+      tenHocSinhRef.current.value,
+      shortNameRef.current.value,
+      ngaySinhRef.current.value,
+      soPhutHocMotTietRef.current.value,
+      hocPhiCaNhanRef.current.value,
+      hocPhiNhomRef.current.value,
+      tenPhuHuynhRef.current.value,
+      soDienThoaiRef.current.value,
+      diaChiRef.current.value,
+      thongTinCoBanRef.current.value
+    );
+    //Thêm mới thoi
+    const { statusCode, dataGot } = await hocSinhMoi.themHocSinhMoi();
+    //Đẩy thông báo thôi
     setTimeout(() => {
       notiCtx.clearNoti();
       if (statusCode === 200 || statusCode === 201) {
         clearInput();
       }
     }, process.env.DELAY_TIME_NOTI);
+    window.scrollTo(0, 0);
     notiCtx.pushNoti({
       status: statusCode,
-      message: dataRes.thongbao,
+      message: dataGot.thongbao,
     });
-    window.scrollTo(0, 0);
   };
   //Cb chính fetch sưa hs
   const suaHocSinhHandler = async (e) => {
     e.preventDefault();
-    //Tổng hợp value đẻ submnit
-    const dataSubmit = {
-      id: dataHocSinh.id,
-      lopHoc: [
+    //Dùng class sửa hs ở đây
+    const hocSinhUpdate = new HocSinh(
+      [
         isCanhan ? "canhan" : null,
         isNhom ? "nhom" : null,
         isTangCuong ? "tangcuong" : null,
       ],
-      gioiTinh: gioiTinhRef.current.value,
-      tenHocSinh: tenHocSinhRef.current.value,
-      shortName: shortNameRef.current.value,
-      ngaySinh: ngaySinhRef.current.value,
-      soPhutHocMotTiet: soPhutHocMotTietRef.current.value,
-      hocPhiCaNhan: hocPhiCaNhanRef.current.value,
-      hocPhiNhom: hocPhiNhomRef.current.value,
-      tenPhuHuynh: tenPhuHuynhRef.current.value,
-      soDienThoai: soDienThoaiRef.current.value,
-      diaChi: diaChiRef.current.value,
-      thongTinCoBan: thongTinCoBanRef.current.value,
-    };
-    //FETCH HERE
-    const response = await fetch(HS_API_ROUTE, {
-      method: "PUT",
-      body: JSON.stringify(dataSubmit),
-      headers: { "Content-Type": "application/json" },
-    });
-    const statusCode = response.status;
-    const dataRes = await response.json();
-    //Chạy push noti
+      gioiTinhRef.current.value,
+      tenHocSinhRef.current.value,
+      shortNameRef.current.value,
+      ngaySinhRef.current.value,
+      soPhutHocMotTietRef.current.value,
+      hocPhiCaNhanRef.current.value,
+      hocPhiNhomRef.current.value,
+      tenPhuHuynhRef.current.value,
+      soDienThoaiRef.current.value,
+      diaChiRef.current.value,
+      thongTinCoBanRef.current.value
+    );
+    //Sửa thôi
+    const { statusCode, dataGot } = await hocSinhUpdate.suaHocSinh(
+      dataHocSinh.id
+    );
+    //Đẩy thông báo thôi
     setTimeout(() => {
       notiCtx.clearNoti();
       if (statusCode === 200 || statusCode === 201) {
-        router.push("/hoc-sinh/ds-ca-nhan");
+        clearInput();
       }
-      clearInput();
     }, process.env.DELAY_TIME_NOTI);
+    window.scrollTo(0, 0);
     notiCtx.pushNoti({
       status: statusCode,
-      message: dataRes.thongbao,
+      message: dataGot.thongbao,
     });
-    window.scrollTo(0, 0);
   };
   //Side effect
   useEffect(() => {

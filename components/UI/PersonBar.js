@@ -26,7 +26,7 @@ const PersonBar = (props) => {
         </div>
         {arrLoaiLop.length > 0 &&
           arrLoaiLop.map((item) => (
-            <div key={item} className={classes.lop}>
+            <div key={Math.random()} className={classes.lop}>
               {item}
             </div>
           ))}

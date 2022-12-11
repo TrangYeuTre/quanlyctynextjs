@@ -121,10 +121,10 @@ const handler = async (req, res) => {
     //Tiến hành sửa nào
     try {
       //Tách từ body phần data cần sửa và id
-      const idHocSinhSua = req.body.id;
+      const idHocSinhSua = req.body.hocSinhId;
       let dataEdit = new Object();
       for (let prop in req.body) {
-        if (prop !== "id") {
+        if (prop !== "hocSinhId") {
           dataEdit[prop] = req.body[prop];
         }
       }
