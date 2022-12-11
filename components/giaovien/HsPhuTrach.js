@@ -3,11 +3,11 @@ import Layout28 from "../layout/layout-2-8";
 import Card from "../UI/Card";
 import PickGiaoVienBar from "../UI/PickGiaoVienBar";
 import ListPerson from "../UI/ListPerson";
-import ActionBar from "../UI/ActionBar";
 import { useState, useContext, useEffect, Fragment } from "react";
 import GiaoVienContext from "../../context/giaoVienContext";
 import NotiContext from "../../context/notiContext";
 import { useRouter } from "next/router";
+import GiaoVien from "../../classes/GiaoVien";
 
 //Comp chính
 const HocSinhPhuTrachPage = (props) => {
@@ -33,20 +33,11 @@ const HocSinhPhuTrachPage = (props) => {
         soPhutHocMotTiet: item.soPhutHocMotTiet,
       };
     });
-    console.log(arrHocSinhDuocChon);
-    //Tổng hợp lại data submit
-    const dataSubmit = {
-      idGiaoVien: giaoVienDuocChonId,
-      arrHocSinhChon: arrHocSinhDuocChon,
-    };
-    //Fetch lên db để cập nhật mảng hocTroCaNhan cho giáo viên
-    const response = await fetch("/api/giaovien/hocSinhPhuTrachChoGiaoVien", {
-      method: "PUT",
-      body: JSON.stringify(dataSubmit),
-      headers: { "Content-Type": "application/json" },
-    });
-    const statusCode = response.status;
-    const dataGot = await response.json();
+    //Fetch update học sinh phụ trách của giáo viên
+    const { statusCode, dataGot } = await GiaoVien.updateHocSinhPhuTrach(
+      giaoVienDuocChonId,
+      arrHocSinhDuocChon
+    );
     //Đẩy thông báo
     setTimeout(() => {
       notiCtx.clearNoti();

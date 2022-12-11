@@ -1,4 +1,5 @@
 import Card from "../UI/Card";
+import GiaoVien from "../../classes/GiaoVien";
 import { useEffect, useState } from "react";
 import PersonBar from "../UI/PersonBar";
 import Search from "../UI/Search";
@@ -6,12 +7,9 @@ import { sortArtByLastShortName, removeDomItem } from "../../helper/uti";
 import classes from "../hocsinh/DsHocSinh.module.css";
 import { useContext } from "react";
 import NotiContext from "../../context/notiContext";
-import { useRouter } from "next/router";
-const DanhSachGiaoVienPage = (props) => {
-  const API_GIAOVIEN_ROUTE = "/api/giaovien/giaoVien"
 
+const DanhSachGiaoVienPage = (props) => {
   const notiCtx = useContext(NotiContext);
-  const router = useRouter();
   //Lấy về từ props
   const { arrGiaoVienGot } = props;
   //State lấy keyword search
@@ -26,17 +24,13 @@ const DanhSachGiaoVienPage = (props) => {
 
   //Cb xóa giáo viên
   const delGiaoVienHandler = async (id) => {
-    const response = await fetch(API_GIAOVIEN_ROUTE, {
-      method: "DELETE",
-      body: JSON.stringify(id),
-      headers: { "Content-Type": "application/json" },
-    });
-    const statusCode = response.status;
-    const dataGot = await response.json();
+    //Class xóa giáo viên
+    const { statusCode, dataGot } = await GiaoVien.xoaGiaoVien(id);
+    //Đẩy thông báo
     setTimeout(() => {
       notiCtx.clearNoti();
       if ((statusCode === 200) | (statusCode === 201)) {
-        removeDomItem(id)
+        removeDomItem(id);
       }
     }, process.env.DELAY_TIME_NOTI);
     window.scrollTo(0, 0);

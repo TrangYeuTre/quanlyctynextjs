@@ -7,6 +7,7 @@ import { arrThu } from "../../data/static";
 import { sortArtByLastShortName } from "../../helper/uti";
 import NotiContext from "../../context/notiContext";
 import { useRouter } from "next/router";
+import GiaoVien from "../../classes/GiaoVien";
 
 //Tạo một cái comp mini để render nội dung phần chọn lịch cho học trò
 const ChonItemPage = (props) => {
@@ -124,14 +125,8 @@ const GanLichChoHsPage = (props) => {
         };
       }),
     };
-    //Tiến hành fetch nào
-    const response = await fetch("/api/giaovien/lichChoHocSinhCuaGiaoVien", {
-      method: "POST",
-      body: JSON.stringify(dataSubmit),
-      headers: { "Content-Type": "application/json" },
-    });
-    const statusCode = response.status;
-    const dataGot = await response.json();
+    //Fetch update lịch cho giaó viên thôi
+    const { statusCode, dataGot } = await GiaoVien.updateLichGiaoVien(dataSubmit);
     //Đẩy thông báo
     setTimeout(() => {
       notiCtx.clearNoti();

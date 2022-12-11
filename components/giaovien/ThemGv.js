@@ -1,4 +1,5 @@
 import classes from "../hocsinh/ThemHs.module.css";
+import GiaoVien from "../../classes/GiaoVien";
 import Card from "../UI/Card";
 import CTA from "../UI/CTA";
 import { useRef, Fragment } from "react";
@@ -9,7 +10,6 @@ import NotiContext from "../../context/notiContext";
 import { useRouter } from "next/router";
 
 const ThemGvPage = (props) => {
-  const API_GIAOVIEN_ROUTE = "/api/giaovien/giaoVien"
   const notiCtx = useContext(NotiContext);
   const router = useRouter();
   //Mong đợi mode dể render tương ứng
@@ -45,28 +45,22 @@ const ThemGvPage = (props) => {
   //Cb chính fetch thêm giáo viên
   const themGiaoVienMoiHandler = async (e) => {
     e.preventDefault();
-    //Tổng hợp value đẻ submnit
-    const dataSubmit = {
-      tenGiaoVien: tenGiaoVienRef.current.value,
-      shortName: shortNameRef.current.value,
-      gioiTinh: gioiTinhRef.current.value,
-      ngaySinh: ngaySinhRef.current.value,
-      luongCaNhan: luongCaNhanRef.current.value,
-      luongNhom: luongNhomRef.current.value,
-      soDienThoai: soDienThoaiRef.current.value,
-      diaChi: diaChiRef.current.value,
-      thongTinCoBan: thongTinCoBanRef.current.value,
-      hocTroCaNhan: [],
-      lichDayCaNhan: [],
-    };
-    //Tiến hành fetch thôi
-    const response = await fetch(API_GIAOVIEN_ROUTE, {
-      method: "POST",
-      body: JSON.stringify(dataSubmit),
-      headers: { "Content-Type": "application/json" },
-    });
-    const statusCode = response.status;
-    const dataGot = await response.json();
+    //Class
+    const giaoVienMoi = new GiaoVien(
+      tenGiaoVienRef.current.value,
+      shortNameRef.current.value,
+      gioiTinhRef.current.value,
+      ngaySinhRef.current.value,
+      luongCaNhanRef.current.value,
+      luongNhomRef.current.value,
+      soDienThoaiRef.current.value,
+      diaChiRef.current.value,
+      thongTinCoBanRef.current.value,
+      [],
+      []
+    );
+    //Fetch thôi
+    const { statusCode, dataGot } = await giaoVienMoi.themGiaoVien();
     //Đẩy thông báo nào
     setTimeout(() => {
       notiCtx.clearNoti();
@@ -80,27 +74,22 @@ const ThemGvPage = (props) => {
   //Cb chính fetch sưa hs
   const suaGiaoVienHandler = async (e) => {
     e.preventDefault();
-    //Tổng hợp value đẻ submnit
-    const dataSubmit = {
-      giaoVienSuaId: giaoVienSuaId,
-      tenGiaoVien: tenGiaoVienRef.current.value,
-      shortName: shortNameRef.current.value,
-      gioiTinh: gioiTinhRef.current.value,
-      ngaySinh: ngaySinhRef.current.value,
-      luongCaNhan: luongCaNhanRef.current.value,
-      luongNhom: luongNhomRef.current.value,
-      soDienThoai: soDienThoaiRef.current.value,
-      diaChi: diaChiRef.current.value,
-      thongTinCoBan: thongTinCoBanRef.current.value,
-    };
-    //Chạy fetch
-    const response = await fetch(API_GIAOVIEN_ROUTE, {
-      method: "PUT",
-      body: JSON.stringify(dataSubmit),
-      headers: { "Content-Type": "application/json" },
-    });
-    const statusCode = response.status;
-    const dataGot = await response.json();
+    //Classes
+    const giaoVienUpdate = new GiaoVien(
+      tenGiaoVienRef.current.value,
+      shortNameRef.current.value,
+      gioiTinhRef.current.value,
+      ngaySinhRef.current.value,
+      luongCaNhanRef.current.value,
+      luongNhomRef.current.value,
+      soDienThoaiRef.current.value,
+      diaChiRef.current.value,
+      thongTinCoBanRef.current.value
+    );
+    //Sửa thôi
+    const { statusCode, dataGot } = await giaoVienUpdate.suaGiaoVien(
+      giaoVienSuaId
+    );
     //Đẩy thông báo nào
     setTimeout(() => {
       notiCtx.clearNoti();

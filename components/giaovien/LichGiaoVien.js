@@ -8,6 +8,7 @@ import GiaoVienContext from "../../context/giaoVienContext";
 import LichBar from "../UI/LichBar";
 import NotiContext from "../../context/notiContext";
 import { useRouter } from "next/router";
+import GiaoVien from "../../classes/GiaoVien";
 
 //Comp chính nè
 const LichGiaoVienPage = (props) => {
@@ -21,13 +22,10 @@ const LichGiaoVienPage = (props) => {
   //Cb async xóa lịch
   const xoaLichHandler = async (id) => {
     if (id && giaoVienDuocChonId) {
-      const response = await fetch("/api/giaovien/lichChoHocSinhCuaGiaoVien", {
-        method: "DELETE",
-        body: JSON.stringify({ lichId: id, giaoVienId: giaoVienDuocChonId }),
-        headers: { "Content-Type": "application/json" },
-      });
-      const statusCode = response.status;
-      const dataGot = await response.json();
+      const { statusCode, dataGot } = await GiaoVien.xoaLichGiaoVien(
+        id,
+        giaoVienDuocChonId
+      );
       //Đẩy thông báo
       setTimeout(() => {
         notiCtx.clearNoti();
