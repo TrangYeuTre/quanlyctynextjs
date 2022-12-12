@@ -27,13 +27,7 @@ const DanhSachHocSinhPage = (props) => {
   //CB xóa học sinh theo id
   const delHocSinhHandler = async (id) => {
     const { statusCode, dataGot } = await HocSinh.xoaHocSinh(id);
-    // const response = await fetch(HS_API_ROUTE, {
-    //   method: "DELETE",
-    //   body: JSON.stringify(id),
-    //   headers: { "Content-Type": "application/json" },
-    // });
-    // const statusCode = response.status;
-    // const dataGot = await response.json();
+
     //Đẩy thông báo
     setTimeout(() => {
       notiCtx.clearNoti();
@@ -58,7 +52,6 @@ const DanhSachHocSinhPage = (props) => {
       setArrHocSinh(sortArtByLastShortName(arrFilter));
     }
   }, [searchKey, arrHocSinhDaPhanLoai]);
-  console.log(arrHocSinh);
   return (
     <Card>
       <div className={classes.container}>

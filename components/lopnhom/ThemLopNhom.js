@@ -6,9 +6,9 @@ import ChonNguoiContext from "../../context/chonNguoiContext";
 import NotiContext from "../../context/notiContext";
 import ActionBar from "../UI/ActionBar";
 import { useRouter } from "next/router";
+import LopNhom from "../../classes/LopNhom";
 
 const ThemLopNhomPage = (props) => {
-  const API_LOPNHOM_ROUTE = "/api/lopnhom/lopNhom"
   const router = useRouter();
   //Ctx thông báo
   const notiCtx = useContext(NotiContext);
@@ -54,19 +54,14 @@ const ThemLopNhomPage = (props) => {
         shortName: hs.shortName,
       };
     });
-    const dataSubmit = {
-      tenLopNhom,
+    //Class
+    const lopNhomMoi = new LopNhom({
+      tenLopNhom: tenLopNhom,
       giaoVienLopNhom: arrGiaoVienLopNhom,
       hocSinhLopNhom: arrHocSinhLopNhom,
-    };
-    //Chạy submit
-    const response = await fetch(API_LOPNHOM_ROUTE, {
-      method: "POST",
-      body: JSON.stringify(dataSubmit),
-      headers: { "Content-Type": "application/json" },
     });
-    const statusCode = response.status;
-    const dataGot = await response.json();
+    //Fetch
+    const { statusCode, dataGot } = await lopNhomMoi.themLopNhom();
     //Đẩy thông báo
     setTimeout(() => {
       notiCtx.clearNoti();
@@ -79,7 +74,7 @@ const ThemLopNhomPage = (props) => {
   };
   //Cb Hủy thêm
   const huyThemLopNhomHandler = () => {
-    console.log("Hủy thêm");
+    router.reload();
   };
   //Xử lý biến tĩnh quyết định có được chốt không
   let disChot = true;

@@ -6,6 +6,7 @@ import ChonNguoiContext from "../../context/chonNguoiContext";
 import NotiContext from "../../context/notiContext";
 import ActionBar from "../UI/ActionBar";
 import { useRouter } from "next/router";
+import LopNhom from "../../classes/LopNhom";
 
 const SuaLopNhomPage = (props) => {
   const API_LOPNHOM_ROUTE = "/api/lopnhom/lopNhom";
@@ -33,7 +34,6 @@ const SuaLopNhomPage = (props) => {
       }
     });
   }
-  console.log(arrHocSinhNhom);
   //Đánh lại isSelected của giáo viên
   if (giaoVienLopNhom) {
     giaoVienLopNhom.forEach((giaovien) => {
@@ -83,20 +83,16 @@ const SuaLopNhomPage = (props) => {
         shortName: hs.shortName,
       };
     });
-    const dataSubmit = {
-      lopNhomId: lopNhom.lopNhomId,
-      tenLopNhom,
+    //Class
+    const lopNhomUpdate = new LopNhom({
+      tenLopNhom: tenLopNhom,
       giaoVienLopNhom: arrGiaoVienLopNhom,
       hocSinhLopNhom: arrHocSinhLopNhom,
-    };
-    //Chạy submit
-    const response = await fetch(API_LOPNHOM_ROUTE, {
-      method: "PUT",
-      body: JSON.stringify(dataSubmit),
-      headers: { "Content-Type": "application/json" },
     });
-    const statusCode = response.status;
-    const dataGot = await response.json();
+    //Fetch sửa
+    const { statusCode, dataGot } = await lopNhomUpdate.suaLopNhom(
+      lopNhom.lopNhomId
+    );
     //Đẩy thông báo
     setTimeout(() => {
       notiCtx.clearNoti();

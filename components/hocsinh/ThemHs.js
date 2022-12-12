@@ -76,24 +76,24 @@ const ThemHsPage = (props) => {
   //Cb chính fetch thêm hs
   const themHocSinhMoiHandler = async (e) => {
     e.preventDefault();
-    const hocSinhMoi = new HocSinh(
-      [
+    const hocSinhMoi = new HocSinh({
+      lopHoc: [
         isCanhan ? "canhan" : null,
         isNhom ? "nhom" : null,
         isTangCuong ? "tangcuong" : null,
       ],
-      gioiTinhRef.current.value,
-      tenHocSinhRef.current.value,
-      shortNameRef.current.value,
-      ngaySinhRef.current.value,
-      soPhutHocMotTietRef.current.value,
-      hocPhiCaNhanRef.current.value,
-      hocPhiNhomRef.current.value,
-      tenPhuHuynhRef.current.value,
-      soDienThoaiRef.current.value,
-      diaChiRef.current.value,
-      thongTinCoBanRef.current.value
-    );
+      gioiTinh: gioiTinhRef.current.value,
+      tenHocSinh: tenHocSinhRef.current.value,
+      shortName: shortNameRef.current.value,
+      ngaySinh: ngaySinhRef.current.value,
+      soPhutHocMotTiet: soPhutHocMotTietRef.current.value,
+      hocPhiCaNhan: hocPhiCaNhanRef.current.value,
+      hocPhiNhom: hocPhiNhomRef.current.value,
+      tenPhuHuynh: tenPhuHuynhRef.current.value,
+      soDienThoai: soDienThoaiRef.current.value,
+      diaChi: diaChiRef.current.value,
+      thongTinCoBan: thongTinCoBanRef.current.value,
+    });
     //Thêm mới thoi
     const { statusCode, dataGot } = await hocSinhMoi.themHocSinhMoi();
     //Đẩy thông báo thôi
@@ -113,24 +113,24 @@ const ThemHsPage = (props) => {
   const suaHocSinhHandler = async (e) => {
     e.preventDefault();
     //Dùng class sửa hs ở đây
-    const hocSinhUpdate = new HocSinh(
-      [
+    const hocSinhUpdate = new HocSinh({
+      lopHoc: [
         isCanhan ? "canhan" : null,
         isNhom ? "nhom" : null,
         isTangCuong ? "tangcuong" : null,
       ],
-      gioiTinhRef.current.value,
-      tenHocSinhRef.current.value,
-      shortNameRef.current.value,
-      ngaySinhRef.current.value,
-      soPhutHocMotTietRef.current.value,
-      hocPhiCaNhanRef.current.value,
-      hocPhiNhomRef.current.value,
-      tenPhuHuynhRef.current.value,
-      soDienThoaiRef.current.value,
-      diaChiRef.current.value,
-      thongTinCoBanRef.current.value
-    );
+      gioiTinh: gioiTinhRef.current.value,
+      tenHocSinh: tenHocSinhRef.current.value,
+      shortName: shortNameRef.current.value,
+      ngaySinh: ngaySinhRef.current.value,
+      soPhutHocMotTiet: soPhutHocMotTietRef.current.value,
+      hocPhiCaNhan: hocPhiCaNhanRef.current.value,
+      hocPhiNhom: hocPhiNhomRef.current.value,
+      tenPhuHuynh: tenPhuHuynhRef.current.value,
+      soDienThoai: soDienThoaiRef.current.value,
+      diaChi: diaChiRef.current.value,
+      thongTinCoBan: thongTinCoBanRef.current.value,
+    });
     //Sửa thôi
     const { statusCode, dataGot } = await hocSinhUpdate.suaHocSinh(
       dataHocSinh.id

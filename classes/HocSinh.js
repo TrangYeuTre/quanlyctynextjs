@@ -1,34 +1,19 @@
 const HS_API_ROUTE = "/api/hocsinh/hocSinh";
 
 class HocSinh {
-  constructor(
-    // hocSinhId,
-    lopHoc,
-    gioiTinh,
-    tenHocSinh,
-    shortName,
-    ngaySinh,
-    soPhutHocMotTiet,
-    hocPhiCaNhan,
-    hocPhiNhom,
-    tenPhuHuynh,
-    soDienThoai,
-    diaChi,
-    thongTinCoBan
-  ) {
-    // this.hocSinhId = hocSinhId;
-    this.lopHoc = lopHoc;
-    this.gioiTinh = gioiTinh;
-    this.tenHocSinh = tenHocSinh;
-    this.shortName = shortName;
-    this.ngaySinh = ngaySinh;
-    this.soPhutHocMotTiet = +soPhutHocMotTiet;
-    this.hocPhiCaNhan = +hocPhiCaNhan;
-    this.hocPhiNhom = +hocPhiNhom;
-    this.tenPhuHuynh = tenPhuHuynh;
-    this.soDienThoai = soDienThoai;
-    this.diaChi = diaChi;
-    this.thongTinCoBan = thongTinCoBan;
+  constructor(inputData) {
+    this.lopHoc = inputData.lopHoc;
+    this.gioiTinh = inputData.gioiTinh;
+    this.tenHocSinh = inputData.tenHocSinh;
+    this.shortName = inputData.shortName;
+    this.ngaySinh = inputData.ngaySinh;
+    this.soPhutHocMotTiet = +inputData.soPhutHocMotTiet;
+    this.hocPhiCaNhan = +inputData.hocPhiCaNhan;
+    this.hocPhiNhom = +inputData.hocPhiNhom;
+    this.tenPhuHuynh = inputData.tenPhuHuynh;
+    this.soDienThoai = inputData.soDienThoai;
+    this.diaChi = inputData.diaChi;
+    this.thongTinCoBan = inputData.thongTinCoBan;
   }
 
   async themHocSinhMoi() {

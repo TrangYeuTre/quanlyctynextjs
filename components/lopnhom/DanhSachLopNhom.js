@@ -4,7 +4,8 @@ import LopNhomBar from "../UI/LopNhomBar";
 import { useRouter } from "next/router";
 import { useContext } from "react";
 import NotiContext from "../../context/notiContext";
-import {removeDomItem} from '../../helper/uti'
+import { removeDomItem } from "../../helper/uti";
+import LopNhom from "../../classes/LopNhom";
 
 const DanhSachLopNhomPage = (props) => {
   const API_LOPNHOM_ROUTE = "/api/lopnhom/lopNhom";
@@ -15,18 +16,12 @@ const DanhSachLopNhomPage = (props) => {
   const { arrLopNhom } = props;
   //Cb xóa lớp nhóm
   const xoaLopNhomHandler = async (id) => {
-    const response = await fetch(API_LOPNHOM_ROUTE, {
-      method: "DELETE",
-      body: JSON.stringify(id),
-      headers: { "Content-Type": "application/json" },
-    });
-    const statusCode = response.status;
-    const dataGot = await response.json();
+    const { statusCode, dataGot } = await LopNhom.xoaLopNhom(id);
     //Đẩy thông báo
     setTimeout(() => {
       notiCtx.clearNoti();
       if (statusCode == 200 || statusCode === 201) {
-        removeDomItem(id)
+        removeDomItem(id);
       }
     }, process.env.DELAY_TIME_NOTI);
     notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });

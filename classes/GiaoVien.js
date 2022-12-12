@@ -3,30 +3,18 @@ const API_GV_HSPHUTRACH_ROUTE = "/api/giaovien/hocSinhPhuTrachChoGiaoVien";
 const API_GV_LICH_ROUTE = "/api/giaovien/lichChoHocSinhCuaGiaoVien";
 
 class GiaoVien {
-  constructor(
-    tenGiaoVien,
-    shortName,
-    gioiTinh,
-    ngaySinh,
-    luongCaNhan,
-    luongNhom,
-    soDienThoai,
-    diaChi,
-    thongTinCoBan,
-    hocTroCaNhan,
-    lichDayCaNhan
-  ) {
-    this.tenGiaoVien = tenGiaoVien;
-    this.shortName = shortName;
-    this.gioiTinh = gioiTinh;
-    this.ngaySinh = ngaySinh;
-    this.luongCaNhan = +luongCaNhan;
-    this.luongNhom = +luongNhom;
-    this.soDienThoai = soDienThoai;
-    this.diaChi = diaChi;
-    this.thongTinCoBan = thongTinCoBan;
-    this.hocTroCaNhan = hocTroCaNhan;
-    this.lichDayCaNhan = lichDayCaNhan;
+  constructor(inputData) {
+    this.tenGiaoVien = inputData.tenGiaoVien;
+    this.shortName = inputData.shortName;
+    this.gioiTinh = inputData.gioiTinh;
+    this.ngaySinh = inputData.ngaySinh;
+    this.luongCaNhan = +inputData.luongCaNhan;
+    this.luongNhom = +inputData.luongNhom;
+    this.soDienThoai = inputData.soDienThoai;
+    this.diaChi = inputData.diaChi;
+    this.thongTinCoBan = inputData.thongTinCoBan;
+    this.hocTroCaNhan = inputData.hocTroCaNhan;
+    this.lichDayCaNhan = inputData.lichDayCaNhan;
   }
 
   async themGiaoVien() {

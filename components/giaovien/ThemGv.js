@@ -46,19 +46,19 @@ const ThemGvPage = (props) => {
   const themGiaoVienMoiHandler = async (e) => {
     e.preventDefault();
     //Class
-    const giaoVienMoi = new GiaoVien(
-      tenGiaoVienRef.current.value,
-      shortNameRef.current.value,
-      gioiTinhRef.current.value,
-      ngaySinhRef.current.value,
-      luongCaNhanRef.current.value,
-      luongNhomRef.current.value,
-      soDienThoaiRef.current.value,
-      diaChiRef.current.value,
-      thongTinCoBanRef.current.value,
-      [],
-      []
-    );
+    const giaoVienMoi = new GiaoVien({
+      tenGiaoVien: tenGiaoVienRef.current.value,
+      shortName: shortNameRef.current.value,
+      gioiTinh: gioiTinhRef.current.value,
+      ngaySinh: ngaySinhRef.current.value,
+      luongCaNhan: luongCaNhanRef.current.value,
+      luongNhom: luongNhomRef.current.value,
+      soDienThoai: soDienThoaiRef.current.value,
+      diaChi: diaChiRef.current.value,
+      thongTinCoBan: thongTinCoBanRef.current.value,
+      hocTroCaNhan: [],
+      lichDayCaNhan: [],
+    });
     //Fetch thôi
     const { statusCode, dataGot } = await giaoVienMoi.themGiaoVien();
     //Đẩy thông báo nào
@@ -75,17 +75,19 @@ const ThemGvPage = (props) => {
   const suaGiaoVienHandler = async (e) => {
     e.preventDefault();
     //Classes
-    const giaoVienUpdate = new GiaoVien(
-      tenGiaoVienRef.current.value,
-      shortNameRef.current.value,
-      gioiTinhRef.current.value,
-      ngaySinhRef.current.value,
-      luongCaNhanRef.current.value,
-      luongNhomRef.current.value,
-      soDienThoaiRef.current.value,
-      diaChiRef.current.value,
-      thongTinCoBanRef.current.value
-    );
+    const giaoVienUpdate = new GiaoVien({
+      tenGiaoVien: tenGiaoVienRef.current.value,
+      shortName: shortNameRef.current.value,
+      gioiTinh: gioiTinhRef.current.value,
+      ngaySinh: ngaySinhRef.current.value,
+      luongCaNhan: luongCaNhanRef.current.value,
+      luongNhom: luongNhomRef.current.value,
+      soDienThoai: soDienThoaiRef.current.value,
+      diaChi: diaChiRef.current.value,
+      thongTinCoBan: thongTinCoBanRef.current.value,
+      hocTroCaNhan: [],
+      lichDayCaNhan: [],
+    });
     //Sửa thôi
     const { statusCode, dataGot } = await giaoVienUpdate.suaGiaoVien(
       giaoVienSuaId
