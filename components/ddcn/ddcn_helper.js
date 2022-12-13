@@ -1,4 +1,5 @@
 import { convertInputDateFormat } from "../../helper/uti";
+import DiemDanhCaNhan from "../../classes/DiemDanhCaNhan";
 
 //PHẦN NÀY XỬ LÝ PHỤ CHO ĐIỂM DANH CHÍNH
 //Xóa phần tử trừng trong mảng theo hocSinhId phục vụ cho thằng bên dưới
@@ -199,14 +200,14 @@ export const getObjSubmitDiemDanhChinh = (
       };
     });
   } //end if tăng cường
-  //Cuối  cùng là thêm thông tin chính vào
-  objResult = {
-    ...objResult,
+  //Tạo instance mới nào
+  const ddcnMoi = new DiemDanhCaNhan({
     ngayDiemDanh: ngayDdFormat,
     giaoVienId: giaoVienChonId,
     shortName: shortNameFormat,
-  };
-  return objResult;
+  });
+  //Trả
+  return { instanceDdcnMoi: ddcnMoi, objHocSinhData: objResult };
 };
 
 /////////////
@@ -291,13 +292,16 @@ export const getObjSubmitDayThe = (
       };
     });
   }
-  objResult = {
-    ...objResult,
+  //Tạo instance mới
+  const instaceNgayDayTheMoi = new DiemDanhCaNhan({
     ngayDiemDanh: ngayDiemDanhFormat,
-    giaoVienId: giaoVienChonId ? giaoVienChonId : null,
-    shortName: dataGiaoVienDuocChon ? dataGiaoVienDuocChon.shortName : null,
+    giaoVienId: giaoVienDayTheId ? giaoVienDayTheId : null,
+    shortName: giaoVienDayTheShortName ? giaoVienDayTheShortName : null,
+  });
+  return {
+    instaceNgayDayTheMoi: instaceNgayDayTheMoi,
+    objHocSinhData: objResult,
   };
-  return objResult;
 };
 
 //PHẦN NÀY CHO THÔNG KÊ GIÁO VIÊN

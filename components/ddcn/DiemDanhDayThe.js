@@ -17,6 +17,7 @@ import GiaoVienContext from "../../context/giaoVienContext";
 import PickDateBar from "../UI/PickDateBar";
 import ActionBar from "../UI/ActionBar";
 import ChonNguoi from "../UI/ChonNguoi";
+import DiemDanhCaNhan from "../../classes/DiemDanhCaNhan";
 
 //Comp chính
 const DiemDanhDayThePage = (props) => {
@@ -63,7 +64,7 @@ const DiemDanhDayThePage = (props) => {
   );
 
   //Tổng hợp lại data submit theo obj only
-  const dataSubmit = getObjSubmitDayThe(
+  const { instaceNgayDayTheMoi, objHocSinhData } = getObjSubmitDayThe(
     arrHocTroDayThe,
     ngayDiemDanh,
     giaoVienChonId,
@@ -71,25 +72,19 @@ const DiemDanhDayThePage = (props) => {
     giaoVienDayTheShortName,
     dataGiaoVienDuocChon
   );
-  console.log(dataSubmit);
 
   //CB chính submit
   const diemDanhDayTheHandler = async () => {
-    const response = await fetch("/api/ddcn/diemDanhDayThe", {
-      method: "POST",
-      body: JSON.stringify(dataSubmit),
-      headers: { "Content-Type": "application/json" },
-    });
-    const statusCode = response.status;
-    const dataRes = await response.json();
-    //Chạy push noti
+    const { statusCode, dataGot } =
+      await instaceNgayDayTheMoi.themDiemDanhDayTheMoi(objHocSinhData);
+    //Đảy thông báo
     setTimeout(() => {
       notiCtx.clearNoti();
       router.reload();
     }, process.env.DELAY_TIME_NOTI);
     notiCtx.pushNoti({
       status: statusCode,
-      message: dataRes.thongbao,
+      message: dataGot.thongbao,
     });
     window.scrollTo(0, 0);
   };

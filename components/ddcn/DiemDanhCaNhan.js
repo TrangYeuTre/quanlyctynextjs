@@ -64,8 +64,8 @@ const DiemDanhCaNhanPage = (props) => {
     arrHocSinhNghi,
     arrHsTangCuongFinal
   );
-  //Chuyển mảng trên và các info cần thiét thành objSubmit
-  const dataSubmit = getObjSubmitDiemDanhChinh(
+  //Chuyển mảng trên và các info cần thiét thành objSubmit, obj này là instance của class DDCN
+  const { instanceDdcnMoi, objHocSinhData } = getObjSubmitDiemDanhChinh(
     arrHsHocChinh,
     arrHsNghi,
     arrHsTangCuong,
@@ -73,16 +73,10 @@ const DiemDanhCaNhanPage = (props) => {
     giaoVienChonId,
     dataGiaoVienDuocChon
   );
-
   //CB chính submit
   const diemDanhCaNhanHandler = async () => {
-    const response = await fetch("/api/ddcn/diemDanhDayChinh", {
-      method: "POST",
-      body: JSON.stringify(dataSubmit),
-      headers: { "Content-Type": "application/json" },
-    });
-    const statusCode = response.status;
-    const dataRes = await response.json();
+    const { statusCode, dataGot } =
+      await instanceDdcnMoi.themDiemDanhDayChinhMoi(objHocSinhData);
     //Chạy push noti
     setTimeout(() => {
       notiCtx.clearNoti();
@@ -90,7 +84,7 @@ const DiemDanhCaNhanPage = (props) => {
     }, process.env.DELAY_TIME_NOTI);
     notiCtx.pushNoti({
       status: statusCode,
-      message: dataRes.thongbao,
+      message: dataGot.thongbao,
     });
     window.scrollTo(0, 0);
   };

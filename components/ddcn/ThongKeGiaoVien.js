@@ -12,6 +12,7 @@ import NotiContext from "../../context/notiContext";
 import PickDateBar from "../UI/PickDateBar";
 import ItemNgayDdcn from "./ItemNgayDdcn";
 import SuaNgayDiemDanhCuaHocSinhPage from "./SuaNgayDdHocSinh";
+import DiemDanhCaNhan from "../../classes/DiemDanhCaNhan";
 
 const ThongKeGiaoVienPage = (props) => {
   const { arrGiaoVien, arrDiemDanhCaNhan } = props;
@@ -42,13 +43,9 @@ const ThongKeGiaoVienPage = (props) => {
   };
   //Cb xóa ngày điểm danh
   const xoaNgayDiemDanhHandler = async (ngayDiemDanhId) => {
-    const response = await fetch("/api/ddcn/xoaNgayDiemDanh", {
-      method: "DELETE",
-      body: JSON.stringify(ngayDiemDanhId),
-      headers: { "Content-Type": "application/json" },
-    });
-    const statusCode = response.status;
-    const dataRes = await response.json();
+    const { statusCode, dataGot } = await DiemDanhCaNhan.xoaNgayDiemDanh(
+      ngayDiemDanhId
+    );
     //Chạy push noti
     setTimeout(() => {
       notiCtx.clearNoti();
@@ -58,7 +55,7 @@ const ThongKeGiaoVienPage = (props) => {
     }, process.env.DELAY_TIME_NOTI);
     notiCtx.pushNoti({
       status: statusCode,
-      message: dataRes.thongbao,
+      message: dataGot.thongbao,
     });
   };
   //Lấy lại mảng lọc điểm danh theo giáo viên id và tháng này

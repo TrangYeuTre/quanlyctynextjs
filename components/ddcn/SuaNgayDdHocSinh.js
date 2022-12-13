@@ -4,6 +4,7 @@ import { convertInputDateFormat } from "../../helper/uti";
 import { getDataSubmitSuaNgayDiemDanh } from "./ddcn_helper";
 import { useRouter } from "next/router";
 import NotiContext from "../../context/notiContext";
+import DiemDanhCaNhan from "../../classes/DiemDanhCaNhan";
 
 const SuaNgayDiemDanhCuaHocSinhPage = (props) => {
   const { data, arrGiaoVien, tatTrangSua } = props;
@@ -90,13 +91,10 @@ const SuaNgayDiemDanhCuaHocSinhPage = (props) => {
   //Cb chính sửa lại ngày điểm dánh
   const suaNgayDiemDanhHandler = async (e) => {
     e.preventDefault();
-    const response = await fetch("/api/ddcn/suaNgayDiemDanh", {
-      method: "PUT",
-      body: JSON.stringify(dataSubmit),
-      headers: { "Content-Type": "application/json" },
-    });
-    const statusCode = response.status;
-    const dataRes = await response.json();
+    //Fetch
+    const { statusCode, dataGot } = await DiemDanhCaNhan.suaNgayDiemDanhCaNhan(
+      dataSubmit
+    );
     //Chạy push noti
     setTimeout(() => {
       notiCtx.clearNoti();
@@ -108,21 +106,15 @@ const SuaNgayDiemDanhCuaHocSinhPage = (props) => {
     window.scrollTo(0, 0);
     notiCtx.pushNoti({
       status: statusCode,
-      message: dataRes.thongbao,
+      message: dataGot.thongbao,
     });
   };
   //Cb chính xóa ngày điểm dánh
   const xoaHocSinhDiemDanhHandler = async (hocSinhId) => {
-    const response = await fetch("/api/ddcn/xoaHocSinhTrongNgayDiemDanh", {
-      method: "DELETE",
-      body: JSON.stringify({
-        ngayDiemDanhId: ngayDiemDanhId,
-        hocSinhId: hocSinhId,
-      }),
-      headers: { "Content-Type": "application/json" },
-    });
-    const statusCode = response.status;
-    const dataRes = await response.json();
+    const { statusCode, dataGot } = await DiemDanhCaNhan.xoaHocSinhTrongNgayDiemDanhCaNhan(
+      hocSinhId,
+      ngayDiemDanhId
+    );
     //Chạy push noti
     setTimeout(() => {
       notiCtx.clearNoti();
@@ -134,7 +126,7 @@ const SuaNgayDiemDanhCuaHocSinhPage = (props) => {
     window.scrollTo(0, 0);
     notiCtx.pushNoti({
       status: statusCode,
-      message: dataRes.thongbao,
+      message: dataGot.thongbao,
     });
   };
 
