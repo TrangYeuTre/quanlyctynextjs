@@ -8,6 +8,7 @@ import { layTenLopNhom, layMangDdnRender } from "./ddn_helper";
 import { removeDomItem } from "../../helper/uti";
 import NotiContext from "../../context/notiContext";
 import KetQuaDdnBar from "../UI/KetQuaDdnBar";
+import DiemDanhNhom from "../../classes/DiemDanhNhom";
 
 const KetQuaDiemDanhNhomPage = (props) => {
   const API_DDN_ROUTE = "/api/ddn/diemDanhNhom";
@@ -38,13 +39,7 @@ const KetQuaDiemDanhNhomPage = (props) => {
 
   //Cb xóa ngày đỉem danh nhóm
   const xoaNgayDdnHandler = async (id) => {
-    const response = await fetch(API_DDN_ROUTE, {
-      method: "DELETE",
-      body: JSON.stringify(id),
-      headers: { "Content-Type": "application/json" },
-    });
-    const statusCode = response.status;
-    const dataGot = await response.json();
+    const { statusCode, dataGot } = await DiemDanhNhom.xoaNgayDiemDanhNhom(id);
     setTimeout(() => {
       notiCtx.clearNoti();
       if ((statusCode === 200) | (statusCode === 201)) {

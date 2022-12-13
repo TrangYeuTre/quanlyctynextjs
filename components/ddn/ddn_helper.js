@@ -1,5 +1,5 @@
 import { convertInputDateFormat } from "../../helper/uti";
-
+import DiemDanhNhom from "../../classes/DiemDanhNhom";
 //Xử lý mảng chọn lớp nhóm render
 export const layArrLopNhomRender = (arrLopNhom, lopNhomIdChon) => {
   //Đầu tiên là xử lý mảng lớp nhóm render
@@ -26,7 +26,6 @@ export const layArrLopNhomRender = (arrLopNhom, lopNhomIdChon) => {
 
 //Lấy mảng giáo viên của lớp nhóm đã được set trước đó trong lớp nhóm
 export const layArrGvCuaLopNhom = (arrLopNhom, lopNhomChonId) => {
-  console.log(arrLopNhom, lopNhomChonId);
   //Từ id lớp nhóm chọn -> load ds giáo viên của lớp nhóm đó trước
   let arrGiaoVienCuaLopNhom = [];
   const indexLopNhomChon = arrLopNhom.findIndex(
@@ -36,8 +35,6 @@ export const layArrGvCuaLopNhom = (arrLopNhom, lopNhomChonId) => {
   if (indexLopNhomChon !== -1) {
     arrGiaoVienCuaLopNhom = arrLopNhom[indexLopNhomChon].giaoVienLopNhom;
   }
-  console.log(arrGiaoVienCuaLopNhom);
-
   return arrGiaoVienCuaLopNhom;
 };
 
@@ -94,11 +91,13 @@ export const layObjSubmit = (
     return {};
   }
 
-  let objGiaoVien = {
+  const instanceDdnMoi = new DiemDanhNhom({
     ngayDiemDanh: convertInputDateFormat(ngayChon),
     lopNhomId: lopNhomChonId,
     tenLopNhom: tenLopNhomChon,
-  };
+  });
+
+  let objGiaoVien = {};
   arrGvSelected.forEach((giaovien) => {
     objGiaoVien[giaovien.id] = {
       shortName: giaovien.shortName,
@@ -106,7 +105,7 @@ export const layObjSubmit = (
     };
   });
 
-  return objGiaoVien;
+  return { instanceDdnMoi, objGiaoVien };
 };
 
 //Tra tên lớp nhóm từ id và mảng lớp nhóm

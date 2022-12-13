@@ -18,7 +18,6 @@ import NgayDaChotDiemDanh from "../UI/NgayChot";
 import { useRouter } from "next/router";
 
 const DiemDanhNhomPage = (props) => {
-  const API_DDN_ROUTE = "/api/ddn/diemDanhNhom";
   const { arrLopNhom, arrGiaoVien } = props;
 
   const router = useRouter();
@@ -64,20 +63,15 @@ const DiemDanhNhomPage = (props) => {
   const diemDanhNhomHandler = async () => {
     setDisChot(true);
     //Lấy data submit
-    const dataSubmit = layObjSubmit(
+    const { instanceDdnMoi, objGiaoVien } = layObjSubmit(
       ngayChon,
       arrGiaoVienRender,
       lopNhomChonId,
       tenLopNhomChon
     );
-    //Fetch
-    const response = await fetch(API_DDN_ROUTE, {
-      method: "POST",
-      body: JSON.stringify(dataSubmit),
-      headers: { "Content-Type": "application/json" },
-    });
-    const statusCode = response.status;
-    const dataGot = await response.json();
+    //Fetch thôi
+    const { statusCode, dataGot } =
+      await instanceDdnMoi.themNgayDiemDanhNhomMoi(objGiaoVien);
     //Đẩy thông báo
     setTimeout(() => {
       notiCtx.clearNoti();
@@ -88,7 +82,7 @@ const DiemDanhNhomPage = (props) => {
   };
   //Cb té ddn
   const huyDiemDanhNhomHandler = () => {
-    console.log(" té ddn");
+    router.reload();
   };
   return (
     <Card>
