@@ -35,7 +35,6 @@ const DayChinh = (props) => {
     if (dataGiaoVien) {
       arrLichDayCaNhan = dataGiaoVien.lichDayCaNhan;
     }
-
     //Xử lý lấy mảng học sinh của giáo viên được chọn auto theo ngày được chọn
     const arrHsChonTrue = locMangHsDayChinh(
       arrLichDayCaNhan,
@@ -43,10 +42,9 @@ const DayChinh = (props) => {
       chonNguoiCtx
     );
     //Xử lý ưu tiên nếu arrhocSinhCtx có thì dùng cái này
-    // setHocTroDayChinhTheoNgay(arrHsChonTrue);
     chonNguoiCtx.chonHocSinh(arrHsChonTrue);
   }, [labelThuNgayDiemDanh, dataGiaoVien]);
-  console.log(arrHocSinhNghi);
+  
   return (
     <div className={classes.container}>
       {/* Vùng chọn hs dạy chính */}

@@ -8,6 +8,7 @@ import { sortArtByLastShortName } from "../../helper/uti";
 import NotiContext from "../../context/notiContext";
 import { useRouter } from "next/router";
 import GiaoVien from "../../classes/GiaoVien";
+import DataGiaoVien from "../../classes/DataGiaoVien";
 
 //Tạo một cái comp mini để render nội dung phần chọn lịch cho học trò
 const ChonItemPage = (props) => {
@@ -69,8 +70,8 @@ const ChonItemPage = (props) => {
 
 const GanLichChoHsPage = (props) => {
   const notiCtx = useContext(NotiContext);
-  // const router = useRouter();
-  const { giaoVien, arrHocTroCaNhan, arrLichDayCaNhan } = props;
+  const { arrHocTroCaNhan } = props;
+  const giaoVien = DataGiaoVien.giaoVienChonData;
   //Xử lý lấy arrThu và arrHocSInh để chọn cho phần gán lịch
   const arrThuGot = arrThu();
   let arrHocTro = [];
@@ -126,7 +127,9 @@ const GanLichChoHsPage = (props) => {
       }),
     };
     //Fetch update lịch cho giaó viên thôi
-    const { statusCode, dataGot } = await GiaoVien.updateLichGiaoVien(dataSubmit);
+    const { statusCode, dataGot } = await GiaoVien.updateLichGiaoVien(
+      dataSubmit
+    );
     //Đẩy thông báo
     setTimeout(() => {
       notiCtx.clearNoti();

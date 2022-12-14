@@ -21,7 +21,7 @@ export const layHocPhiCaNhanNhomCuaHocSinh = (arrHocSinh, hocSinhChonId) => {
   return result;
 };
 
-//Tra id học sinh để lấy thông tin cơ bản
+//Tra id học sinh để lấy thông tin cơ bản - class đã thay
 export const layThongTinHocSinhTuId = (arrHocSinh, hocSinhId) => {
   let result = { shortName: "" };
   const hsMatched = arrHocSinh.find((item) => item.id === hocSinhId);

@@ -8,12 +8,15 @@ import GiaoVienContext from "../../context/giaoVienContext";
 import NotiContext from "../../context/notiContext";
 import { useRouter } from "next/router";
 import GiaoVien from "../../classes/GiaoVien";
-
+import DataHocSinh from "../../classes/DataHocSinh";
+import DataGiaoVien from "../../classes/DataGiaoVien";
 //Comp chính
 const HocSinhPhuTrachPage = (props) => {
   const router = useRouter();
   //Ghi chú: arrGiaoVien,arrHocSinhCaNhan cho chế độ chọn hs cá nhân, giaoVien cho chế độ chọn lịch cho học sinh
-  const { arrGiaoVien, arrHocSinhCaNhan, giaoVien } = props;
+  const { giaoVien } = props;
+  const arrHocSinhCaNhan = DataHocSinh.arrHocSinhCaNhan;
+  const arrGiaoVien = DataGiaoVien.arrGiaoVien;
   //Lấy ctx giáo viên
   const notiCtx = useContext(NotiContext);
   const giaoVienCtx = useContext(GiaoVienContext);

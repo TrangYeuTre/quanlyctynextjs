@@ -212,7 +212,7 @@ export const getObjSubmitDiemDanhChinh = (
 
 /////////////
 
-//Xử lý lấy mảng giáo viên dạy thế = mảng giáo viên gốc loại giáo viên được chọn ra
+//Xử lý lấy mảng giáo viên dạy thế = mảng giáo viên gốc loại giáo viên được chọn ra - Thay bằng class
 export const layArrGiaoVienDayThe = (arrGiaoVien, giaoVienChonId) => {
   const arrGiaoVienClone = [...arrGiaoVien];
   if (giaoVienChonId) {
@@ -256,7 +256,7 @@ export const layArrHocSinhDayThe = (dataGiaoVienDuocChon, arrHocSinhChon) => {
   return { arrHocTroCaNhan, arrHocTroDayThe };
 };
 
-//Lấy shortName giáo viên dạy thế
+//Lấy shortName giáo viên dạy thế - class datahs có rồi
 export const layShortNameGiaoVienDayThe = (arrGiaoVien, giaoVienDayTheId) => {
   let giaoVienDayTheShortName = null;
   if (arrGiaoVien) {

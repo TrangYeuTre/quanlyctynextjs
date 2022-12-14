@@ -1,16 +1,16 @@
 import ConnectMongodb from "../../../helper/connectMongodb";
 import { ObjectId } from "mongodb";
 import SuaLopNhomPage from "../../../components/lopnhom/SuaLopNhom";
+import DataHocSinh from "../../../classes/DataHocSinh";
+import DataGiaoVien from "../../../classes/DataGiaoVien";
+import DataLopNhom from "../../../classes/DataLopNhom";
 
 const SuaLopNhomRoute = (props) => {
   const { lopNhom, arrHocSinhNhom, arrGiaoVien } = props;
-  return (
-    <SuaLopNhomPage
-      lopNhom={lopNhom}
-      arrHocSinhNhom={arrHocSinhNhom}
-      arrGiaoVien={arrGiaoVien}
-    />
-  );
+  DataHocSinh.loadArrHocSinhNhom(arrHocSinhNhom);
+  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
+  DataLopNhom.loadLopNhomData(lopNhom);
+  return <SuaLopNhomPage />;
 };
 
 //SSG

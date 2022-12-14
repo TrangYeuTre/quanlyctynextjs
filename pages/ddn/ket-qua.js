@@ -5,14 +5,15 @@ import {
   getFirstLastDateOfThisMonth,
   getFirstLastDateOfPrevMonth,
 } from "../../helper/uti";
+import DataLopNhom from "../../classes/DataLopNhom";
 
 const KetQuaDiemDanhNhomRoute = (props) => {
   const { arrDiemDanhNhomFilter, arrLopNhom } = props;
+  DataLopNhom.loadArrLopNhom(arrLopNhom);
   return (
     <ChonNguoiProvider>
       <KetQuaDiemDanhNhomPage
         arrDdnFitler={arrDiemDanhNhomFilter}
-        arrLopNhom={arrLopNhom}
       />
     </ChonNguoiProvider>
   );

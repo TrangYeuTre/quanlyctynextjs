@@ -3,8 +3,11 @@ import ConnectMongo from "../../helper/connectMongodb";
 import GiaoVienProvider from "../../context/giaoVienProvider";
 import ChonNguoiProvider from "../../context/chonNguoiProvider";
 import { useEffect, useState } from "react";
+import DataGiaoVien from "../../classes/DataGiaoVien";
+
 const DiemDanhCaNhanRoute = (props) => {
   const { arrGiaoVien } = props;
+  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
   //State loading
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -18,7 +21,7 @@ const DiemDanhCaNhanRoute = (props) => {
     <GiaoVienProvider>
       <ChonNguoiProvider>
         {loading && <h1>Đang load ...</h1>}
-        {!loading && <DiemDanhCaNhanPage arrGiaoVien={arrGiaoVien} />}
+        {!loading && <DiemDanhCaNhanPage />}
       </ChonNguoiProvider>
     </GiaoVienProvider>
   );

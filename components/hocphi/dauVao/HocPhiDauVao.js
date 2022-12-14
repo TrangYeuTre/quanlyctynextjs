@@ -5,30 +5,25 @@ import Search from "../../UI/Search";
 import PickDateBar from "../../UI/PickDateBar";
 import ChonNguoiContext from "../../../context/chonNguoiContext";
 import { useState, useContext, Fragment } from "react";
-import {
-  layArrHocSinhRender,
-  layThongTinHocSinhTuId,
-  chuyenNgayView,
-} from "../hocphi_helper";
+import { chuyenNgayView } from "../hocphi_helper";
 import NotiContext from "../../../context/notiContext";
 import {
   convertInputDateFormat,
   getFirstLastDateOfNextMonth,
 } from "../../../helper/uti";
 import Link from "next/link";
+import DataHocSinh from "../../../classes/DataHocSinh";
+import HocPhiHocSinh from "../../../classes/HocPhiHocSinh";
 
 const HocPhiDauVaoPage = (props) => {
-  const { arrHocSinh } = props;
-  const API_HOCPHI_DAUVAO = "/api/hocphi/locThongTinDauVao";
   //CTx noti
   const notiCtx = useContext(NotiContext);
   //Láy ctx chọn người đẻ lấy học sinh được chọn
   const chonNguoiCtx = useContext(ChonNguoiContext);
   const hocSinhChonId = chonNguoiCtx.nguoiDuocChonId;
-  const hocSinhChonShortName = layThongTinHocSinhTuId(
-    arrHocSinh,
-    hocSinhChonId
-  ).shortName;
+  const hocSinhChonShortName = DataHocSinh.traHsCaNhanData(hocSinhChonId)
+    ? DataHocSinh.traHsCaNhanData(hocSinhChonId).shortName
+    : "";
   //State load ui đầu vào hay ui đã xử lý fetch data về
   const [showDauVao, setShowDauVao] = useState(true);
   //State lấy keyword từ search để lọc
@@ -63,7 +58,7 @@ const HocPhiDauVaoPage = (props) => {
     setNgayChon(date);
   };
   //Lọc lại mảng hs theo key để render
-  const arrHocSinhRender = layArrHocSinhRender(keySearch, arrHocSinh);
+  const arrHocSinhRender = DataHocSinh.timKiemHsCaNhanTheoShortName(keySearch);
 
   //Cb xử lý lấy thông tin đầu vào và fetch lên db đẻ lọc data cần lấy về
   const xuLyThongTinDauVaoHandler = async () => {
@@ -72,13 +67,8 @@ const HocPhiDauVaoPage = (props) => {
       hocSinhId: hocSinhChonId || null,
       ngayChon: convertInputDateFormat(ngayChon) || null,
     };
-    const response = await fetch(API_HOCPHI_DAUVAO, {
-      method: "POST",
-      body: JSON.stringify(dataSubmit),
-      headers: { "Content-Type": "application/json" },
-    });
-    const statusCode = response.status;
-    const dataGot = await response.json();
+    //Fetch
+    const { statusCode, dataGot } = await HocPhiHocSinh.xuLyDauVao(dataSubmit);
     setKqLoc(dataGot.data);
     //Đẩy thông báo nào
     setTimeout(() => {

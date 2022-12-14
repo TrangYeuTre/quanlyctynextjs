@@ -2,13 +2,15 @@ import ConnectMongo from "../../helper/connectMongodb";
 import DiemDanhDayThePage from "../../components/ddcn/DiemDanhDayThe";
 import GiaoVienProvider from "../../context/giaoVienProvider";
 import ChonNguoiProvider from "../../context/chonNguoiProvider";
+import DataGiaoVien from "../../classes/DataGiaoVien";
 
 const DiemDanhDayTheRoute = (props) => {
   const { arrGiaoVien } = props;
+  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
   return (
     <GiaoVienProvider>
       <ChonNguoiProvider>
-        <DiemDanhDayThePage arrGiaoVien={arrGiaoVien} />
+        <DiemDanhDayThePage />
       </ChonNguoiProvider>
     </GiaoVienProvider>
   );

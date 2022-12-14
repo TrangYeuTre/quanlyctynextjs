@@ -1,9 +1,11 @@
 import DanhSachGiaoVienPage from "../../components/giaovien/DsGiaoVien";
 import ConnectMongoDb from "../../helper/connectMongodb";
+import DataGiaoVien from "../../classes/DataGiaoVien";
 
 const DsHocSinhCaNhanRoute = (props) => {
   const { arrGiaoVien } = props;
-  return <DanhSachGiaoVienPage arrGiaoVienGot={arrGiaoVien} />;
+  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
+  return <DanhSachGiaoVienPage />;
 };
 
 //SSG lấy mảng giáo viên về nào

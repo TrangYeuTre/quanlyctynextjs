@@ -1,12 +1,16 @@
 import DiemDanhNhomPage from "../../components/ddn/DiemDanhNhom";
 import ConnectMongo from "../../helper/connectMongodb";
 import ChonNguoiProvider from "../../context/chonNguoiProvider";
+import DataGiaoVien from "../../classes/DataGiaoVien";
+import DataLopNhom from "../../classes/DataLopNhom";
 
 const DiemDanhNhomRoute = (props) => {
   const { arrLopNhom, arrGiaoVien } = props;
+  DataLopNhom.loadArrLopNhom(arrLopNhom);
+  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
   return (
     <ChonNguoiProvider>
-      <DiemDanhNhomPage arrLopNhom={arrLopNhom} arrGiaoVien={arrGiaoVien} />
+      <DiemDanhNhomPage />
     </ChonNguoiProvider>
   );
 };

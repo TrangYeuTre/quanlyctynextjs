@@ -1,16 +1,16 @@
 import HocSinhPhuTrachPage from "../../../components/giaovien/HsPhuTrach";
 import GiaoVienProvider from "../../../context/giaoVienProvider";
 import ConnectMongoDb from "../../../helper/connectMongodb";
+import DataHocSinh from "../../../classes/DataHocSinh";
+import DataGiaoVien from "../../../classes/DataGiaoVien";
 
 const HocSinhPhuTrachRoute = (props) => {
   const { arrGiaoVien, arrHocSinhCaNhan } = props;
-  //Bọc provider dùng nội bộ trong tính năng học sinh phụ trách này thôi
+  DataHocSinh.loadArrHocSinhCaNhan(arrHocSinhCaNhan);
+  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
   return (
     <GiaoVienProvider>
-      <HocSinhPhuTrachPage
-        arrGiaoVien={arrGiaoVien}
-        arrHocSinhCaNhan={arrHocSinhCaNhan}
-      />
+      <HocSinhPhuTrachPage />
     </GiaoVienProvider>
   );
 };

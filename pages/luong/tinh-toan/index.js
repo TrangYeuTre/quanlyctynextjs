@@ -3,17 +3,20 @@ import { useState, useEffect } from "react";
 import { chuyenThangViewThanhNgay } from "../../../components/hocphi/hocphi_helper";
 import TinhToanLuongPage from "../../../components/luong/TinhToanLuong";
 import ConnectMongoDb from "../../../helper/connectMongodb";
+import DataGiaoVien from "../../../classes/DataGiaoVien";
 
 const TinhToanLuongRoute = (props) => {
   const { arrGiaoVien } = props;
-
+  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
   const router = useRouter();
   const giaoVienId = router.query.giaoVienId;
   const thangTinh = router.query.thangTinh;
+  const gvMatched = DataGiaoVien.timKiemGiaoVienTheoId(giaoVienId);
+  DataGiaoVien.loadDataGiaoVienDuocChon(gvMatched);
   //State lấy data 2 mảng ddcn và ddn
   const [arrDdcn, setArrDdcn] = useState([]);
   const [arrDdn, setArrDdn] = useState([]);
-  const [giaoVienChonData, setGvChonData] = useState({});
+  // const [giaoVienChonData, setGvChonData] = useState({});
   //Side effect fetch lấy về data
   useEffect(() => {
     //Tạo func ascyn
@@ -35,18 +38,12 @@ const TinhToanLuongRoute = (props) => {
     };
     //Chạy func
     layDataDiemDanh();
-    //Xử lý lấy data của giáo viên được chọn
-    const gvMatched = arrGiaoVien.find((item) => item.id === giaoVienId);
-    if (gvMatched) {
-      setGvChonData(gvMatched);
-    }
-  }, [giaoVienId, thangTinh, arrGiaoVien, giaoVienChonData]);
+  }, [giaoVienId, thangTinh]);
 
   return (
     <TinhToanLuongPage
       arrDdcn={arrDdcn}
       arrDdn={arrDdn}
-      giaoVienChonData={giaoVienChonData}
       ngayDauThang={chuyenThangViewThanhNgay(thangTinh)}
     />
   );

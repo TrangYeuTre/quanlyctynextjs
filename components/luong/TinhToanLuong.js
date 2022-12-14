@@ -8,14 +8,16 @@ import { kiemTraLuongCaNhanTinhChua, tinhTongLuong } from "./luong_helper";
 import NotiContext from "../../context/notiContext";
 import { useRouter } from "next/router";
 import { viewSplitMoney } from "../../helper/uti";
+import LuongGiaoVien from "../../classes/LuongGiaoVien";
+import DataGiaoVien from "../../classes/DataGiaoVien";
 
 const TinhToanLuongPage = (props) => {
-  const API_LUONG_ROUTE = "/api/luong/luongThangGiaoVien";
   const router = useRouter();
   //Noti
   const notiCtx = useContext(NotiContext);
   //Lấy về data ddcn và ddn của giáo viên
-  const { arrDdcn, arrDdn, giaoVienChonData, ngayDauThang } = props;
+  const { arrDdcn, arrDdn, ngayDauThang } = props;
+  const giaoVienChonData = DataGiaoVien.giaoVienChonData;
   //State chính xử lý xem được bấm nút chốt tính lương hay không
   const [isSubmit, setSubmit] = useState(false);
   //State lấy data lương cá nhân
@@ -38,23 +40,18 @@ const TinhToanLuongPage = (props) => {
   };
   //Cb chính chốt lương tháng mới
   const chotLuongThangHandler = async () => {
-    //Tổng hợp dataSubmit
-    const dataSubmit = {
+    //Class
+    const luongGiaoVienThangMoi = new LuongGiaoVien({
       giaoVienId: giaoVienChonData.id,
       shortName: giaoVienChonData.shortName,
       ngayTinhLuong: ngayDauThang,
       dataLuongCaNhan: dataLuongCaNhan,
       dataLuongNhom: dataLuongNhom,
       dataPhuPhi: dataPhuPhi,
-    };
-    //fetch
-    const response = await fetch(API_LUONG_ROUTE, {
-      method: "POST",
-      body: JSON.stringify(dataSubmit),
-      headers: { "Content-Type": "application/json" },
     });
-    const statusCode = response.status;
-    const dataGot = await response.json();
+    //Fetch
+    const { statusCode, dataGot } =
+      await luongGiaoVienThangMoi.themLuongGiaoVien();
     //Push noti
     setTimeout(() => {
       notiCtx.clearNoti();

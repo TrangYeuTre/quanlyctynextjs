@@ -8,12 +8,14 @@ import { convertInputDateFormat } from "../../helper/uti";
 import { useContext } from "react";
 import NotiContext from "../../context/notiContext";
 import { useRouter } from "next/router";
+import DataGiaoVien from "../../classes/DataGiaoVien";
 
 const ThemGvPage = (props) => {
   const notiCtx = useContext(NotiContext);
   const router = useRouter();
   //Mong đợi mode dể render tương ứng
-  const { renderMode, dataGiaoVien } = props;
+  const { renderMode } = props;
+  const dataGiaoVien = DataGiaoVien.giaoVienChonData;
   //Lấy id giáo viên khi kích sửa
   let giaoVienSuaId;
   if (dataGiaoVien) {

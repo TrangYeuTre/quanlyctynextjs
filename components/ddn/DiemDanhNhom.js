@@ -16,10 +16,12 @@ import NotiContext from "../../context/notiContext";
 import ActionBar from "../UI/ActionBar";
 import NgayDaChotDiemDanh from "../UI/NgayChot";
 import { useRouter } from "next/router";
+import DataGiaoVien from "../../classes/DataGiaoVien";
+import DataLopNhom from "../../classes/DataLopNhom";
 
 const DiemDanhNhomPage = (props) => {
-  const { arrLopNhom, arrGiaoVien } = props;
-
+  const arrGiaoVien = DataGiaoVien.arrGiaoVien;
+  const arrLopNhom = DataLopNhom.arrLopNhom;
   const router = useRouter();
   //Lấy context chọn người
   const chonNguoiCtx = useContext(ChonNguoiContext);
@@ -32,7 +34,7 @@ const DiemDanhNhomPage = (props) => {
   //Tạo một state dis actons1 của ActionBar, khi bấm nút thêm thì dis nó, đến khi res thành công mới mở lại
   const [disChot, setDisChot] = useState(false);
   //Lấy tên lớp nhóm chọn
-  const tenLopNhomChon = layTenLopNhom(arrLopNhom, lopNhomChonId);
+  const tenLopNhomChon = DataLopNhom.traTenLopNhomChon(lopNhomChonId);
   //State kiểm soát ngày được chọn để điểm danh
   const [ngayChon, setNgayChon] = useState(new Date());
 

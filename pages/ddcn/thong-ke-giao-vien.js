@@ -7,9 +7,13 @@ import {
   getFirstLastDateOfThisMonth,
 } from "../../helper/uti";
 import { useState, useEffect } from "react";
+import DataGiaoVien from "../../classes/DataGiaoVien";
+import DataDiemDanhCaNhan from "../../classes/DataDiemDanhCaNhan";
 
 const ThongKeGiaoVienRoute = (props) => {
   const { arrGiaoVien, arrDiemDanhCaNhanFilter } = props;
+  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
+  DataDiemDanhCaNhan.loadArrDiemDanhCaNhan(arrDiemDanhCaNhanFilter);
   //State loading
   const [loading, setLoading] = useState(true);
   //   Side effect set loading
@@ -24,12 +28,7 @@ const ThongKeGiaoVienRoute = (props) => {
     <GiaoVienProvider>
       <ChonNguoiProvider>
         {loading && <h1 style={{ color: "var(--mauMh4--)" }}>Đang load ...</h1>}
-        {!loading && (
-          <ThongKeGiaoVienPage
-            arrGiaoVien={arrGiaoVien}
-            arrDiemDanhCaNhan={arrDiemDanhCaNhanFilter}
-          />
-        )}
+        {!loading && <ThongKeGiaoVienPage />}
       </ChonNguoiProvider>
     </GiaoVienProvider>
   );
@@ -93,7 +92,6 @@ export async function getStaticProps() {
     arrDdcn.forEach((item) => (item._id = item._id.toString()));
     arrDiemDanhCaNhanFilter = arrDdcn;
   } catch (err) {
-    console.log(err);
     client.close();
     return {
       notFound: true,

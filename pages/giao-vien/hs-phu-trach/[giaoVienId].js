@@ -1,40 +1,29 @@
 import ConnectMongoDb from "../../../helper/connectMongodb";
 import { ObjectId } from "mongodb";
-// import HocSinhPhuTrachPage from "../../../components/giaovien/HsPhuTrach";
 import GanLichChoHsPage from "../../../components/giaovien/GanLichChoHs";
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
+import DataGiaoVien from "../../../classes/DataGiaoVien";
 
 const GanLichChoHocTroCuaGiaoVienDuocChonRoute = (props) => {
-  const { giaoVien, arrHocSinhCaNhan, arrHocTroCaNhan, arrLichDayCaNhan } =
-    props;
-  //State lư giáo viên
-  const [gv, setGv] = useState({});
-  //Side effect load
-  useEffect(() => {
-    let gvClone = { ...giaoVien };
-    //Lọc lại mảng học trò cho giáo viên để thêm shortName
-    let arrHocTroCaNhanRemake = [];
-    const curHocTroCaNhan = arrHocTroCaNhan;
-    if (curHocTroCaNhan.length > 0) {
-      curHocTroCaNhan.forEach((i) => {
-        const indexHsMatched = arrHocSinhCaNhan.findIndex(
-          (hs) => hs.id === i.hocSinhId
-        );
-        if (indexHsMatched !== -1) {
-          arrHocTroCaNhanRemake.push(arrHocSinhCaNhan[indexHsMatched]);
-        }
-      });
-    }
-    gvClone.hocTroCaNhan = arrHocTroCaNhanRemake;
-    setGv(gvClone);
-  }, [giaoVien, arrHocSinhCaNhan, arrHocTroCaNhan]);
-  return (
-    <GanLichChoHsPage
-      giaoVien={gv}
-      arrHocTroCaNhan={arrHocTroCaNhan}
-      arrLichDayCaNhan={arrLichDayCaNhan}
-    />
-  );
+  const { giaoVien, arrHocSinhCaNhan, arrHocTroCaNhan } = props;
+  //Xử lý mảng học trò cá nhân của giáo viên
+  let gvClone = { ...giaoVien };
+  //Lọc lại mảng học trò cho giáo viên để thêm shortName
+  let arrHocTroCaNhanRemake = [];
+  const curHocTroCaNhan = arrHocTroCaNhan;
+  if (curHocTroCaNhan.length > 0) {
+    curHocTroCaNhan.forEach((i) => {
+      const indexHsMatched = arrHocSinhCaNhan.findIndex(
+        (hs) => hs.id === i.hocSinhId
+      );
+      if (indexHsMatched !== -1) {
+        arrHocTroCaNhanRemake.push(arrHocSinhCaNhan[indexHsMatched]);
+      }
+    });
+  }
+  gvClone.hocTroCaNhan = arrHocTroCaNhanRemake;
+  DataGiaoVien.loadDataGiaoVienDuocChon(gvClone);
+  return <GanLichChoHsPage arrHocTroCaNhan={arrHocTroCaNhan} />;
 };
 
 //SSG lấy data học sinh cần sửa
@@ -96,7 +85,6 @@ export async function getStaticProps(context) {
       revalidate: 10,
     };
   } catch (err) {
-    console.log(err);
     client.close();
     return {
       notFound: true,

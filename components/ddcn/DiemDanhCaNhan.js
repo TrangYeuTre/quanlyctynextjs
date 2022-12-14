@@ -17,11 +17,12 @@ import ChonNguoiContext from "../../context/chonNguoiContext";
 import NotiContext from "../../context/notiContext";
 import ActionBar from "../UI/ActionBar";
 import { useRouter } from "next/router";
+import DataGiaoVien from "../../classes/DataGiaoVien";
 
 //Comp chính
 const DiemDanhCaNhanPage = (props) => {
-  const { arrGiaoVien } = props;
-
+  // const { arrGiaoVien } = props;
+  const arrGiaoVien = DataGiaoVien.arrGiaoVien;
   const router = useRouter();
   const gvCtx = useContext(GiaoVienContext);
   const notiCtx = useContext(NotiContext);
@@ -37,14 +38,14 @@ const DiemDanhCaNhanPage = (props) => {
   const arrHocSinhDayChinh = arrHocSinhChon.filter((item) => item.isSelected);
   //State ngày được chọn để điểm danh
   const [ngayDiemDanh, setNgayDiemDanh] = useState(new Date());
+
   //Cb đổi ngày điểm danh
   const layNgayHandler = (date) => {
     setNgayDiemDanh(new Date(date));
   };
   //Lọc lại data giáo viên được chọn để truyền xuống phần chọn hóc sinh điểm danh chính
-  const dataGiaoVienDuocChon = arrGiaoVien.find(
-    (giaovien) => giaovien.id === giaoVienChonId
-  );
+  const dataGiaoVienDuocChon =
+    DataGiaoVien.timKiemGiaoVienTheoId(giaoVienChonId);
 
   //Xử lý lấy mảng hs tăng cường để chọn ban đầu
   const arrHocSinhTangCuong = layMangHsTangCuongDeChon(
@@ -64,6 +65,7 @@ const DiemDanhCaNhanPage = (props) => {
     arrHocSinhNghi,
     arrHsTangCuongFinal
   );
+
   //Chuyển mảng trên và các info cần thiét thành objSubmit, obj này là instance của class DDCN
   const { instanceDdcnMoi, objHocSinhData } = getObjSubmitDiemDanhChinh(
     arrHsHocChinh,
@@ -73,6 +75,7 @@ const DiemDanhCaNhanPage = (props) => {
     giaoVienChonId,
     dataGiaoVienDuocChon
   );
+
   //CB chính submit
   const diemDanhCaNhanHandler = async () => {
     const { statusCode, dataGot } =
@@ -90,6 +93,7 @@ const DiemDanhCaNhanPage = (props) => {
   };
   //CB hủy điể danh
   const huyDiemDanhHandler = () => {};
+
   return (
     <Card>
       <Layout28>

@@ -1,12 +1,14 @@
 import ConnectMongoDb from "../../../helper/connectMongodb";
 import ChonNguoiProvider from "../../../context/chonNguoiProvider";
 import LuongDauVaoPage from "../../../components/luong/dauVao/LuongDauVao";
+import DataGiaoVien from "../../../classes/DataGiaoVien";
 
 const LuongDauVaoRoute = (props) => {
   const { arrGiaoVien } = props;
+  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
   return (
     <ChonNguoiProvider>
-      <LuongDauVaoPage arrGiaoVien={arrGiaoVien} />
+      <LuongDauVaoPage />
     </ChonNguoiProvider>
   );
 };

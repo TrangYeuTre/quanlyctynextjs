@@ -11,10 +11,12 @@ const LuongNhom = (props) => {
   //State mảng lương nhóm render
   const [arrLuongNhom, setArrLuongNhom] = useState([]);
   //Cb lấy giá trị ghi chú
+  let delay;
   const layGiaTriGhiChuHandler = (e) => {
-    setTimeout(() => {
+    clearTimeout(delay);
+    delay = setTimeout(() => {
       setGhiChuVal(e.target.value);
-    }, 2000);
+    }, 500);
   };
   //Tính tổng lương nhớm
   const tongLuongNhom = tinhTongLuongNhom(arrLuongNhom);
@@ -35,6 +37,7 @@ const LuongNhom = (props) => {
   useEffect(() => {
     setArrLuongNhom(dataLuongNhom);
   }, [dataLuongNhom]);
+  console.log(arrLuongNhom);
   return (
     <div className={classes.container}>
       <h4>Tính lương nhóm</h4>

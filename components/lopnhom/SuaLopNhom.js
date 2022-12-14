@@ -7,9 +7,11 @@ import NotiContext from "../../context/notiContext";
 import ActionBar from "../UI/ActionBar";
 import { useRouter } from "next/router";
 import LopNhom from "../../classes/LopNhom";
+import DataHocSinh from "../../classes/DataHocSinh";
+import DataGiaoVien from "../../classes/DataGiaoVien";
+import DataLopNhom from "../../classes/DataLopNhom";
 
 const SuaLopNhomPage = (props) => {
-  const API_LOPNHOM_ROUTE = "/api/lopnhom/lopNhom";
   //Lấy data sửa
   const router = useRouter();
   //Ctx thông báo
@@ -19,7 +21,9 @@ const SuaLopNhomPage = (props) => {
   const arrGiaoVienChon = chonNguoiCtx.arrGiaoVien;
   const arrHocSinhChon = chonNguoiCtx.arrHocSinh;
   //Cần từ props mảng học sinh nhóm và giáo viên ở đây
-  const { arrHocSinhNhom, arrGiaoVien, lopNhom } = props;
+  const arrHocSinhNhom = DataHocSinh.arrHocSinhNhom;
+  const arrGiaoVien = DataGiaoVien.arrGiaoVien;
+  const lopNhom = DataLopNhom.lopNhomChonData;
   //Từ lớp nhóm lấy 2 mảng học sinh nhóm và giáo viên nhớm đã tồn tại
   const { giaoVienLopNhom, hocSinhLopNhom } = lopNhom;
   //Chạy lặp từng id của 2 mảng trên để đánh lại isSelected của mảng chính

@@ -1,25 +1,29 @@
 import classes from "./LuongNhom.module.css";
 import { viewSplitMoney } from "../../../helper/uti";
 import { tinhTongLuongNhom } from "../luong_helper";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NgayBar from "../../UI/NgayBar";
 
 const LuongNhom = (props) => {
   const { arrDdn, layDataLuongNhom } = props;
-  //State lấy giá trị của ô ghi chú
-  const [ghiChuVal, setGhiChuVal] = useState("");
-  //Cb lấy giá trị ghi chú
-  const layGiaTriGhiChuHandler = (e) => {
-    setTimeout(() => {
+  //State magnr render
+  const [arrDdnRender, setArrDdnRender] = useState(arrDdn);
+  //State lây value ghi chú từ input
+  const [ghiChuVal, setGhiChuVal] = useState();
+  let delay;
+  const layGhiChuHandler = (e) => {
+    clearTimeout(delay);
+    delay = setTimeout(() => {
       setGhiChuVal(e.target.value);
-    }, 2000);
+    }, 500);
   };
   //Tính tổng lương nhớm
   const tongLuongNhom = tinhTongLuongNhom(arrDdn);
   //Cb thêm ghi chú cho ngày nhóm
   const themGhiChuNgayNhomHandler = (ngayDiemDanh) => {
     //Tìm trong mảng ngày tương ứng để thêm ghi chú
-    const arrDdnClone = [...arrDdn];
+    const arrDdnClone = [...arrDdnRender];
+
     const ngayMatched = arrDdnClone.find(
       (item) => item.ngayDiemDanh === ngayDiemDanh
     );
@@ -27,10 +31,20 @@ const LuongNhom = (props) => {
       ngayMatched.ghiChu = ghiChuVal;
     }
     layDataLuongNhom(arrDdnClone);
+    setArrDdnRender(arrDdnClone);
   };
+  // useEffect(()=>{},)
+  useEffect(() => {
+    setArrDdnRender(arrDdn);
+  }, []);
+
   return (
     <div className={classes.container}>
       <h4>Tính lương nhóm</h4>
+      <p className="ghichu">
+        Nhập xong ghi chú sau 3s nó tự mất hoặc load lại ghi chú cũ, nhấn nút
+        thêm để xác nhận là được nhé - do đó cố gắng nhập nhanh
+      </p>
       {/* Bảng data lương nhóm */}
       <table style={{ width: "100%" }}>
         {/* Tiêu đề */}
@@ -48,8 +62,8 @@ const LuongNhom = (props) => {
         </thead>
         {/* Phần thân data */}
         <tbody>
-          {arrDdn.length > 0 &&
-            arrDdn.map((item) => (
+          {arrDdnRender.length > 0 &&
+            arrDdnRender.map((item) => (
               <tr key={Math.random()}>
                 <td className={`${classes.cellData} ${classes.part2}`}>
                   <NgayBar ngay={new Date(item.ngayDiemDanh).getDate()} />
@@ -63,7 +77,7 @@ const LuongNhom = (props) => {
                       type="text"
                       className={classes.ghiChuInput}
                       defaultValue={item.ghiChu}
-                      onChange={layGiaTriGhiChuHandler}
+                      onChange={layGhiChuHandler}
                     />
                     <div
                       onClick={themGhiChuNgayNhomHandler.bind(

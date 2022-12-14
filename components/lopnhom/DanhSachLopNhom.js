@@ -6,14 +6,14 @@ import { useContext } from "react";
 import NotiContext from "../../context/notiContext";
 import { removeDomItem } from "../../helper/uti";
 import LopNhom from "../../classes/LopNhom";
+import DataLopNhom from "../../classes/DataLopNhom";
 
 const DanhSachLopNhomPage = (props) => {
-  const API_LOPNHOM_ROUTE = "/api/lopnhom/lopNhom";
   const router = useRouter();
   //Ctx thông báo
   const notiCtx = useContext(NotiContext);
   //Lấy data từ props
-  const { arrLopNhom } = props;
+  const arrLopNhom = DataLopNhom.arrLopNhom;
   //Cb xóa lớp nhóm
   const xoaLopNhomHandler = async (id) => {
     const { statusCode, dataGot } = await LopNhom.xoaLopNhom(id);

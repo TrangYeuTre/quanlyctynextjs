@@ -7,18 +7,13 @@ import classes from "./DsHocSinh.module.css";
 import { useContext } from "react";
 import NotiContext from "../../context/notiContext";
 import HocSinh from "../../classes/HocSinh";
+import DataHocSinh from "../../classes/DataHocSinh";
 
-const DanhSachHocSinhPage = (props) => {
-  const HS_API_ROUTE = "/api/hocsinh/hocSinh";
-
+const DanhSachHocSinhNhomPage = (props) => {
   const notiCtx = useContext(NotiContext);
-  // const router = useRouter();
-  //Lấy về từ props
-  const { arrHocSinhDaPhanLoai } = props;
   //State lấy keyword search
   const [searchKey, setSearchKey] = useState("");
   //Mảng kết quả hs render
-  //Quan trọng : arrHocsinh (arrHocSinhDaPhanLoai ở dưới) đã được fitler nhóm hay cá nhân từ SSG nên ở đây không cần quan tâm
   const [arrHocSinh, setArrHocSinh] = useState([]);
   //CB lấy key search
   const setSearchKeyHandler = (value) => {
@@ -27,31 +22,26 @@ const DanhSachHocSinhPage = (props) => {
   //CB xóa học sinh theo id
   const delHocSinhHandler = async (id) => {
     const { statusCode, dataGot } = await HocSinh.xoaHocSinh(id);
-
     //Đẩy thông báo
     setTimeout(() => {
       notiCtx.clearNoti();
       if (statusCode === 200 || statusCode === 201) {
         removeDomItem(id);
       }
-    }, 3000);
+    }, process.env.DELAY_TIME_NOTI);
     notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
 
   //Xử lý side effect láy mảng hs nếu có search
   useEffect(() => {
     if (!searchKey || searchKey === "") {
-      setArrHocSinh(sortArtByLastShortName(arrHocSinhDaPhanLoai));
+      setArrHocSinh(DataHocSinh.arrHocSinhNhom);
     } else {
-      const arrFilter = arrHocSinhDaPhanLoai.filter((item) =>
-        item.shortName
-          .toLowerCase()
-          .trim()
-          .includes(searchKey.toLowerCase().trim())
-      );
-      setArrHocSinh(sortArtByLastShortName(arrFilter));
+      const arrHocSinhNhomTrungSearch =
+        DataHocSinh.timKiemHsNhomTheoShortName(searchKey);
+      setArrHocSinh(arrHocSinhNhomTrungSearch);
     }
-  }, [searchKey, arrHocSinhDaPhanLoai]);
+  }, [searchKey]);
   return (
     <Card>
       <div className={classes.container}>
@@ -72,4 +62,4 @@ const DanhSachHocSinhPage = (props) => {
   );
 };
 
-export default DanhSachHocSinhPage;
+export default DanhSachHocSinhNhomPage;

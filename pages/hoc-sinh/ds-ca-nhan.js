@@ -1,15 +1,13 @@
-import DanhSachHocSinhPage from "../../components/hocsinh/DsHocSinh";
+import DanhSachHocSinhCaNhanPage from "../../components/hocsinh/DsHocSinhCn";
 import ConnectMongoDb from "../../helper/connectMongodb";
 import { useEffect, useState } from "react";
+import DataHocSinh from "../../classes/DataHocSinh";
 
 const DsHocSinhCaNhanRoute = (props) => {
   const { arrHocSinh } = props;
-  //State mang render
-  const [arrHocSinhRender, setArrHocSinhRender] = useState([]);
-  useEffect(() => {
-    setArrHocSinhRender(arrHocSinh);
-  }, [arrHocSinh]);
-  return <DanhSachHocSinhPage arrHocSinhDaPhanLoai={arrHocSinhRender} />;
+  //Tạo class data hs
+  DataHocSinh.loadArrHocSinhCaNhan(arrHocSinh);
+  return <DanhSachHocSinhCaNhanPage />;
 };
 
 //SSG lấy mảng hs cá nhân từ db
@@ -28,7 +26,7 @@ export async function getStaticProps() {
   try {
     const arrHocSinhGot = await db
       .collection("hocsinhs")
-      .find({lopHoc:{$in:['canhan']}})
+      .find({ lopHoc: { $in: ["canhan"] } })
       .toArray();
     const arrHocSinhConvertId = arrHocSinhGot.map((item) => {
       return {
@@ -56,7 +54,6 @@ export async function getStaticProps() {
       revalidate: 10,
     };
   } catch (err) {
-    console.log(err)
     client.close();
     return { notFound: true };
   }

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { chuyenThangViewThanhNgay } from "../../components/hocphi/hocphi_helper";
 import ConnectMongoDb from "../../helper/connectMongodb";
 import SuaLuongPage from "../../components/luong/SuaLuong";
+import DataGiaoVien from "../../classes/DataGiaoVien";
 
 const SuaLuongRoute = (props) => {
   const router = useRouter();
@@ -11,13 +12,16 @@ const SuaLuongRoute = (props) => {
   const luongThangId = router.query.luongThangId;
   const giaoVienId = router.query.giaoVienId;
   const thangTinh = router.query.thangTinh;
-  console.log(luongThangId, giaoVienId, thangTinh);
+  //TÌm data giáo viên chọn
+  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
+  const giaoVienChonData = DataGiaoVien.timKiemGiaoVienTheoId(giaoVienId);
+  DataGiaoVien.loadDataGiaoVienDuocChon(giaoVienChonData);
 
   //State lấy data lương thagns tìm được
   const [dataLuongThang, setDataLuongThang] = useState({});
   const [arrDdcn, setArrDdcn] = useState([]);
   const [arrDdn, setArrDdn] = useState([]);
-  const [giaoVienChonData, setGvChonData] = useState({});
+  // const [giaoVienChonData, setGvChonData] = useState({});
   //Side effct lấy data lương tháng
   useEffect(() => {
     const layDataLuongThang = async () => {
@@ -51,13 +55,8 @@ const SuaLuongRoute = (props) => {
     if (luongThangId && giaoVienId && thangTinh) {
       layDataLuongThang();
       layDataDiemDanh();
-      //Xử lý lấy data của giáo viên được chọn
-      const gvMatched = arrGiaoVien.find((item) => item.id === giaoVienId);
-      if (gvMatched) {
-        setGvChonData(gvMatched);
-      }
     }
-  }, [luongThangId, arrGiaoVien, giaoVienChonData, giaoVienId, thangTinh]);
+  }, [luongThangId, arrGiaoVien, giaoVienId, thangTinh]);
   return (
     arrDdcn.length > 0 &&
     arrDdn.length > 0 &&
@@ -66,7 +65,7 @@ const SuaLuongRoute = (props) => {
       <SuaLuongPage
         arrDdcn={arrDdcn}
         arrDdn={arrDdn}
-        giaoVienChonData={giaoVienChonData}
+        // giaoVienChonData={giaoVienChonData}
         ngayDauThang={chuyenThangViewThanhNgay(thangTinh)}
         dataLuongThang={dataLuongThang}
       />

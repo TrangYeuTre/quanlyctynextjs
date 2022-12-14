@@ -1,9 +1,11 @@
 import DanhSachLopNhomPage from "../../components/lopnhom/DanhSachLopNhom";
 import ConnectMongodb from "../../helper/connectMongodb";
+import DataLopNhom from "../../classes/DataLopNhom";
 
 const DanhSachLopNhomRoute = (props) => {
   const { arrLopNhom } = props;
-  return <DanhSachLopNhomPage arrLopNhom={arrLopNhom} />;
+  DataLopNhom.loadArrLopNhom(arrLopNhom);
+  return <DanhSachLopNhomPage />;
 };
 
 //SSG đẻ load ds lớp nhóm

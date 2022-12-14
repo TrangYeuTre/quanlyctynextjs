@@ -1,16 +1,12 @@
-import DanhSachHocSinhPage from "../../components/hocsinh/DsHocSinh";
 import ConnectMongoDb from "../../helper/connectMongodb";
-import { useEffect, useState } from "react";
+import DanhSachHocSinhNhomPage from "../../components/hocsinh/DsHocSinhNhom";
+import DataHocSinh from "../../classes/DataHocSinh";
 
 const DsHocSinhNhomRoute = (props) => {
   const { arrHocSinh } = props;
-  //State mang render
-  const [arrHocSinhRender, setArrHocSinhRender] = useState([]);
-  useEffect(() => {
-    setArrHocSinhRender(arrHocSinh);
-  }, [arrHocSinh]);
-
-  return <DanhSachHocSinhPage arrHocSinhDaPhanLoai={arrHocSinhRender} />;
+  //Tạo class data hs
+  DataHocSinh.loadArrHocSinhNhom(arrHocSinh);
+  return <DanhSachHocSinhNhomPage />;
 };
 
 //SSG lấy mảng hs cá nhân từ db

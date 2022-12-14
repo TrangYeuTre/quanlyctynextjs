@@ -8,20 +8,20 @@ import { layDataGiaoVienDuocChon, chuyenNgayView } from "../luong_helper";
 import NotiContext from "../../../context/notiContext";
 import { convertInputDateFormat } from "../../../helper/uti";
 import Link from "next/link";
+import DataGiaoVien from "../../../classes/DataGiaoVien";
+import LuongGiaoVien from "../../../classes/LuongGiaoVien";
 
 const LuongDauVaoPage = (props) => {
-  const { arrGiaoVien } = props;
-  const API_HOCPHI_DAUVAO = "/api/luong/locThongTinDauVao";
+  const arrGiaoVien = DataGiaoVien.arrGiaoVien;
   //CTx noti
   const notiCtx = useContext(NotiContext);
   //Láy ctx chọn người đẻ lấy học sinh được chọn
   const chonNguoiCtx = useContext(ChonNguoiContext);
   const giaoVienChonId = chonNguoiCtx.nguoiDuocChonId;
-  //Lấy thông tin cần thiết từ giáo viên được chọnh
-  const { shortName, luongCaNhan, luongNhom } = layDataGiaoVienDuocChon(
-    arrGiaoVien,
-    giaoVienChonId
-  );
+  //Lấy thông tin data giáo viên
+  const shortName = DataGiaoVien.timKiemGiaoVienTheoId(giaoVienChonId)
+    ? DataGiaoVien.timKiemGiaoVienTheoId(giaoVienChonId).shortName
+    : "";
   //State lương tháng đã tồn tại
   const [luongThangIdTonTai, setLuongThangIdTonTai] = useState();
   //State load ui đầu vào hay ui đã xử lý fetch data về
@@ -52,15 +52,12 @@ const LuongDauVaoPage = (props) => {
       giaoVienId: giaoVienChonId || null,
       ngayChon: convertInputDateFormat(ngayChon) || null,
     };
-    const response = await fetch(API_HOCPHI_DAUVAO, {
-      method: "POST",
-      body: JSON.stringify(dataSubmit),
-      headers: { "Content-Type": "application/json" },
-    });
-    const statusCode = response.status;
-    const dataGot = await response.json();
+    //Fetch
+    const { statusCode, dataGot } = await LuongGiaoVien.xuLyThongTinDauVao(
+      dataSubmit
+    );
     setKqLoc(dataGot.data);
-    //Đẩy thông báo nào
+    //Đẩy thông báo
     setTimeout(() => {
       notiCtx.clearNoti();
       if (statusCode === 200 || statusCode === 201) {

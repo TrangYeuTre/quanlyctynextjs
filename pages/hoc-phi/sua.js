@@ -1,9 +1,11 @@
 import { useRouter } from "next/router";
 import ConnectMongoDb from "../../helper/connectMongodb";
 import SuaHocPhiPage from "../../components/hocphi/tinhToan/SuaHocPhi";
+import DataHocSinh from "../../classes/DataHocSinh";
 
 const SuaHocPhiRoute = (props) => {
   const { arrHocSinh } = props;
+  DataHocSinh.loadArrHocSinhCaNhan(arrHocSinh);
   const router = useRouter();
   const hocSinhId = router.query.hocSinhId;
   const thangTinh = router.query.thangTinh;
@@ -12,7 +14,6 @@ const SuaHocPhiRoute = (props) => {
     <SuaHocPhiPage
       hocSinhId={hocSinhId}
       thangTinh={thangTinh}
-      arrHocSinh={arrHocSinh}
     />
   );
 };

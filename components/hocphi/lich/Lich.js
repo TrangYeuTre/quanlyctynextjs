@@ -2,14 +2,13 @@ import classes from "./Lich.module.css";
 import {
   taoInitArr42Ngay,
   layNgayCuoiThangVaThuNgayDauThang,
-  layThoiGianThangTiepTheo,
   loadLichRender,
   themDataChonNhieuNgayVaoLich,
   suaDataNgayTrongLich,
   layThongKeDataLich,
 } from "./Lich_helper";
 import LichItem from "./LichItem";
-import { Fragment, useState, useEffect } from "react";
+import { Fragment } from "react";
 import ActionBar from "../../UI/ActionBar";
 
 const Lich = (props) => {
@@ -21,13 +20,13 @@ const Lich = (props) => {
     showNgaySua,
     arrDataNgaySua,
     layDataThongKe,
+    layLichSubmit,
   } = props;
   //Từ ngày chọn format lại date để render ngay tháng này
   const thoiGianThangNay = new Date(ngayChon);
   //Lấy ngày cuối tháng và thứ ngày đầu tháng
   const { ngayCuoiThang, thuNgayDauThang, title } =
     layNgayCuoiThangVaThuNgayDauThang(thoiGianThangNay);
-    // console.log(ngayChon)
   //Lấy arr 42 ngày ban đầu
   const arrDatesInit = taoInitArr42Ngay();
   //Lấy mảng lịch tháng này để render
@@ -61,6 +60,7 @@ const Lich = (props) => {
   //Cb chốt data thống kê cho comp trên dùng
   const layDataLichHandler = () => {
     layDataThongKe(thongKeLich);
+    layLichSubmit(arrLichDaSuaNgay);
   };
 
   return (

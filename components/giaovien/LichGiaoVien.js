@@ -7,14 +7,16 @@ import { removeDomItem } from "../../helper/uti";
 import GiaoVienContext from "../../context/giaoVienContext";
 import LichBar from "../UI/LichBar";
 import NotiContext from "../../context/notiContext";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 import GiaoVien from "../../classes/GiaoVien";
+import DataGiaoVien from "../../classes/DataGiaoVien";
 
 //Comp chính nè
 const LichGiaoVienPage = (props) => {
-  const { arrGiaoVien } = props;
+  // const { arrGiaoVien } = props;
+  const arrGiaoVien = DataGiaoVien.arrGiaoVien;
   //Lấy ctx giáo viên
-  const router = useRouter();
+  // const router = useRouter();
   const notiCtx = useContext(NotiContext);
   const giaoVienCtx = useContext(GiaoVienContext);
   const giaoVienDuocChonId = giaoVienCtx.giaoVienSelectedId;
@@ -41,13 +43,10 @@ const LichGiaoVienPage = (props) => {
   const [giaoVienChon, setGiaoVienChon] = useState();
   //Side effect set giáo viên chọn
   useEffect(() => {
-    const giaoVienMatched = arrGiaoVien.find(
-      (i) => i.id === giaoVienDuocChonId
-    );
-    if (giaoVienMatched) {
-      setGiaoVienChon(giaoVienMatched);
-    }
-  }, [arrGiaoVien, giaoVienDuocChonId]);
+    const giaoVienMatched =
+      DataGiaoVien.timKiemGiaoVienTheoId(giaoVienDuocChonId);
+    setGiaoVienChon(giaoVienMatched);
+  }, [giaoVienDuocChonId]);
   //Trả
   return (
     <Card>

@@ -3,14 +3,11 @@ import Card from "../UI/Card";
 import ChonMotNguoi from "../UI/ChonMotNguoi";
 import PickDateBar from "../UI/PickDateBar";
 import Search from "../UI/Search";
-import { locShortNameTheoKeyword } from "../../helper/uti";
-import {
-  getArrDataDdcnThangHocSinhRender,
-  layShortNameGiaoVienDayThe,
-} from "./ddcn_helper";
+import { getArrDataDdcnThangHocSinhRender } from "./ddcn_helper";
 import { useState, useContext } from "react";
 import ChonNguoiContext from "../../context/chonNguoiContext";
-
+import DataHocSinh from "../../classes/DataHocSinh";
+import DataDiemDanhCaNhan from "../../classes/DataDiemDanhCaNhan";
 //Comp phụ render 1 thẻ ngày data
 const DateDataBar = (props) => {
   const { ngayDiemDanh, gvShortName, type, soPhutHocMotTiet } = props;
@@ -46,13 +43,12 @@ const DateDataBar = (props) => {
 };
 
 const ThongKeHocSinhPage = (props) => {
-  const { arrHocSinh, arrDdcn } = props;
+  const arrDdcn = DataDiemDanhCaNhan.arrDiemDanhCaNhan;
   //Ctx chọn người
   const chonNguoiCtx = useContext(ChonNguoiContext);
   const hocSinhChonId = chonNguoiCtx.nguoiDuocChonId;
   //Lấy shortName hs chọn
-  const hsChonShortName = layShortNameGiaoVienDayThe(arrHocSinh, hocSinhChonId);
-
+  const hsChonShortName = DataHocSinh.traHsCaNhanData(hocSinhChonId).shortName;
   //State lấy key search học sinh
   const [keyword, setKeyword] = useState("");
   //State lấy ngày đẻ lọc kết quả
@@ -68,7 +64,8 @@ const ThongKeHocSinhPage = (props) => {
     setNgayLoc(date);
   };
   //Xử lý mảng hs cuối được render sau khi xử lý search
-  let arrHocSinhRender = locShortNameTheoKeyword(arrHocSinh, keyword);
+  let arrHocSinhRender = DataHocSinh.timKiemHsCaNhanTheoShortName(keyword);
+
   //Xử lý mảng điểm danh cá nhân của học sinh trong tháng đẻ render
   const arrDiemDanhThangRender = getArrDataDdcnThangHocSinhRender(
     arrDdcn,

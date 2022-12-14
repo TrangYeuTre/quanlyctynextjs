@@ -19,12 +19,12 @@ const handler = async (req, res) => {
   //Xử lý post req
   if (method === "POST") {
     //Kiểm tra data
-    const { hocSinhId, ngayTinhPhi, dataNhieuNgayChon } = body;
+    const { hocSinhId, ngayTinhPhi, lichDaChonNgay } = body;
     //Check
     if (
       !hocSinhId ||
       !ngayTinhPhi ||
-      !dataNhieuNgayChon ||
+      !lichDaChonNgay ||
       hocSinhId === "" ||
       ngayTinhPhi === ""
     ) {
@@ -63,7 +63,7 @@ const handler = async (req, res) => {
               $lte: lastDateOfThisMonth,
             },
           },
-          { $set: { dataNhieuNgayChon: dataNhieuNgayChon } }
+          { $set: { lichDaChonNgay: lichDaChonNgay } }
         );
         //Trả
         client.close();

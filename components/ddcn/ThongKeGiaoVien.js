@@ -2,10 +2,8 @@ import classes from "./DiemDanhCaNhan.module.css";
 import Card from "../UI/Card";
 import Layout28 from "../layout/layout-2-8";
 import PickGiaoVienBar from "../UI/PickGiaoVienBar";
-import { useRouter } from "next/router";
 import { useContext, useState } from "react";
 import { getArrDdcnByGvNThisMonth } from "./ddcn_helper";
-// import ChonNguoiContext from "../../context/chonNguoiContext";
 import { removeDomItem } from "../../helper/uti";
 import GiaoVienContext from "../../context/giaoVienContext";
 import NotiContext from "../../context/notiContext";
@@ -13,10 +11,12 @@ import PickDateBar from "../UI/PickDateBar";
 import ItemNgayDdcn from "./ItemNgayDdcn";
 import SuaNgayDiemDanhCuaHocSinhPage from "./SuaNgayDdHocSinh";
 import DiemDanhCaNhan from "../../classes/DiemDanhCaNhan";
+import DataGiaoVien from "../../classes/DataGiaoVien";
+import DataDiemDanhCaNhan from "../../classes/DataDiemDanhCaNhan";
 
 const ThongKeGiaoVienPage = (props) => {
-  const { arrGiaoVien, arrDiemDanhCaNhan } = props;
-  const router = useRouter();
+  const arrGiaoVien = DataGiaoVien.arrGiaoVien;
+  const arrDiemDanhCaNhan = DataDiemDanhCaNhan.arrDiemDanhCaNhan;
   //State render giao diện sửa cho hs
   const [hocSinhSua, setHocSinhSua] = useState(null);
   //Cb thiết lập data hs sua
@@ -58,6 +58,7 @@ const ThongKeGiaoVienPage = (props) => {
       message: dataGot.thongbao,
     });
   };
+
   //Lấy lại mảng lọc điểm danh theo giáo viên id và tháng này
   const arrDdcnByGvNThisMonth = getArrDdcnByGvNThisMonth(
     arrDiemDanhCaNhan,

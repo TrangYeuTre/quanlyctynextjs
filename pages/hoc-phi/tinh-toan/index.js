@@ -1,21 +1,20 @@
 import TinhToanHocPhiPage from "../../../components/hocphi/tinhToan/TinhToan";
 import { useRouter } from "next/router";
 import ConnectMongoDb from "../../../helper/connectMongodb";
+import DataHocSinh from "../../../classes/DataHocSinh";
 
 const TinhToanHocPhiRoute = (props) => {
   const { arrHocSinh } = props;
   const router = useRouter();
   const hocSinhId = router.query.hocSinhId;
   const thangTinh = router.query.thangTinh;
-  console.log(thangTinh)
+  DataHocSinh.loadArrHocSinhCaNhan(arrHocSinh);
 
   return (
     <TinhToanHocPhiPage
       hocSinhId={hocSinhId}
       thangTinh={thangTinh}
-      arrHocSinh={arrHocSinh}
     />
-    // <h1>Ok ok</h1>
   );
 };
 

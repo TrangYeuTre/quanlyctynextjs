@@ -1,12 +1,14 @@
 import LichGiaoVienPage from "../../../components/giaovien/LichGiaoVien";
 import ConnectMongoDb from "../../../helper/connectMongodb";
 import GiaoVienProvider from "../../../context/giaoVienProvider";
+import DataGiaoVien from "../../../classes/DataGiaoVien";
 
 const LichGiaoVienRoute = (props) => {
   const { arrGiaoVien } = props;
+  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
   return (
     <GiaoVienProvider>
-      <LichGiaoVienPage arrGiaoVien={arrGiaoVien} />
+      <LichGiaoVienPage />
     </GiaoVienProvider>
   );
 };

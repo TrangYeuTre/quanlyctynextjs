@@ -1,16 +1,18 @@
 import ThemLopNhomPage from "../../components/lopnhom/ThemLopNhom";
 import ChonNguoiProvider from "../../context/chonNguoiProvider";
 import ConnectMongoDb from "../../helper/connectMongodb";
+import DataHocSinh from "../../classes/DataHocSinh";
+import DataGiaoVien from "../../classes/DataGiaoVien";
 
 const ThemLopNhomRoute = (props) => {
   //Lấy về mảng
   const { arrHsNhom, arrGiaoVien } = props;
+  //Set class học sinh
+  DataHocSinh.loadArrHocSinhNhom(arrHsNhom);
+  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
   return (
     <ChonNguoiProvider>
-      <ThemLopNhomPage
-        arrHocSinhNhom={arrHsNhom}
-        arrGiaoVien={arrGiaoVien}
-      />
+      <ThemLopNhomPage />
     </ChonNguoiProvider>
   );
 };

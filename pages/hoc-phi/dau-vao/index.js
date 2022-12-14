@@ -1,12 +1,14 @@
 import ConnectMongoDb from "../../../helper/connectMongodb";
 import ChonNguoiProvider from "../../../context/chonNguoiProvider";
 import HocPhiDauVaoPage from "../../../components/hocphi/dauVao/HocPhiDauVao";
+import DataHocSinh from "../../../classes/DataHocSinh";
 
 const HocPhiDauVaoRoute = (props) => {
   const { arrHocSinh } = props;
+  DataHocSinh.loadArrHocSinhCaNhan(arrHocSinh);
   return (
     <ChonNguoiProvider>
-      <HocPhiDauVaoPage arrHocSinh={arrHocSinh} />
+      <HocPhiDauVaoPage />
     </ChonNguoiProvider>
   );
 };

@@ -15,22 +15,23 @@ import ChonNhieuNgay from "../chonNhieuNgay/ChonNhieuNGay";
 import SuaNgayTrongLich from "../lich/SuaNgay";
 import TinhTienTam from "../TinhTienTam";
 import { convertInputDateFormat } from "../../../helper/uti";
+import HocPhiHocSinh from "../../../classes/HocPhiHocSinh";
+import DataHocSinh from "../../../classes/DataHocSinh";
 
 const TinhToanHocPhiPage = (props) => {
-  const { arrHocSinh, hocSinhId: hocSinhChonId, thangTinh } = props;
-  const API_HOCPHI_ROUTE = "/api/hocphi/hocPhiThangMoi";
+  const { hocSinhId: hocSinhChonId, thangTinh } = props;
   const notiCtx = useContext(NotiContext);
   const router = useRouter();
-  //Tra shortname
-  const hocSinhShortName = layThongTinHocSinhTuId(
-    arrHocSinh,
-    hocSinhChonId
-  ).shortName;
-  //Lấy thong tin học phí cùa học sinh để tính tiền
-  const { hpCaNhan, hpNhom } = layHocPhiCaNhanNhomCuaHocSinh(
-    arrHocSinh,
-    hocSinhChonId
-  );
+  //Lấy thông tin cần thiết
+  const hocSinhShortName = DataHocSinh.traHsCaNhanData(hocSinhChonId)
+    ? DataHocSinh.traHsCaNhanData(hocSinhChonId).shortName
+    : "";
+  const hpCaNhan = DataHocSinh.traHsCaNhanData(hocSinhChonId)
+    ? +DataHocSinh.traHsCaNhanData(hocSinhChonId).hocPhiCaNhan
+    : 0;
+  const hpNhom = DataHocSinh.traHsCaNhanData(hocSinhChonId)
+    ? +DataHocSinh.traHsCaNhanData(hocSinhChonId).hocPhiNhom
+    : 0;
   //State lấy ngày được chọn
   const [ngayChon, setNgayChon] = useState(new Date());
   //Side effect lấy tháng tính truyền xuống
@@ -72,6 +73,12 @@ const TinhToanHocPhiPage = (props) => {
     Sat: [],
     Sun: [],
   });
+  //State lấy mảng lịch với ngày đã chọn để submit
+  const [lichDaChonNgay, setLichChonNgay] = useState([]);
+  const setLichChonNgayHandler = (arr) => {
+    setLichChonNgay(arr);
+  };
+
   //Cb lấy data từ lấy nhiều ngày
   const layDataNhieuNgayHandler = (data) => {
     const { type, arrThuChon, loaiLop, heso } = data;
@@ -149,20 +156,13 @@ const TinhToanHocPhiPage = (props) => {
   };
   //CB chính submit tính phí tháng mới
   const tinhPhiThangMoiHandler = async () => {
-    //Chốt data submit
-    const dataSubmit = {
+    const hocPhiThangMoi = new HocPhiHocSinh({
       hocSinhId: hocSinhChonId,
       ngayTinhPhi: convertInputDateFormat(ngayChon),
-      dataNhieuNgayChon: dataNhieuNgayChon,
-    };
-    //Fetch nào
-    const response = await fetch(API_HOCPHI_ROUTE, {
-      method: "POST",
-      body: JSON.stringify(dataSubmit),
-      headers: { "Content-Type": "application/json" },
+      lichDaChonNgay: lichDaChonNgay,
     });
-    const statusCode = response.status;
-    const dataGot = await response.json();
+    //Fetch
+    const { statusCode, dataGot } = await hocPhiThangMoi.themHocPhiHocSinh();
     //Đẩy thông báo
     setTimeout(() => {
       notiCtx.clearNoti();
@@ -171,8 +171,6 @@ const TinhToanHocPhiPage = (props) => {
     window.scrollTo(0, 0);
     notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
-  //Lọc lại mảng hs theo key để render
-  // const arrHocSinhRender = arrHocSinh;
   //Side effect lần đầu load trang thì fetch get data ddcn của học sinh
   useEffect(() => {
     //Muốn viết async code trong useEffect phải tạo và call riêng như sau
@@ -257,6 +255,7 @@ const TinhToanHocPhiPage = (props) => {
           dataNhieuNgayChon={dataNhieuNgayChon}
           showNgaySua={showSuaNgayChonHandler}
           layDataThongKe={getDataThongKeLich}
+          layLichSubmit={setLichChonNgayHandler}
         />
         <h4>Kết quả tính tạm</h4>
         <TinhTienTam

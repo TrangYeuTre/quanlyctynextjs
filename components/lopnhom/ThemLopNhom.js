@@ -7,6 +7,8 @@ import NotiContext from "../../context/notiContext";
 import ActionBar from "../UI/ActionBar";
 import { useRouter } from "next/router";
 import LopNhom from "../../classes/LopNhom";
+import DataHocSinh from "../../classes/DataHocSinh";
+import DataGiaoVien from "../../classes/DataGiaoVien";
 
 const ThemLopNhomPage = (props) => {
   const router = useRouter();
@@ -17,7 +19,8 @@ const ThemLopNhomPage = (props) => {
   const arrGiaoVienChon = chonNguoiCtx.arrGiaoVien;
   const arrHocSinhChon = chonNguoiCtx.arrHocSinh;
   //Cần từ props mảng học sinh nhóm và giáo viên ở đây
-  const { arrHocSinhNhom, arrGiaoVien } = props;
+  const arrHocSinhNhom = DataHocSinh.arrHocSinhNhom;
+  const arrGiaoVien = DataGiaoVien.arrGiaoVien;
   //Ref lấy tên
   const tenLopNhomRef = useRef();
   //Nếu arr giáo viên / hs trên chọn người trên ctx có tồn tại thì lấy mảng này render
@@ -34,11 +37,9 @@ const ThemLopNhomPage = (props) => {
   const themLopNhomHandler = async () => {
     //Lấy tên, phần này nếu tên rỗng thì api trả lại lỗi
     const tenLopNhom = tenLopNhomRef.current.value;
-
     const arrGiaoVienRenderFilter = arrGiaoVienRender.filter(
       (i) => i.isSelected
     );
-
     //Xử lý lấy mảng hoc sinh và giáo viên
     const arrGiaoVienLopNhom = arrGiaoVienRenderFilter.map((gv) => {
       return {

@@ -5,13 +5,17 @@ import {
   getFirstLastDateOfPrevMonth,
   getFirstLastDateOfThisMonth,
 } from "../../helper/uti";
+import DataHocSinh from "../../classes/DataHocSinh";
+import DataDiemDanhCaNhan from "../../classes/DataDiemDanhCaNhan";
 
 const ThongKeHocSinhRoute = (props) => {
   const { arrHocSinh, arrDiemDanhCaNhanFilter } = props;
+  DataHocSinh.loadArrHocSinhCaNhan(arrHocSinh);
+  DataDiemDanhCaNhan.loadArrDiemDanhCaNhan(arrDiemDanhCaNhanFilter);
   return (
     <ChonNguoiProvider>
       {" "}
-      <ThongKeHocSinhPage arrHocSinh={arrHocSinh} arrDdcn={arrDiemDanhCaNhanFilter}/>
+      <ThongKeHocSinhPage />
     </ChonNguoiProvider>
   );
 };

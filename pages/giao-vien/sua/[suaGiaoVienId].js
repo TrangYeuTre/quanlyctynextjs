@@ -1,11 +1,13 @@
 import ThemGvPage from "../../../components/giaovien/ThemGv";
 import ConnectMongoDb from "../../../helper/connectMongodb";
 import { ObjectId } from "mongodb";
+import DataGiaoVien from "../../../classes/DataGiaoVien";
 
 const SuaGiaoVienRoute = (props) => {
   const { giaoVien } = props;
+  DataGiaoVien.loadDataGiaoVienDuocChon(giaoVien);
   //Trả
-  return <ThemGvPage renderMode="sua" dataGiaoVien={giaoVien} />;
+  return <ThemGvPage renderMode="sua" />;
 };
 
 //SSG lấy data học sinh cần sửa

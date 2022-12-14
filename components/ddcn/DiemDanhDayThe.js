@@ -1,13 +1,8 @@
 import classes from "./DiemDanhCaNhan.module.css";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
-import { layTenThuTuNgay, convertInputDateFormat } from "../../helper/uti";
-import {
-  layArrGiaoVienDayThe,
-  layArrHocSinhDayThe,
-  layShortNameGiaoVienDayThe,
-  getObjSubmitDayThe,
-} from "./ddcn_helper";
+import { layTenThuTuNgay } from "../../helper/uti";
+import { layArrHocSinhDayThe, getObjSubmitDayThe } from "./ddcn_helper";
 import ChonNguoiContext from "../../context/chonNguoiContext";
 import NotiContext from "../../context/notiContext";
 import Card from "../UI/Card";
@@ -17,25 +12,25 @@ import GiaoVienContext from "../../context/giaoVienContext";
 import PickDateBar from "../UI/PickDateBar";
 import ActionBar from "../UI/ActionBar";
 import ChonNguoi from "../UI/ChonNguoi";
-import DiemDanhCaNhan from "../../classes/DiemDanhCaNhan";
+// import DiemDanhCaNhan from "../../classes/DiemDanhCaNhan";
+import DataGiaoVien from "../../classes/DataGiaoVien";
 
 //Comp chính
 const DiemDanhDayThePage = (props) => {
-  const { arrGiaoVien } = props;
-
+  const arrGiaoVien = DataGiaoVien.arrGiaoVien;
   const router = useRouter();
   const gvCtx = useContext(GiaoVienContext);
   const notiCtx = useContext(NotiContext);
   //Lấy context giáo viên đẻ lấy id giáo viên được pick từ PickGiaoVienBar
   const giaoVienChonId = gvCtx.giaoVienSelectedId;
   //Xử lý lấy mảng giáo viên day thế = loại giáo viên được chọn ra
-  const arrGiaoVienDayThe = layArrGiaoVienDayThe(arrGiaoVien, giaoVienChonId);
-
+  const arrGiaoVienDayThe = DataGiaoVien.layArrGiaoVienDayThe(giaoVienChonId);
   //Thêm ctx  chọn người ở đây để truyền xuống render và lấy ds học sinh chonhj luôn
   const chonNguoiCtx = useContext(ChonNguoiContext);
   const arrHocSinhChon = chonNguoiCtx.arrHocSinh;
   //State ngày được chọn để điểm danh
   const [ngayDiemDanh, setNgayDiemDanh] = useState(new Date());
+
   //State giáo viên dạy thế
   const [giaoVienDayTheId, setGiaoVienDayTheId] = useState("none");
   //Cb đổi ngày điểm danh
@@ -47,9 +42,8 @@ const DiemDanhDayThePage = (props) => {
     setGiaoVienDayTheId(e.target.value);
   };
   //Lọc lại data giáo viên được chọn để truyền xuống phần chọn hóc sinh điểm danh chính
-  const dataGiaoVienDuocChon = arrGiaoVien.find(
-    (giaovien) => giaovien.id === giaoVienChonId
-  );
+  const dataGiaoVienDuocChon =
+    DataGiaoVien.timKiemGiaoVienTheoId(giaoVienChonId);
 
   //Xử lý xem mảng học trò đẻ chọn dạy thế render
   const { arrHocTroCaNhan, arrHocTroDayThe } = layArrHocSinhDayThe(
@@ -58,10 +52,11 @@ const DiemDanhDayThePage = (props) => {
   );
 
   //Tra shortName của giáo viên dạy thế
-  const giaoVienDayTheShortName = layShortNameGiaoVienDayThe(
-    arrGiaoVien,
+  const giaoVienDayTheShortName = DataGiaoVien.timKiemGiaoVienTheoId(
     giaoVienDayTheId
-  );
+  )
+    ? DataGiaoVien.timKiemGiaoVienTheoId(giaoVienDayTheId).shortName
+    : "";
 
   //Tổng hợp lại data submit theo obj only
   const { instaceNgayDayTheMoi, objHocSinhData } = getObjSubmitDayThe(
@@ -88,8 +83,10 @@ const DiemDanhDayThePage = (props) => {
     });
     window.scrollTo(0, 0);
   };
+
   //CB hủy điể danh
   const huyDdDayTheHandler = () => {};
+
   return (
     <Card>
       <Layout28>

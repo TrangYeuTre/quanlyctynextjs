@@ -7,15 +7,16 @@ import CTA from "../UI/CTA";
 import { kiemTraLuongCaNhanTinhChua, tinhTongLuong } from "./luong_helper";
 import NotiContext from "../../context/notiContext";
 import { useRouter } from "next/router";
+import LuongGiaoVien from "../../classes/LuongGiaoVien";
+import DataGiaoVien from "../../classes/DataGiaoVien";
 
 const SuaLuongPage = (props) => {
-  const API_LUONG_ROUTE = "/api/luong/luongThangGiaoVien";
   const router = useRouter();
   //Noti
   const notiCtx = useContext(NotiContext);
   //Lấy về data ddcn và ddn của giáo viên
-  const { arrDdcn, arrDdn, giaoVienChonData, ngayDauThang, dataLuongThang } =
-    props;
+  const { arrDdcn, arrDdn, ngayDauThang, dataLuongThang } = props;
+  const giaoVienChonData = DataGiaoVien.giaoVienChonData;
   //State chính xử lý xem được bấm nút chốt tính lương hay không
   const [isSubmit, setSubmit] = useState(false);
   //State lấy data lương cá nhân
@@ -38,26 +39,19 @@ const SuaLuongPage = (props) => {
   };
   //Cb chính chốt lương tháng mới
   const chotLuongThangHandler = async () => {
-    //Tổng hợp dataSubmit
-    const dataSubmit = {
-      luongThangId: dataLuongThang._id,
-      dataUpdate: {
-        giaoVienId: giaoVienChonData.id,
-        shortName: giaoVienChonData.shortName,
-        ngayTinhLuong: ngayDauThang,
-        dataLuongCaNhan: dataLuongCaNhan,
-        dataLuongNhom: dataLuongNhom,
-        dataPhuPhi: dataPhuPhi,
-      },
-    };
-    //fetch
-    const response = await fetch(API_LUONG_ROUTE, {
-      method: "PUT",
-      body: JSON.stringify(dataSubmit),
-      headers: { "Content-Type": "application/json" },
+    //Class
+    const luongGiaoVienUpdate = new LuongGiaoVien({
+      giaoVienId: giaoVienChonData.id,
+      shortName: giaoVienChonData.shortName,
+      ngayTinhLuong: ngayDauThang,
+      dataLuongCaNhan: dataLuongCaNhan,
+      dataLuongNhom: dataLuongNhom,
+      dataPhuPhi: dataPhuPhi,
     });
-    const statusCode = response.status;
-    const dataGot = await response.json();
+    //Fetch
+    const { statusCode, dataGot } = await luongGiaoVienUpdate.suaLuongGiaoVien(
+      dataLuongThang._id
+    );
     //Push noti
     setTimeout(() => {
       notiCtx.clearNoti();

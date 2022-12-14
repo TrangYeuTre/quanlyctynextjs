@@ -9,17 +9,17 @@ import { removeDomItem } from "../../helper/uti";
 import NotiContext from "../../context/notiContext";
 import KetQuaDdnBar from "../UI/KetQuaDdnBar";
 import DiemDanhNhom from "../../classes/DiemDanhNhom";
+import DataLopNhom from "../../classes/DataLopNhom";
 
 const KetQuaDiemDanhNhomPage = (props) => {
-  const API_DDN_ROUTE = "/api/ddn/diemDanhNhom";
-  const { arrLopNhom, arrDdnFitler } = props;
-
+  const { arrDdnFitler } = props;
+  const arrLopNhom = DataLopNhom.arrLopNhom;
   const notiCtx = useContext(NotiContext);
 
   //State kiểm soát id lớp nhóm được chọn
   const [lopNhomChonId, setLopNhomChonId] = useState();
   //Lấy tên lớp nhóm chọn
-  const tenLopNhomChon = layTenLopNhom(arrLopNhom, lopNhomChonId);
+  const tenLopNhomChon = DataLopNhom.traTenLopNhomChon(lopNhomChonId);
   //State kiểm soát ngày được chọn để view kết quả
   const [ngayChon, setNgayChon] = useState(new Date());
   //View mont và year

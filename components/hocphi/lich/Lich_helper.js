@@ -119,6 +119,16 @@ export const themDataChonNhieuNgayVaoLich = (
 ) => {
   //Clone lại mảng lịch để xử lý và trả kq
   let arrDatesClone = [...arrDatesRender];
+  //Kiêm tra nếu dataNhieuNgayChon có cac props thứ đều là mảng rổng tưc là ban đầu chưa chọn gì thì trả mảng đầu
+  let isInit = true;
+  for (const key in dataNhieuNgayChon) {
+    if (dataNhieuNgayChon[key].length > 0) {
+      isInit = false;
+    }
+  }
+  if (isInit) {
+    return arrDatesClone;
+  }
 
   //Từ dataNhieuNgayChon lọc ra các key tương ứng các thứ có value là mảng rỗng
   const arrThuRong = []; // ['Mon','Fri']
@@ -195,6 +205,7 @@ export const suaDataNgayTrongLich = (arrDatesWithData, arrDataNgaySua) => {
       }
     } //end if update lớp học
   });
+
   //Trả lại mảng clone sau khi xử lý
   return arrClone;
 };

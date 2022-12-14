@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import Loading from "../../components/UI/Loading";
 
 const LuongRoute = (props) => {
-  console.log('CHuyển lương')
   const router = useRouter();
   //State loading
   const [loading, setLoading] = useState(true);
