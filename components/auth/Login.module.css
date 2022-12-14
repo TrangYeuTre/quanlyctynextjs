@@ -1,0 +1,30 @@
+.container {
+  border-radius: 1rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 40%;
+  background-color: #e3f6f5;
+  box-shadow: 8px 8px 10px rgb(232, 231, 231);
+  margin: 3rem auto;
+}
+.controls,
+.control {
+  display: flex;
+  flex-direction: row;
+  gap: 3rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.control {
+  gap: 1rem;
+}
+.controls {
+  width: minmax(30%, 90%);
+  border-bottom: 2px dotted var(--mauNen--);
+  padding: 1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
