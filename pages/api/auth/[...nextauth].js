@@ -7,8 +7,7 @@ export const authOptions = {
   // Configure one or more authentication providers
   providers: [
     CredentialsProvider({
-      secret: process.env.NEXTAUTH_SECRET,
-      session: { jwt: true },
+      name: "credentials",
       async authorize(credentials, req) {
         //Kết nói db trước
         let db, client;
