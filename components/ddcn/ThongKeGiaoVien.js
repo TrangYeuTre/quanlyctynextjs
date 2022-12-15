@@ -43,7 +43,7 @@ const ThongKeGiaoVienPage = (props) => {
   };
   //Cb xóa ngày điểm danh
   const xoaNgayDiemDanhHandler = async (ngayDiemDanhId) => {
-    const { statusCode, dataGot } = await DiemDanhCaNhan.xoaNgayDiemDanh(
+    const { statusCode, dataGot } = await DiemDanhCaNhan.xoaNgayDiemDanhCaNhan(
       ngayDiemDanhId
     );
     //Chạy push noti

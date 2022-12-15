@@ -32,7 +32,7 @@ export const locMangHsDayChinh = (arrLichDayCaNhan, labelThuNgayDiemDanh) => {
   let arrHocTroDaChon = [];
   if (arrLichDayCaNhanByThu.length > 0) {
     arrLichDayCaNhanByThu.forEach((item) => {
-      arrHocTroDaChon = [...item.arrHocSinh];
+      arrHocTroDaChon = [...item.arrHocSinh, ...arrHocTroDaChon];
     });
   }
   //Thêm isSelected cho mảng
@@ -419,9 +419,11 @@ export const getArrDataDdcnThangHocSinhRender = (
     (item) => new Date(item.ngayDiemDanh).getMonth() === locMonth
   );
   //Lọc theo id học sinh chọn
-  const arrFilterByHocSinh = arrFilterMonth.filter(
-    (item) => item[hocSinhChonId] !== undefined
+  const arrFilterByHocSinh = arrFilterMonth.filter((item) =>
+    item.hasOwnProperty(hocSinhChonId)
   );
+  console.log(hocSinhChonId);
+  console.log(arrFilterMonth);
   //Đẩy kết quả
   arrFilterByHocSinh.forEach((item) => {
     arrResult.push({

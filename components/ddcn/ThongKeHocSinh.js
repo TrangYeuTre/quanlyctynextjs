@@ -48,7 +48,9 @@ const ThongKeHocSinhPage = (props) => {
   const chonNguoiCtx = useContext(ChonNguoiContext);
   const hocSinhChonId = chonNguoiCtx.nguoiDuocChonId;
   //Lấy shortName hs chọn
-  const hsChonShortName = DataHocSinh.traHsCaNhanData(hocSinhChonId).shortName;
+  const hsChonShortName = DataHocSinh.traHsCaNhanData(hocSinhChonId)
+    ? DataHocSinh.traHsCaNhanData(hocSinhChonId).shortName
+    : "";
   //State lấy key search học sinh
   const [keyword, setKeyword] = useState("");
   //State lấy ngày đẻ lọc kết quả
@@ -72,6 +74,7 @@ const ThongKeHocSinhPage = (props) => {
     ngayLoc,
     hocSinhChonId
   );
+  console.log(arrDiemDanhThangRender);
   return (
     <Card>
       <div className={classes.container}>

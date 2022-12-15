@@ -26,13 +26,16 @@ const handler = async (req, res) => {
       // Tìm ngày dd đã tồn tại chưa, nếu chưa thì thêm mới/ không thì đè lên
       const ngayDiemDanhExist = await db
         .collection("diemdanhcanhans")
-        .findOne({ ngayDiemDanh: ngayDiemDanh });
+        .findOne({ ngayDiemDanh: ngayDiemDanh, giaoVienId: giaoVienId });
       if (!ngayDiemDanhExist) {
         await db.collection("diemdanhcanhans").insertOne(body);
       } else {
         await db
           .collection("diemdanhcanhans")
-          .replaceOne({ ngayDiemDanh: ngayDiemDanh }, body);
+          .replaceOne(
+            { ngayDiemDanh: ngayDiemDanh, giaoVienId: giaoVienId },
+            body
+          );
       }
       client.close();
       return res

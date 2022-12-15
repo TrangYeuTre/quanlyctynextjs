@@ -47,6 +47,7 @@ const DiemDanhCaNhanPage = (props) => {
   const dataGiaoVienDuocChon =
     DataGiaoVien.timKiemGiaoVienTheoId(giaoVienChonId);
 
+
   //Xử lý lấy mảng hs tăng cường để chọn ban đầu
   const arrHocSinhTangCuong = layMangHsTangCuongDeChon(
     arrHocSinhChon,
@@ -83,7 +84,7 @@ const DiemDanhCaNhanPage = (props) => {
     //Chạy push noti
     setTimeout(() => {
       notiCtx.clearNoti();
-      router.reload();
+      // router.reload();
     }, process.env.DELAY_TIME_NOTI);
     notiCtx.pushNoti({
       status: statusCode,

@@ -39,7 +39,6 @@ const DayChinh = (props) => {
     const arrHsChonTrue = locMangHsDayChinh(
       arrLichDayCaNhan,
       labelThuNgayDiemDanh,
-      chonNguoiCtx
     );
     //Xử lý ưu tiên nếu arrhocSinhCtx có thì dùng cái này
     chonNguoiCtx.chonHocSinh(arrHsChonTrue);
