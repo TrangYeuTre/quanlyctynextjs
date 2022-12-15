@@ -7,7 +7,7 @@ const nextConfig = {
     MONGODB_USERNAME: "nghiadeptrai91",
     MONGODB_PASSWORD: "NghiaTrang9192",
     MONGODB_CLUSTER: "hoc-nodejs-cluster",
-    NEXTAUTH_SECRET: "Không có cái này thì vãi cả lỗi trên vercel"
+    NEXTAUTH_SECRET: "5c876e7f261d25c232a2dfa9ed19fc60",
   },
 };
 

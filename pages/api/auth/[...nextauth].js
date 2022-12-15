@@ -5,6 +5,11 @@ import { compare } from "bcryptjs";
 
 export const authOptions = {
   // Configure one or more authentication providers
+  secret: process.env.NEXTAUTH_SECRET,
+  jwt: {
+    secret: process.env.NEXTAUTH_SECRET,
+    encryption: true,
+  },
   providers: [
     CredentialsProvider({
       name: "credentials",
