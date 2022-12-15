@@ -41,3 +41,17 @@
   cursor: pointer;
   transition: all 0.2s;
 }
+.nutTangGiam {
+  padding: 3px;
+  border-radius: 5px;
+  border: 2px solid var(--mauMh3--);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.nutTangGiam:hover {
+  border: 2px solid var(--mauMh4--);
+}

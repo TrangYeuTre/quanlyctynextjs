@@ -7,6 +7,7 @@ import {
   getFirstLastDateOfNextMonth,
   getFirstLastDateOfThisMonth,
 } from "../../helper/uti";
+import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
 
 const PickDateBar = (props) => {
   //Dợi props hàm truyền ngày được chọn lên thôi
@@ -26,6 +27,17 @@ const PickDateBar = (props) => {
   const thayDoiNgayDiemDanhHandler = (e) => {
     setNgayDiemDanh(new Date(e.target.value));
     setChot(false);
+  };
+  //CB tăng giảm
+  const congMotNgayHandler = () => {
+    let date = new Date(ngayDiemDanh);
+    date.setDate(date.getDate() + 1);
+    setNgayDiemDanh(date);
+  };
+  const truMotNgayHandler = () => {
+    let date = new Date(ngayDiemDanh);
+    date.setDate(date.getDate() - 1);
+    setNgayDiemDanh(date);
   };
   //Cb chốt hay không
   const setChotHandler = () => {
@@ -62,6 +74,14 @@ const PickDateBar = (props) => {
             max={lastDateOfThisMonth}
           />
         )}
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <div className={classes.nutTangGiam} onClick={congMotNgayHandler}>
+            <AiFillPlusCircle color="var(--mauNut--)" size="1.5rem" />
+          </div>
+          <div className={classes.nutTangGiam} onClick={truMotNgayHandler}>
+            <AiFillMinusCircle color="var(--mauNut--)" size="1.5rem" />
+          </div>
+        </div>
       </div>
       <button
         className={`${isChot ? classes.btnDaChot : classes.btnChuaChot}`}
