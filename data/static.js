@@ -63,7 +63,7 @@ export const navItems = () => {
       name: "Lương giáo viên",
       children: [{ id: "c-1", route: "/dau-vao", name: "Xử lý đầu vào" }],
     },
-    { id: "i-8", route: "/auth/login", name: "Test login" },
+    // { id: "i-8", route: "/auth/signOut", name: "Sign Out" },
   ];
   return ARR_NAV_ITEMS;
 };

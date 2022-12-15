@@ -2,14 +2,27 @@ import DiemDanhCaNhanPage from "../../components/ddcn/DiemDanhCaNhan";
 import ConnectMongo from "../../helper/connectMongodb";
 import GiaoVienProvider from "../../context/giaoVienProvider";
 import ChonNguoiProvider from "../../context/chonNguoiProvider";
-import { useEffect, useState } from "react";
 import DataGiaoVien from "../../classes/DataGiaoVien";
+import { useState, useEffect } from "react";
+import { getSession } from "next-auth/react";
 
 const DiemDanhCaNhanRoute = (props) => {
   const { arrGiaoVien } = props;
   DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
   //State loading
   const [loading, setLoading] = useState(true);
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+        window.location.href = "/auth/login";
+      }
+    });
+  }, []);
+
   useEffect(() => {
     if (arrGiaoVien) {
       setLoading(false);
@@ -17,6 +30,10 @@ const DiemDanhCaNhanRoute = (props) => {
       setLoading(true);
     }
   }, [arrGiaoVien]);
+  if (!isLoggedIn) {
+    return <h1>Đang xử lý ...</h1>;
+  }
+
   return (
     <GiaoVienProvider>
       <ChonNguoiProvider>

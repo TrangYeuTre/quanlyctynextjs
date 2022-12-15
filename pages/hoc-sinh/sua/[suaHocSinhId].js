@@ -1,10 +1,27 @@
 import ThemHsPage from "../../../components/hocsinh/ThemHs";
 import ConnectMongoDb from "../../../helper/connectMongodb";
 import { ObjectId } from "mongodb";
+import { useEffect, useState } from "react";
+import { getSession } from "next-auth/react";
 
 const SuaHocSinhRoute = (props) => {
   //Lấy vè data sửa
   const { dataHocSinhSua } = props;
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+        window.location.href = "/auth/login";
+      }
+    });
+  }, []);
+  if (!isLoggedIn) {
+    return <h1>Đang xử lý ...</h1>;
+  }
+
   //Trả
   return <ThemHsPage renderMode="sua" dataHocSinh={dataHocSinhSua} />;
 };

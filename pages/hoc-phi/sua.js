@@ -2,6 +2,8 @@ import { useRouter } from "next/router";
 import ConnectMongoDb from "../../helper/connectMongodb";
 import SuaHocPhiPage from "../../components/hocphi/tinhToan/SuaHocPhi";
 import DataHocSinh from "../../classes/DataHocSinh";
+import { useState, useEffect } from "react";
+import { getSession } from "next-auth/react";
 
 const SuaHocPhiRoute = (props) => {
   const { arrHocSinh } = props;
@@ -9,13 +11,23 @@ const SuaHocPhiRoute = (props) => {
   const router = useRouter();
   const hocSinhId = router.query.hocSinhId;
   const thangTinh = router.query.thangTinh;
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+        window.location.href = "/auth/login";
+      }
+    });
+  }, []);
+  
+  if (!isLoggedIn) {
+    return <h1>Đang xử lý ...</h1>;
+  }
 
-  return (
-    <SuaHocPhiPage
-      hocSinhId={hocSinhId}
-      thangTinh={thangTinh}
-    />
-  );
+  return <SuaHocPhiPage hocSinhId={hocSinhId} thangTinh={thangTinh} />;
 };
 
 //SSG lây mảng học sinh cá nhân ở để tính

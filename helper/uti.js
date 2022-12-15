@@ -1,4 +1,5 @@
 import $ from "jquery";
+
 //Sort lại mảng theo phần tên của shortname, phương pháp dưới hơi dài nhưng tối ưu theo O(n)
 export const sortArtByLastShortName = (arrIn) => {
   //Mảng arrIn có dạng [{id,shortName, và các props khác}]

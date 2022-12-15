@@ -7,8 +7,25 @@ import {
 } from "../../helper/uti";
 import DataHocSinh from "../../classes/DataHocSinh";
 import DataDiemDanhCaNhan from "../../classes/DataDiemDanhCaNhan";
+import { useState, useEffect } from "react";
+import { getSession } from "next-auth/react";
 
 const ThongKeHocSinhRoute = (props) => {
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+        window.location.href = "/auth/login";
+      }
+    });
+  }, []);
+  if (!isLoggedIn) {
+    return <h1>Đang xử lý ...</h1>;
+  }
+
   const { arrHocSinh, arrDiemDanhCaNhanFilter } = props;
   DataHocSinh.loadArrHocSinhCaNhan(arrHocSinh);
   DataDiemDanhCaNhan.loadArrDiemDanhCaNhan(arrDiemDanhCaNhanFilter);

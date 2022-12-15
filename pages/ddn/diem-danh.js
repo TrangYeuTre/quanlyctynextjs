@@ -3,8 +3,25 @@ import ConnectMongo from "../../helper/connectMongodb";
 import ChonNguoiProvider from "../../context/chonNguoiProvider";
 import DataGiaoVien from "../../classes/DataGiaoVien";
 import DataLopNhom from "../../classes/DataLopNhom";
+import { useState, useEffect } from "react";
+import { getSession } from "next-auth/react";
 
 const DiemDanhNhomRoute = (props) => {
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+        window.location.href = "/auth/login";
+      }
+    });
+  }, []);
+  if (!isLoggedIn) {
+    return <h1>Đang xử lý ...</h1>;
+  }
+
   const { arrLopNhom, arrGiaoVien } = props;
   DataLopNhom.loadArrLopNhom(arrLopNhom);
   DataGiaoVien.loadArrGiaoVien(arrGiaoVien);

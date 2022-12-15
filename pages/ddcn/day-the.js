@@ -3,8 +3,25 @@ import DiemDanhDayThePage from "../../components/ddcn/DiemDanhDayThe";
 import GiaoVienProvider from "../../context/giaoVienProvider";
 import ChonNguoiProvider from "../../context/chonNguoiProvider";
 import DataGiaoVien from "../../classes/DataGiaoVien";
+import { useState, useEffect } from "react";
+import { getSession } from "next-auth/react";
 
 const DiemDanhDayTheRoute = (props) => {
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+        window.location.href = "/auth/login";
+      }
+    });
+  }, []);
+  if (!isLoggedIn) {
+    return <h1>Đang xử lý ...</h1>;
+  }
+
   const { arrGiaoVien } = props;
   DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
   return (

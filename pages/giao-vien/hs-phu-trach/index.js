@@ -3,8 +3,25 @@ import GiaoVienProvider from "../../../context/giaoVienProvider";
 import ConnectMongoDb from "../../../helper/connectMongodb";
 import DataHocSinh from "../../../classes/DataHocSinh";
 import DataGiaoVien from "../../../classes/DataGiaoVien";
+import { useState, useEffect } from "react";
+import { getSession } from "next-auth/react";
 
 const HocSinhPhuTrachRoute = (props) => {
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+        window.location.href = "/auth/login";
+      }
+    });
+  }, []);
+  if (!isLoggedIn) {
+    return <h1>Đang xử lý ...</h1>;
+  }
+
   const { arrGiaoVien, arrHocSinhCaNhan } = props;
   DataHocSinh.loadArrHocSinhCaNhan(arrHocSinhCaNhan);
   DataGiaoVien.loadArrGiaoVien(arrGiaoVien);

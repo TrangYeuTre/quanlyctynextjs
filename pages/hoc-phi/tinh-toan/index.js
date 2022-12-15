@@ -2,6 +2,8 @@ import TinhToanHocPhiPage from "../../../components/hocphi/tinhToan/TinhToan";
 import { useRouter } from "next/router";
 import ConnectMongoDb from "../../../helper/connectMongodb";
 import DataHocSinh from "../../../classes/DataHocSinh";
+import { useState, useEffect } from "react";
+import { getSession } from "next-auth/react";
 
 const TinhToanHocPhiRoute = (props) => {
   const { arrHocSinh } = props;
@@ -9,13 +11,22 @@ const TinhToanHocPhiRoute = (props) => {
   const hocSinhId = router.query.hocSinhId;
   const thangTinh = router.query.thangTinh;
   DataHocSinh.loadArrHocSinhCaNhan(arrHocSinh);
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+        window.location.href = "/auth/login";
+      }
+    });
+  }, []);
+  if (!isLoggedIn) {
+    return <h1>Đang xử lý ...</h1>;
+  }
 
-  return (
-    <TinhToanHocPhiPage
-      hocSinhId={hocSinhId}
-      thangTinh={thangTinh}
-    />
-  );
+  return <TinhToanHocPhiPage hocSinhId={hocSinhId} thangTinh={thangTinh} />;
 };
 
 //SSG lây mảng học sinh cá nhân ở để tính

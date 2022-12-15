@@ -6,15 +6,30 @@ import {
   getFirstLastDateOfPrevMonth,
 } from "../../helper/uti";
 import DataLopNhom from "../../classes/DataLopNhom";
+import { useState, useEffect } from "react";
+import { getSession } from "next-auth/react";
 
 const KetQuaDiemDanhNhomRoute = (props) => {
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+        window.location.href = "/auth/login";
+      }
+    });
+  }, []);
+  if (!isLoggedIn) {
+    return <h1>Đang xử lý ...</h1>;
+  }
+
   const { arrDiemDanhNhomFilter, arrLopNhom } = props;
   DataLopNhom.loadArrLopNhom(arrLopNhom);
   return (
     <ChonNguoiProvider>
-      <KetQuaDiemDanhNhomPage
-        arrDdnFitler={arrDiemDanhNhomFilter}
-      />
+      <KetQuaDiemDanhNhomPage arrDdnFitler={arrDiemDanhNhomFilter} />
     </ChonNguoiProvider>
   );
 };

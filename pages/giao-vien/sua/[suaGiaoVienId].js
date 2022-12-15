@@ -2,8 +2,25 @@ import ThemGvPage from "../../../components/giaovien/ThemGv";
 import ConnectMongoDb from "../../../helper/connectMongodb";
 import { ObjectId } from "mongodb";
 import DataGiaoVien from "../../../classes/DataGiaoVien";
+import { useState, useEffect } from "react";
+import { getSession } from "next-auth/react";
 
 const SuaGiaoVienRoute = (props) => {
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+        window.location.href = "/auth/login";
+      }
+    });
+  }, []);
+  if (!isLoggedIn) {
+    return <h1>Đang xử lý ...</h1>;
+  }
+
   const { giaoVien } = props;
   DataGiaoVien.loadDataGiaoVienDuocChon(giaoVien);
   //Trả

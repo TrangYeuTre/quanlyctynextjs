@@ -2,9 +2,25 @@ import DanhSachHocSinhCaNhanPage from "../../components/hocsinh/DsHocSinhCn";
 import ConnectMongoDb from "../../helper/connectMongodb";
 import { useEffect, useState } from "react";
 import DataHocSinh from "../../classes/DataHocSinh";
+import { getSession } from "next-auth/react";
 
 const DsHocSinhCaNhanRoute = (props) => {
   const { arrHocSinh } = props;
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+        window.location.href = "/auth/login";
+      }
+    });
+  }, []);
+  if (!isLoggedIn) {
+    return <h1>Đang xử lý ...</h1>;
+  }
+
   //Tạo class data hs
   DataHocSinh.loadArrHocSinhCaNhan(arrHocSinh);
   return <DanhSachHocSinhCaNhanPage />;

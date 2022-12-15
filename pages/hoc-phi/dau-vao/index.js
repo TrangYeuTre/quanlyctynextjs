@@ -2,8 +2,25 @@ import ConnectMongoDb from "../../../helper/connectMongodb";
 import ChonNguoiProvider from "../../../context/chonNguoiProvider";
 import HocPhiDauVaoPage from "../../../components/hocphi/dauVao/HocPhiDauVao";
 import DataHocSinh from "../../../classes/DataHocSinh";
+import { useState, useEffect } from "react";
+import { getSession } from "next-auth/react";
 
 const HocPhiDauVaoRoute = (props) => {
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+        window.location.href = "/auth/login";
+      }
+    });
+  }, []);
+  if (!isLoggedIn) {
+    return <h1>Đang xử lý ...</h1>;
+  }
+
   const { arrHocSinh } = props;
   DataHocSinh.loadArrHocSinhCaNhan(arrHocSinh);
   return (

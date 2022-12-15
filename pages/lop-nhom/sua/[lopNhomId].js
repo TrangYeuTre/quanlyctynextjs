@@ -4,8 +4,25 @@ import SuaLopNhomPage from "../../../components/lopnhom/SuaLopNhom";
 import DataHocSinh from "../../../classes/DataHocSinh";
 import DataGiaoVien from "../../../classes/DataGiaoVien";
 import DataLopNhom from "../../../classes/DataLopNhom";
+import { useState, useEffect } from "react";
+import { getSession } from "next-auth/react";
 
 const SuaLopNhomRoute = (props) => {
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+        window.location.href = "/auth/login";
+      }
+    });
+  }, []);
+  if (!isLoggedIn) {
+    return <h1>Đang xử lý ...</h1>;
+  }
+
   const { lopNhom, arrHocSinhNhom, arrGiaoVien } = props;
   DataHocSinh.loadArrHocSinhNhom(arrHocSinhNhom);
   DataGiaoVien.loadArrGiaoVien(arrGiaoVien);

@@ -4,6 +4,7 @@ import { chuyenThangViewThanhNgay } from "../../components/hocphi/hocphi_helper"
 import ConnectMongoDb from "../../helper/connectMongodb";
 import SuaLuongPage from "../../components/luong/SuaLuong";
 import DataGiaoVien from "../../classes/DataGiaoVien";
+import { getSession } from "next-auth/react";
 
 const SuaLuongRoute = (props) => {
   const router = useRouter();
@@ -21,7 +22,17 @@ const SuaLuongRoute = (props) => {
   const [dataLuongThang, setDataLuongThang] = useState({});
   const [arrDdcn, setArrDdcn] = useState([]);
   const [arrDdn, setArrDdn] = useState([]);
-  // const [giaoVienChonData, setGvChonData] = useState({});
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+        window.location.href = "/auth/login";
+      }
+    });
+  }, []);
   //Side effct lấy data lương tháng
   useEffect(() => {
     const layDataLuongThang = async () => {
@@ -57,6 +68,11 @@ const SuaLuongRoute = (props) => {
       layDataDiemDanh();
     }
   }, [luongThangId, arrGiaoVien, giaoVienId, thangTinh]);
+
+  if (!isLoggedIn) {
+    return <h1>Đang xử lý ...</h1>;
+  }
+
   return (
     arrDdcn.length > 0 &&
     arrDdn.length > 0 &&

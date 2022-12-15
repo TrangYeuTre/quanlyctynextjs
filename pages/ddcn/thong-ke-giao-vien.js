@@ -9,6 +9,7 @@ import {
 import { useState, useEffect } from "react";
 import DataGiaoVien from "../../classes/DataGiaoVien";
 import DataDiemDanhCaNhan from "../../classes/DataDiemDanhCaNhan";
+import { getSession } from "next-auth/react";
 
 const ThongKeGiaoVienRoute = (props) => {
   const { arrGiaoVien, arrDiemDanhCaNhanFilter } = props;
@@ -16,6 +17,18 @@ const ThongKeGiaoVienRoute = (props) => {
   DataDiemDanhCaNhan.loadArrDiemDanhCaNhan(arrDiemDanhCaNhanFilter);
   //State loading
   const [loading, setLoading] = useState(true);
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+        window.location.href = "/auth/login";
+      }
+    });
+  }, []);
+
   //   Side effect set loading
   useEffect(() => {
     if (arrGiaoVien && arrDiemDanhCaNhanFilter) {
@@ -24,6 +37,11 @@ const ThongKeGiaoVienRoute = (props) => {
       setLoading(true);
     }
   }, [arrGiaoVien, arrDiemDanhCaNhanFilter]);
+  
+  if (!isLoggedIn) {
+    return <h1>Đang xử lý ...</h1>;
+  }
+
   return (
     <GiaoVienProvider>
       <ChonNguoiProvider>

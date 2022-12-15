@@ -6,14 +6,14 @@ import { SessionProvider } from "next-auth/react";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
-    <NotiProvider>
-      <MainLayout>
-        <NextNProgress color={"var(--mauMh1--)"} height={10} />
-        <SessionProvider session={session}>
+    <SessionProvider session={session}>
+      <NotiProvider>
+        <MainLayout>
+          <NextNProgress color={"var(--mauMh1--)"} height={10} />
           <Component {...pageProps} />
-        </SessionProvider>
-      </MainLayout>
-    </NotiProvider>
+        </MainLayout>
+      </NotiProvider>{" "}
+    </SessionProvider>
   );
 }
 

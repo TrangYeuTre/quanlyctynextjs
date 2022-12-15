@@ -2,8 +2,25 @@ import ConnectMongoDb from "../../../helper/connectMongodb";
 import ChonNguoiProvider from "../../../context/chonNguoiProvider";
 import LuongDauVaoPage from "../../../components/luong/dauVao/LuongDauVao";
 import DataGiaoVien from "../../../classes/DataGiaoVien";
+import { useState, useEffect } from "react";
+import { getSession } from "next-auth/react";
 
 const LuongDauVaoRoute = (props) => {
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+        window.location.href = "/auth/login";
+      }
+    });
+  }, []);
+  if (!isLoggedIn) {
+    return <h1>Đang xử lý ...</h1>;
+  }
+
   const { arrGiaoVien } = props;
   DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
   return (

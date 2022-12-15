@@ -3,6 +3,7 @@
   padding: 2rem;
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
   gap: 2rem;
   width: 40%;
   background-color: #e3f6f5;

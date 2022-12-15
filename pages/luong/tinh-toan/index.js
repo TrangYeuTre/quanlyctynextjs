@@ -1,9 +1,10 @@
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
 import { chuyenThangViewThanhNgay } from "../../../components/hocphi/hocphi_helper";
 import TinhToanLuongPage from "../../../components/luong/TinhToanLuong";
 import ConnectMongoDb from "../../../helper/connectMongodb";
 import DataGiaoVien from "../../../classes/DataGiaoVien";
+import { useState, useEffect } from "react";
+import { getSession } from "next-auth/react";
 
 const TinhToanLuongRoute = (props) => {
   const { arrGiaoVien } = props;
@@ -16,7 +17,18 @@ const TinhToanLuongRoute = (props) => {
   //State lấy data 2 mảng ddcn và ddn
   const [arrDdcn, setArrDdcn] = useState([]);
   const [arrDdn, setArrDdn] = useState([]);
-  // const [giaoVienChonData, setGvChonData] = useState({});
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+        window.location.href = "/auth/login";
+      }
+    });
+  }, []);
+
   //Side effect fetch lấy về data
   useEffect(() => {
     //Tạo func ascyn
@@ -39,6 +51,10 @@ const TinhToanLuongRoute = (props) => {
     //Chạy func
     layDataDiemDanh();
   }, [giaoVienId, thangTinh]);
+
+  if (!isLoggedIn) {
+    return <h1>Đang xử lý ...</h1>;
+  }
 
   return (
     <TinhToanLuongPage

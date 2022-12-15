@@ -2,9 +2,13 @@ import classes from "./subMenu.module.css";
 import Link from "next/link";
 import { navItems } from "../../data/static";
 import { useRouter } from "next/router";
+import { getSession } from "next-auth/react";
+import { Fragment, useState, useEffect } from "react";
 
 const SubMenu = (props) => {
   const router = useRouter();
+  const [isLoggedIn, setLoggedIn] = useState(false);
+
   //Lấy phần route chính của navitem từ router
   const arrPaths = router.asPath.split("/");
   const mainRouteGot = `/${arrPaths[1]}`;
@@ -30,8 +34,19 @@ const SubMenu = (props) => {
       };
     });
   }
+  useEffect(() => {
+    getSession().then((session) => {
+      if (session) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+      }
+    });
+  }, []);
+
   return (
-    arrChildren.length > 0 && (
+    arrChildren.length > 0 &&
+    isLoggedIn && (
       <div className={classes.container}>
         {arrChildren.map((child) => {
           console.log(child.route);
