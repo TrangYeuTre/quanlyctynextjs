@@ -6,6 +6,7 @@ import NgayBar from "../../UI/NgayBar";
 
 const LuongNhom = (props) => {
   const { arrDdn, layDataLuongNhom } = props;
+  console.log(arrDdn)
   //State magnr render
   const [arrDdnRender, setArrDdnRender] = useState(arrDdn);
   //State lây value ghi chú từ input
@@ -36,7 +37,7 @@ const LuongNhom = (props) => {
   // useEffect(()=>{},)
   useEffect(() => {
     setArrDdnRender(arrDdn);
-  }, []);
+  }, [arrDdn]);
 
   return (
     <div className={classes.container}>
