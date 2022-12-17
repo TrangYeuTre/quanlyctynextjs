@@ -1,4 +1,5 @@
 const HS_API_ROUTE = "/api/hocsinh/hocSinh";
+const API_GETHS_ROUTE = "/api/hocsinh/layDataHocSinh";
 
 class HocSinh {
   constructor(inputData) {

@@ -10,21 +10,22 @@ import NotiContext from "../../context/notiContext";
 import DataGiaoVien from "../../classes/DataGiaoVien";
 
 const DanhSachGiaoVienPage = (props) => {
+  //VARIABLES
   const notiCtx = useContext(NotiContext);
-  //State lấy keyword search
   const [searchKey, setSearchKey] = useState("");
-  //Mảng kết quả hs render
-  //Quan trọng : arrHocsinh (arrGiaoVien ở dưới) đã được fitler nhóm hay cá nhân từ SSG nên ở đây không cần quan tâm
   const [arrGiaoVien, setArrGiaoVien] = useState([]);
-  //CB lấy key search
+
+  //CB SET STATE
   const setSearchKeyHandler = (value) => {
     setSearchKey(value);
   };
-  //Cb xóa giáo viên
-  const delGiaoVienHandler = async (id) => {
-    //Class xóa giáo viên
-    const { statusCode, dataGot } = await GiaoVien.xoaGiaoVien(id);
-    //Đẩy thông báo
+
+  //FUNCTION
+  const delGiaoVienHandler = async (giaoVienId) => {
+    const { statusCode, dataGot } = await GiaoVien.xoaGiaoVien(giaoVienId);
+    dayThongBao(statusCode, dataGot, giaoVienId);
+  };
+  const dayThongBao = (statusCode, dataGot, id) => {
     setTimeout(() => {
       notiCtx.clearNoti();
       if ((statusCode === 200) | (statusCode === 201)) {
@@ -35,11 +36,12 @@ const DanhSachGiaoVienPage = (props) => {
     notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
 
-  //Xử lý side effect láy mảng giáo viên nếu có search
+  //SIDE EFFECT
   useEffect(() => {
     const arrResult = DataGiaoVien.timKiemGiaoVienTheoShortName(searchKey);
     setArrGiaoVien(arrResult);
   }, [searchKey]);
+
   return (
     <Card>
       <div className={classes.container}>

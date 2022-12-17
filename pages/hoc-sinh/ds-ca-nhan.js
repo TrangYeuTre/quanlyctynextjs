@@ -3,34 +3,37 @@ import ConnectMongoDb from "../../helper/connectMongodb";
 import { useEffect, useState } from "react";
 import DataHocSinh from "../../classes/DataHocSinh";
 import { getSession } from "next-auth/react";
+import {
+  redirectPageAndResetState,
+  layMangChuyenDoiDataTuMongodb,
+} from "../../helper/uti";
 
 const DsHocSinhCaNhanRoute = (props) => {
+  //VARIABLES
   const { arrHocSinh } = props;
   const [isLoggedIn, setLoggedIn] = useState(false);
+  DataHocSinh.loadArrHocSinhCaNhan(arrHocSinh);
+  //SIDE EFFECT
   useEffect(() => {
     getSession().then((session) => {
       if (session) {
         setLoggedIn(true);
       } else {
         setLoggedIn(false);
-        window.location.href = "/auth/login";
+        redirectPageAndResetState("/auth/login");
       }
     });
   }, []);
+
   if (!isLoggedIn) {
     return <h1>Đang xử lý ...</h1>;
   }
-
-  //Tạo class data hs
-  DataHocSinh.loadArrHocSinhCaNhan(arrHocSinh);
   return <DanhSachHocSinhCaNhanPage />;
 };
 
-//SSG lấy mảng hs cá nhân từ db
+//SSG
 export async function getStaticProps() {
-  //Fetch trực tiếp lên mongodb đẻ lấy mảng học sinh luôn, không cần thông api nội bộ làm gì
   let client, db;
-  //Kết nối db trước
   try {
     const { clientGot, dbGot } = await ConnectMongoDb();
     client = clientGot;
@@ -38,31 +41,19 @@ export async function getStaticProps() {
   } catch (err) {
     return { notFound: true };
   }
-  // Lấy về mảng học sinh
+
   try {
     const arrHocSinhGot = await db
       .collection("hocsinhs")
       .find({ lopHoc: { $in: ["canhan"] } })
       .toArray();
-    const arrHocSinhConvertId = arrHocSinhGot.map((item) => {
-      return {
-        id: item._id.toString(),
-        tenHocSinh: item.tenHocSinh,
-        shortName: item.shortName,
-        lopHoc: item.lopHoc,
-        gioiTinh: item.gioiTinh,
-        soPhutHocMotTiet: item.soPhutHocMotTiet,
-        hocPhiCaNhan: item.hocPhiCaNhan,
-        hocPhiNhom: item.hocPhiNhom,
-        ngaySinh: item.ngaySinh,
-        tenPhuHuynh: item.tenPhuHuynh,
-        soDienThoai: item.soDienThoai,
-        diaChi: item.diaChi,
-      };
-    });
-    //Đóng client
+    const arrNeededProps = ["id", "shortName", "lopHoc", "gioiTinh"];
+    const arrHocSinhConvertId = layMangChuyenDoiDataTuMongodb(
+      arrHocSinhGot,
+      arrNeededProps
+    );
+
     client.close();
-    //Trả
     return {
       props: {
         arrHocSinh: arrHocSinhConvertId,

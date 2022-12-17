@@ -11,17 +11,11 @@ import { useRouter } from "next/router";
 import DataGiaoVien from "../../classes/DataGiaoVien";
 
 const ThemGvPage = (props) => {
+  //VARIABLES
   const notiCtx = useContext(NotiContext);
   const router = useRouter();
-  //Mong đợi mode dể render tương ứng
   const { renderMode } = props;
   const dataGiaoVien = DataGiaoVien.giaoVienChonData;
-  //Lấy id giáo viên khi kích sửa
-  let giaoVienSuaId;
-  if (dataGiaoVien) {
-    giaoVienSuaId = dataGiaoVien.id;
-  }
-  //Ref value cho input
   const gioiTinhRef = useRef();
   const tenGiaoVienRef = useRef();
   const shortNameRef = useRef();
@@ -32,7 +26,47 @@ const ThemGvPage = (props) => {
   const luongCaNhanRef = useRef();
   const luongNhomRef = useRef();
 
-  //CB clear input
+  //FUNCTIONS
+  const createInstanceGiaoVien = () => {
+    const giaoVienInstance = new GiaoVien({
+      tenGiaoVien: tenGiaoVienRef.current.value,
+      shortName: shortNameRef.current.value,
+      gioiTinh: gioiTinhRef.current.value,
+      ngaySinh: ngaySinhRef.current.value,
+      luongCaNhan: luongCaNhanRef.current.value,
+      luongNhom: luongNhomRef.current.value,
+      soDienThoai: soDienThoaiRef.current.value,
+      diaChi: diaChiRef.current.value,
+      thongTinCoBan: thongTinCoBanRef.current.value,
+      hocTroCaNhan: [],
+      lichDayCaNhan: [],
+    });
+    return giaoVienInstance;
+  };
+  const themGiaoVienMoiHandler = async (e) => {
+    e.preventDefault();
+    const giaoVienMoi = createInstanceGiaoVien();
+    const { statusCode, dataGot } = await giaoVienMoi.themGiaoVien();
+    dayThongBao(statusCode, dataGot);
+  };
+  const suaGiaoVienHandler = async (e) => {
+    e.preventDefault();
+    const giaoVienUpdate = createInstanceGiaoVien();
+    const { statusCode, dataGot } = await giaoVienUpdate.suaGiaoVien(
+      dataGiaoVien.id
+    );
+    dayThongBao(statusCode, dataGot);
+  };
+  const dayThongBao = (statusCode, dataGot) => {
+    setTimeout(() => {
+      notiCtx.clearNoti();
+      if (statusCode === 200 || statusCode === 201) {
+        clearInput();
+      }
+    }, process.env.DELAY_TIME_NOTI);
+    window.scrollTo(0, 0);
+    notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
+  };
   const clearInput = () => {
     gioiTinhRef.current.value = "";
     tenGiaoVienRef.current.value = "";
@@ -43,69 +77,7 @@ const ThemGvPage = (props) => {
     luongCaNhanRef.current.value = 160000;
     luongNhomRef.current.value = 90000;
   };
-
-  //Cb chính fetch thêm giáo viên
-  const themGiaoVienMoiHandler = async (e) => {
-    e.preventDefault();
-    //Class
-    const giaoVienMoi = new GiaoVien({
-      tenGiaoVien: tenGiaoVienRef.current.value,
-      shortName: shortNameRef.current.value,
-      gioiTinh: gioiTinhRef.current.value,
-      ngaySinh: ngaySinhRef.current.value,
-      luongCaNhan: luongCaNhanRef.current.value,
-      luongNhom: luongNhomRef.current.value,
-      soDienThoai: soDienThoaiRef.current.value,
-      diaChi: diaChiRef.current.value,
-      thongTinCoBan: thongTinCoBanRef.current.value,
-      hocTroCaNhan: [],
-      lichDayCaNhan: [],
-    });
-    //Fetch thôi
-    const { statusCode, dataGot } = await giaoVienMoi.themGiaoVien();
-    //Đẩy thông báo nào
-    setTimeout(() => {
-      notiCtx.clearNoti();
-      if (statusCode === 200 || statusCode === 201) {
-        clearInput();
-      }
-    }, process.env.DELAY_TIME_NOTI);
-    window.scrollTo(0, 0);
-    notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
-  };
-  //Cb chính fetch sưa hs
-  const suaGiaoVienHandler = async (e) => {
-    e.preventDefault();
-    //Classes
-    const giaoVienUpdate = new GiaoVien({
-      tenGiaoVien: tenGiaoVienRef.current.value,
-      shortName: shortNameRef.current.value,
-      gioiTinh: gioiTinhRef.current.value,
-      ngaySinh: ngaySinhRef.current.value,
-      luongCaNhan: luongCaNhanRef.current.value,
-      luongNhom: luongNhomRef.current.value,
-      soDienThoai: soDienThoaiRef.current.value,
-      diaChi: diaChiRef.current.value,
-      thongTinCoBan: thongTinCoBanRef.current.value,
-      hocTroCaNhan: [],
-      lichDayCaNhan: [],
-    });
-    //Sửa thôi
-    const { statusCode, dataGot } = await giaoVienUpdate.suaGiaoVien(
-      giaoVienSuaId
-    );
-    //Đẩy thông báo nào
-    setTimeout(() => {
-      notiCtx.clearNoti();
-      if (statusCode === 200 || statusCode === 201) {
-        clearInput();
-        router.push("/giao-vien/ds-giao-vien");
-      }
-    }, process.env.DELAY_TIME_NOTI);
-    window.scrollTo(0, 0);
-    notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
-  };
-
+  
   return (
     <Card>
       {renderMode === "them" && (

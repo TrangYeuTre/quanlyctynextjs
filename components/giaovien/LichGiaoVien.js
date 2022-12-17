@@ -7,47 +7,47 @@ import { removeDomItem } from "../../helper/uti";
 import GiaoVienContext from "../../context/giaoVienContext";
 import LichBar from "../UI/LichBar";
 import NotiContext from "../../context/notiContext";
-// import { useRouter } from "next/router";
 import GiaoVien from "../../classes/GiaoVien";
 import DataGiaoVien from "../../classes/DataGiaoVien";
 
-//Comp chính nè
 const LichGiaoVienPage = (props) => {
-  // const { arrGiaoVien } = props;
+  //VARIABLES
   const arrGiaoVien = DataGiaoVien.arrGiaoVien;
-  //Lấy ctx giáo viên
-  // const router = useRouter();
   const notiCtx = useContext(NotiContext);
   const giaoVienCtx = useContext(GiaoVienContext);
   const giaoVienDuocChonId = giaoVienCtx.giaoVienSelectedId;
+  const [giaoVienChon, setGiaoVienChon] = useState();
 
-  //Cb async xóa lịch
-  const xoaLichHandler = async (id) => {
-    if (id && giaoVienDuocChonId) {
+  //FUNCTIONS
+  const xoaLichHandler = async (lichId) => {
+    if (isValidLichIdAndGiaoVienId(lichId, giaoVienDuocChonId)) {
       const { statusCode, dataGot } = await GiaoVien.xoaLichGiaoVien(
-        id,
+        lichId,
         giaoVienDuocChonId
       );
-      //Đẩy thông báo
-      setTimeout(() => {
-        notiCtx.clearNoti();
-        if (statusCode === 200 || statusCode == 201) {
-          removeDomItem(id);
-        }
-      }, process.env.DELAY_TIME_NOTI);
-      notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
+      dayThongBao(statusCode, dataGot, lichId);
     }
   };
+  const isValidLichIdAndGiaoVienId = (lichId, giaoVienDuocChonId) => {
+    return lichId && giaoVienDuocChonId;
+  };
+  const dayThongBao = (statusCode, dataGot, lichId) => {
+    setTimeout(() => {
+      notiCtx.clearNoti();
+      if (statusCode === 200 || statusCode == 201) {
+        removeDomItem(lichId);
+      }
+    }, process.env.DELAY_TIME_NOTI);
+    notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
+  };
 
-  //State lấy giao vien được chọn
-  const [giaoVienChon, setGiaoVienChon] = useState();
-  //Side effect set giáo viên chọn
+  //SIDE EFFECT
   useEffect(() => {
     const giaoVienMatched =
       DataGiaoVien.timKiemGiaoVienTheoId(giaoVienDuocChonId);
     setGiaoVienChon(giaoVienMatched);
   }, [giaoVienDuocChonId]);
-  //Trả
+
   return (
     <Card>
       <Layout28>

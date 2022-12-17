@@ -2,34 +2,39 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Loading from "../../components/UI/Loading";
 import { getSession } from "next-auth/react";
+import { redirectPageAndResetState } from "../../helper/uti";
 
 const HocSinhRoute = (props) => {
+  //VARIABLE
   const router = useRouter();
-  //State loading
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setLoggedIn] = useState(false);
-  //Side effect nếu chưa đăng nhập thì không cho truy cạp
+  //SIDE EFFECT
   useEffect(() => {
     getSession().then((session) => {
       if (session) {
         setLoggedIn(true);
       } else {
         setLoggedIn(false);
-        window.location.href = "/auth/login";
+        redirectPageAndResetState("/auth/login");
       }
     });
   }, []);
-  //Side effect set loading
   useEffect(() => {
-    if (router.asPath && router.asPath === "/hoc-sinh/them") {
+    const isInCurrentUrl = () => {
+      return router.asPath && router.asPath === "/hoc-sinh/them";
+    };
+    if (isInCurrentUrl()) {
       setLoading(false);
     } else {
       router.replace("/hoc-sinh/them");
     }
   }, [router]);
+
   if (!isLoggedIn) {
     return <h1>Đang xử lý ...</h1>;
   }
+
   return loading && isLoggedIn && <Loading />;
 };
 

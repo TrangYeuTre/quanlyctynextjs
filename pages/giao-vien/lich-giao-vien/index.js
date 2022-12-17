@@ -4,25 +4,36 @@ import GiaoVienProvider from "../../../context/giaoVienProvider";
 import DataGiaoVien from "../../../classes/DataGiaoVien";
 import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
+import {
+  redirectPageAndResetStated,
+  layMangChuyenDoiDataTuMongodb,
+} from "../../../helper/uti";
 
 const LichGiaoVienRoute = (props) => {
+  //VARIABLES
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const { arrGiaoVien } = props;
+  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
+
+  //SIDE EFFECT
   useEffect(() => {
     getSession().then((session) => {
       if (session) {
         setLoggedIn(true);
       } else {
         setLoggedIn(false);
-        window.location.href = "/auth/login";
+        redirectPageAndResetStated("/auth/login");
       }
     });
   }, []);
-  if (!isLoggedIn) {
+
+  const isProcessing = () => {
+    return !isLoggedIn || !arrGiaoVien;
+  };
+  if (isProcessing()) {
     return <h1>Đang xử lý ...</h1>;
   }
 
-  const { arrGiaoVien } = props;
-  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
   return (
     <GiaoVienProvider>
       <LichGiaoVienPage />
@@ -30,10 +41,9 @@ const LichGiaoVienRoute = (props) => {
   );
 };
 
-//SSG lấy mảng giáo viên về nào
+//SSG
 export async function getStaticProps() {
   let client, db;
-  //Kết nối đến db nào
   try {
     const { clientGot, dbGot } = await ConnectMongoDb();
     client = clientGot;
@@ -42,20 +52,15 @@ export async function getStaticProps() {
     return {
       notFound: true,
     };
-  } // End t-c kết nối db
-  //Tiến hành load ds giáo viên thôi
+  }
+
   try {
     const arrGiaoVienGot = await db.collection("giaoviens").find().toArray();
-    //Map lại mảng giáo viên với _id thành id string
-    //Chú ý: chỉ map lại mảng có các prop cần thiết
-    const arrGiaoVienConvert = arrGiaoVienGot.map((gv) => {
-      return {
-        id: gv._id.toString(),
-        shortName: gv.shortName,
-        lichDayCaNhan: gv.lichDayCaNhan,
-      };
-    });
-    //Ok xong thì trả lại thôi
+    const arrNeededProps = ["id", "shortName", "lichDayCaNhan"];
+    const arrGiaoVienConvert = layMangChuyenDoiDataTuMongodb(
+      arrGiaoVienGot,
+      arrNeededProps
+    );
     client.close();
     return {
       props: { arrGiaoVien: arrGiaoVienConvert },

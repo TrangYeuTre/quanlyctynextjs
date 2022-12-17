@@ -3,37 +3,41 @@ import ConnectMongoDb from "../../../helper/connectMongodb";
 import { ObjectId } from "mongodb";
 import { useEffect, useState } from "react";
 import { getSession } from "next-auth/react";
+import {
+  redirectPageAndResetState,
+  layObjChuyenDoiDataTuMongodb,
+  layMangChuyenDoiDataTuMongodb,
+} from "../../../helper/uti";
 
 const SuaHocSinhRoute = (props) => {
-  //Lấy vè data sửa
+  //VARIABLES
   const { dataHocSinhSua } = props;
   const [isLoggedIn, setLoggedIn] = useState(false);
+  //SIDE EFFECT
   useEffect(() => {
     getSession().then((session) => {
       if (session) {
         setLoggedIn(true);
       } else {
         setLoggedIn(false);
-        window.location.href = "/auth/login";
+        redirectPageAndResetState("/auth/login");
       }
     });
   }, []);
+
   if (!isLoggedIn) {
     return <h1>Đang xử lý ...</h1>;
   }
 
-  //Trả
   return <ThemHsPage renderMode="sua" dataHocSinh={dataHocSinhSua} />;
 };
 
-//SSG lấy data học sinh cần sửa
+//SSG
 export async function getStaticProps(context) {
-  //Lấy về id học sinh từ context
   const idHocSinhSua = context.params.suaHocSinhId;
-  //Xử lý connect đến db đẻ lấy data
+
   let client, db;
   try {
-    //Connect đến db đẻ lấy ds học sinh
     const { clientGot, dbGot } = await ConnectMongoDb();
     client = clientGot;
     db = dbGot;
@@ -42,29 +46,31 @@ export async function getStaticProps(context) {
       notFound: true,
     };
   }
-  //Xử lý lấy về mảng hs từ db nào
+
   try {
-    //Lấy về ds học sinh
-    const hocSinhMatched = await db
+    const hocSinhTonTai = await db
       .collection("hocsinhs")
       .findOne({ _id: ObjectId(idHocSinhSua) });
-    //Chuyển id lại strign
-    const hocSinhConverted = {
-      id: hocSinhMatched._id.toString(),
-      tenHocSinh: hocSinhMatched.tenHocSinh,
-      shortName: hocSinhMatched.shortName,
-      lopHoc: hocSinhMatched.lopHoc,
-      gioiTinh: hocSinhMatched.gioiTinh,
-      soPhutHocMotTiet: hocSinhMatched.soPhutHocMotTiet,
-      hocPhiCaNhan: hocSinhMatched.hocPhiCaNhan,
-      hocPhiNhom: hocSinhMatched.hocPhiNhom,
-      ngaySinh: hocSinhMatched.ngaySinh,
-      tenPhuHuynh: hocSinhMatched.tenPhuHuynh,
-      soDienThoai: hocSinhMatched.soDienThoai,
-      diaChi: hocSinhMatched.diaChi,
-      thongTinCoBan: hocSinhMatched.thongTinCoBan || "Thông tin cơ bản",
-    };
-    //Trả lại thôi
+    const arrNeededProps = [
+      "id",
+      "tenHocSinh",
+      "shortName",
+      "lopHoc",
+      "gioiTinh",
+      "soPhutHocMotTiet",
+      "hocPhiCaNhan",
+      "hocPhiNhom",
+      "ngaySinh",
+      "tenPhuHuynh",
+      "soDienThoai",
+      "diaChi",
+      "thongTinCoBan",
+    ];
+    const hocSinhConverted = layObjChuyenDoiDataTuMongodb(
+      hocSinhTonTai,
+      arrNeededProps
+    );
+
     client.close();
     return {
       props: {
@@ -77,14 +83,13 @@ export async function getStaticProps(context) {
     return {
       notFound: true,
     };
-  } //End try-catch lấy về data hs
+  }
 }
 
-//SSP lấy dah sách hs đẻ render satic
+//SSP
 export async function getStaticPaths() {
   let client, db;
   try {
-    //Connect đến db đẻ lấy ds học sinh
     const { clientGot, dbGot } = await ConnectMongoDb();
     client = clientGot;
     db = dbGot;
@@ -94,20 +99,17 @@ export async function getStaticPaths() {
       fallback: false,
     };
   }
+
   try {
-    //Lấy về ds học sinh
     const arrHocSinh = await db.collection("hocsinhs").find().toArray();
-    //Lấy lại mảng id học sinh để tạo path
-    const arrHocSinhId = arrHocSinh.map((item) => {
-      return { hocSinhId: item._id.toString() };
-    });
-    //Mảng paths nè
+    const arrHocSinhId = layMangChuyenDoiDataTuMongodb(arrHocSinh, [
+      "hocSinhId",
+    ]);
     const arrPaths = arrHocSinhId.map((id) => {
       return {
         params: { suaHocSinhId: id.hocSinhId },
       };
     });
-    //Trả
     client.close();
     return {
       paths: arrPaths,

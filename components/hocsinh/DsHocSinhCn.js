@@ -2,7 +2,7 @@ import Card from "../UI/Card";
 import { useEffect, useState } from "react";
 import PersonBar from "../UI/PersonBar";
 import Search from "../UI/Search";
-import { sortArtByLastShortName, removeDomItem } from "../../helper/uti";
+import { removeDomItem } from "../../helper/uti";
 import classes from "./DsHocSinh.module.css";
 import { useContext } from "react";
 import NotiContext from "../../context/notiContext";
@@ -10,19 +10,20 @@ import HocSinh from "../../classes/HocSinh";
 import DataHocSinh from "../../classes/DataHocSinh";
 
 const DanhSachHocSinhCaNhanPage = (props) => {
+  //VARIABLE
   const notiCtx = useContext(NotiContext);
-  //State lấy keyword search
   const [searchKey, setSearchKey] = useState("");
-  //Mảng kết quả hs render
   const [arrHocSinh, setArrHocSinh] = useState([]);
-  //CB lấy key search
+  //SET STATE
   const setSearchKeyHandler = (value) => {
     setSearchKey(value);
   };
-  //CB xóa học sinh theo id
+  //FUNCTION
   const delHocSinhHandler = async (id) => {
     const { statusCode, dataGot } = await HocSinh.xoaHocSinh(id);
-    //Đẩy thông báo
+    dayThongBao(statusCode, dataGot, id);
+  };
+  const dayThongBao = (statusCode, dataGot, id) => {
     setTimeout(() => {
       notiCtx.clearNoti();
       if (statusCode === 200 || statusCode === 201) {
@@ -32,9 +33,12 @@ const DanhSachHocSinhCaNhanPage = (props) => {
     notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
 
-  //Xử lý side effect láy mảng hs nếu có search
+  //SIDE EFFECT
   useEffect(() => {
-    if (!searchKey || searchKey === "") {
+    const isEmptySearchKey = () => {
+      return !searchKey || searchKey === "";
+    };
+    if (isEmptySearchKey()) {
       setArrHocSinh(DataHocSinh.arrHocSinhCaNhan);
     } else {
       const arrHocSinhCaNhanTrungSearch =
@@ -42,6 +46,7 @@ const DanhSachHocSinhCaNhanPage = (props) => {
       setArrHocSinh(arrHocSinhCaNhanTrungSearch);
     }
   }, [searchKey]);
+
   return (
     <Card>
       <div className={classes.container}>

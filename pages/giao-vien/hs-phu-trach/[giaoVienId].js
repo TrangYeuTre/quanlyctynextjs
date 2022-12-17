@@ -4,50 +4,46 @@ import GanLichChoHsPage from "../../../components/giaovien/GanLichChoHs";
 import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
 import DataGiaoVien from "../../../classes/DataGiaoVien";
+import {
+  redirectPageAndResetState,
+  layObjChuyenDoiDataTuMongodb,
+  layMangChuyenDoiDataTuMongodb,
+} from "../../../helper/uti";
 
 const GanLichChoHocTroCuaGiaoVienDuocChonRoute = (props) => {
+  //VARIABLE
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const { giaoVien } = props;
+  const { hocTroCaNhan } = giaoVien;
+  DataGiaoVien.loadDataGiaoVienDuocChon(giaoVien);
+
+  //SIDE EFFECT
   useEffect(() => {
     getSession().then((session) => {
       if (session) {
         setLoggedIn(true);
       } else {
         setLoggedIn(false);
-        window.location.href = "/auth/login";
+        redirectPageAndResetState("/auth/login");
       }
     });
   }, []);
-  if (!isLoggedIn) {
+
+  const isProcessing = () => {
+    return !isLoggedIn || !giaoVien || Object.keys(giaoVien).length === 0;
+  };
+  if (isProcessing()) {
     return <h1>Đang xử lý ...</h1>;
   }
 
-  const { giaoVien, arrHocSinhCaNhan, arrHocTroCaNhan } = props;
-  //Xử lý mảng học trò cá nhân của giáo viên
-  let gvClone = { ...giaoVien };
-  //Lọc lại mảng học trò cho giáo viên để thêm shortName
-  let arrHocTroCaNhanRemake = [];
-  const curHocTroCaNhan = arrHocTroCaNhan;
-  if (curHocTroCaNhan.length > 0) {
-    curHocTroCaNhan.forEach((i) => {
-      const indexHsMatched = arrHocSinhCaNhan.findIndex(
-        (hs) => hs.id === i.hocSinhId
-      );
-      if (indexHsMatched !== -1) {
-        arrHocTroCaNhanRemake.push(arrHocSinhCaNhan[indexHsMatched]);
-      }
-    });
-  }
-  gvClone.hocTroCaNhan = arrHocTroCaNhanRemake;
-  DataGiaoVien.loadDataGiaoVienDuocChon(gvClone);
-  return <GanLichChoHsPage arrHocTroCaNhan={arrHocTroCaNhan} />;
+  return <GanLichChoHsPage arrHocTroCaNhan={hocTroCaNhan} />;
 };
 
-//SSG lấy data học sinh cần sửa
+//SSG
 export async function getStaticProps(context) {
-  //Lấy phần id
   const giaoVienId = context.params.giaoVienId;
+
   let db, client;
-  //Kết nối db
   try {
     const { clientGot, dbGot } = await ConnectMongoDb();
     db = dbGot;
@@ -57,46 +53,19 @@ export async function getStaticProps(context) {
       notFound: true,
     };
   }
-  let arrHocSinhCaNhan = [];
-  //Lấy về mảng học sinh cá nhân đê render phần chọn cho trang lịch học trò
-  try {
-    const arrHocSinhCaNhanGot = await db
-      .collection("hocsinhs")
-      .find({ lopHoc: { $in: ["canhan"] } })
-      .toArray();
 
-    arrHocSinhCaNhan = arrHocSinhCaNhanGot.map((hs) => {
-      return { id: hs._id.toString(), shortName: hs.shortName };
-    });
-  } catch (err) {
-    client.close();
-    return {
-      notFound: true,
-    };
-  }
-  //Lấy về giáo viên theo id nào
-  let giaoVien = new Object();
-  let arrHocTroCaNhan = [];
-  let arrLichDayCaNhan = [];
-  //Xử lý lấy giáo viên và 2 mảng cần tương tác học trò cá nhân và lịch dạy cá nhân
   try {
     const giaoVienGot = await db
       .collection("giaoviens")
       .findOne({ _id: ObjectId(giaoVienId) });
-    //Lấy về id và shortName của giáo viên xài thôi
-    giaoVien.id = giaoVienGot._id.toString();
-    giaoVien.shortName = giaoVienGot.shortName;
-    //Lấy về mảng học trò cá nhan của giáo viên thôi
-    arrHocTroCaNhan = giaoVienGot.hocTroCaNhan;
-    //Xử lý mảng lịch cá nhân
-    arrLichDayCaNhan = giaoVienGot.lichDayCaNhan;
-    //Trả lại props
+    const arrNeededProps = ["id", "shortName", "hocTroCaNhan"];
+    const giaoVienConvertedId = layObjChuyenDoiDataTuMongodb(
+      giaoVienGot,
+      arrNeededProps
+    );
     return {
       props: {
-        giaoVien,
-        arrHocTroCaNhan,
-        arrLichDayCaNhan,
-        arrHocSinhCaNhan,
+        giaoVien: giaoVienConvertedId,
       },
       revalidate: 10,
     };
@@ -108,10 +77,9 @@ export async function getStaticProps(context) {
   }
 }
 
-// SSP lấy dah sách hs đẻ render satic
+// SSP
 export async function getStaticPaths() {
   let db, client;
-  //Kết nối db
   try {
     const { clientGot, dbGot } = await ConnectMongoDb();
     db = dbGot;
@@ -121,14 +89,17 @@ export async function getStaticPaths() {
       notFound: true,
     };
   }
-  //Đọc mảng giáo viên và lấy về mảng id giáo viên làm paths
+
   try {
     const arrGiaoVienGot = await db.collection("giaoviens").find().toArray();
-    const arrGiaoVienIds = arrGiaoVienGot.map((gv) => gv._id.toString());
-    const arrPaths = arrGiaoVienIds.map((id) => {
+    const arrGiaoVienIdConverted = layMangChuyenDoiDataTuMongodb(
+      arrGiaoVienGot,
+      ["id"]
+    );
+    const arrPaths = arrGiaoVienIdConverted.map((id) => {
       return {
         params: {
-          giaoVienId: id,
+          giaoVienId: id.id,
         },
       };
     });

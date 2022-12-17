@@ -10,24 +10,29 @@ import { useRouter } from "next/router";
 import GiaoVien from "../../classes/GiaoVien";
 import DataHocSinh from "../../classes/DataHocSinh";
 import DataGiaoVien from "../../classes/DataGiaoVien";
-//Comp chính
+
 const HocSinhPhuTrachPage = (props) => {
+  //VARIALBLES
   const router = useRouter();
-  //Ghi chú: arrGiaoVien,arrHocSinhCaNhan cho chế độ chọn hs cá nhân, giaoVien cho chế độ chọn lịch cho học sinh
   const { giaoVien } = props;
   const arrHocSinhCaNhan = DataHocSinh.arrHocSinhCaNhan;
   const arrGiaoVien = DataGiaoVien.arrGiaoVien;
-  //Lấy ctx giáo viên
   const notiCtx = useContext(NotiContext);
   const giaoVienCtx = useContext(GiaoVienContext);
   const giaoVienDuocChonId = giaoVienCtx.giaoVienSelectedId;
-
-  //State mảng học trò đã có của giáo viên được chọn trước đó, đây cũng là mảng chính load học trò của giáo viên
   const [arrHocTroDefault, setArrHocTroDefault] = useState([]);
 
-  //Cb lấy mảng hs phụ trách, cập nhật học trò cho giáo viên luôn
-  const setArrHocSinhPhuTrachHandler = async (arr) => {
-    //Arr truyền lên lúc này vẫn là arrFull học sinh, ta chỉ lọc lại học sinh được chọn đẻ fetch update magnr học trò cá nhân cho giáo viên
+  //FUNCTIONS
+  //Cập nhật mảng hs phụ trách
+  const updateArrHocSinhPhuTrachHandler = async (arr) => {
+    const arrHocSinhDuocChon = tongHopArrHocSinhDuocChon(arr);
+    const { statusCode, dataGot } = await GiaoVien.updateHocSinhPhuTrach(
+      giaoVienDuocChonId,
+      arrHocSinhDuocChon
+    );
+    dayThongBao(statusCode, dataGot);
+  };
+  const tongHopArrHocSinhDuocChon = (arr) => {
     const arrFilterHsDuocChon = arr.filter((hs) => hs.isSelected);
     const arrHocSinhDuocChon = arrFilterHsDuocChon.map((item) => {
       return {
@@ -36,43 +41,51 @@ const HocSinhPhuTrachPage = (props) => {
         soPhutHocMotTiet: item.soPhutHocMotTiet,
       };
     });
-    //Fetch update học sinh phụ trách của giáo viên
-    const { statusCode, dataGot } = await GiaoVien.updateHocSinhPhuTrach(
-      giaoVienDuocChonId,
-      arrHocSinhDuocChon
-    );
-    //Đẩy thông báo
+    return arrHocSinhDuocChon;
+  };
+  const dayThongBao = (statusCode, dataGot) => {
     setTimeout(() => {
       notiCtx.clearNoti();
       if (statusCode === 200 || statusCode === 201) {
-        //Đẩy ngay đến trang thêm lịch cho học trò
-        const giaoVienDuocChonId = giaoVienCtx.giaoVienSelectedId;
-        router.push(`/giao-vien/hs-phu-trach/${giaoVienDuocChonId}`);
+        denTrangChonThuVaHocSinhChoLich(giaoVienDuocChonId);
       }
     }, process.env.DELAY_TIME_NOTI);
     window.scrollTo(0, 0);
     notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
-
-  //Cb không cập nhật ds học trò, next đến trang cập nhật lịch cho học trò
-  const toLichChoHocTro = () => {
+  const denTrangChonThuVaHocSinhChoLich = (giaoVienDuocChonId) => {
     router.push(`/giao-vien/hs-phu-trach/${giaoVienDuocChonId}`);
   };
-  //Dựa vào ctx giáo viên được chọn, load mảng học trò đã tồn tại cua giáo viên này
+
+  //SIDE EFFECT
   useEffect(() => {
-    if (giaoVienDuocChonId) {
-      const giaoVienMatched = arrGiaoVien.find(
-        (gv) => gv.id.toString() === giaoVienDuocChonId.toString()
-      );
-      if (giaoVienMatched) {
-        //Chú ý phải map prop hocSinhId về thành id mới dùng được trong cpm ListPerson
-        const arrConvert = giaoVienMatched.hocTroCaNhan.map((i) => {
-          return { id: i.hocSinhId };
-        });
-        setArrHocTroDefault(arrConvert);
+    const isGiaoVienDuocChonId = () => {
+      if (!giaoVienDuocChonId) {
+        setArrHocTroDefault([]);
+        return;
       }
-    }
-  }, [arrGiaoVien, giaoVienDuocChonId]);
+    };
+    isGiaoVienDuocChonId();
+    const giaoVienMatched =
+      DataGiaoVien.timKiemGiaoVienTheoId(giaoVienDuocChonId);
+    const isGiaoVienDataMatched = () => {
+      if (!giaoVienMatched) {
+        setArrHocTroDefault([]);
+        return;
+      }
+    };
+    isGiaoVienDataMatched();
+    const chuyenArrHocTroThanhMangHocSinhMacDinh = (giaoVienMatched) => {
+      if (!giaoVienMatched) {
+        return;
+      }
+      const arrConvert = giaoVienMatched.hocTroCaNhan.map((i) => {
+        return { id: i.hocSinhId };
+      });
+      setArrHocTroDefault(arrConvert);
+    };
+    chuyenArrHocTroThanhMangHocSinhMacDinh(giaoVienMatched);
+  }, [giaoVienDuocChonId]);
 
   return (
     <Card>
@@ -93,8 +106,11 @@ const HocSinhPhuTrachPage = (props) => {
                   <ListPerson
                     arrPeopleSelected={arrHocTroDefault}
                     arrPeople={arrHocSinhCaNhan}
-                    getArrResult={setArrHocSinhPhuTrachHandler}
-                    doSubAction={toLichChoHocTro}
+                    getArrResult={updateArrHocSinhPhuTrachHandler}
+                    doSubAction={denTrangChonThuVaHocSinhChoLich.bind(
+                      0,
+                      giaoVienDuocChonId
+                    )}
                     hintAction="Không đổi thì Té, có thì Chốt"
                   />
                 </div>

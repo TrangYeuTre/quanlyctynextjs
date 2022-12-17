@@ -10,32 +10,35 @@ import { useRouter } from "next/router";
 import GiaoVien from "../../classes/GiaoVien";
 import DataGiaoVien from "../../classes/DataGiaoVien";
 
-//Tạo một cái comp mini để render nội dung phần chọn lịch cho học trò
+//Comp mini
 const ChonItemPage = (props) => {
+  //VARIABLES
   const { arrItems, getArrResult, type } = props;
-  //State mảng trả lại
   const [arrResult, setArrResult] = useState([]);
-  //Cb xử lý chọn
+  //FUNCTIONS
   const chonItemHandler = (id) => {
-    //Clone lại mảng arrItems
     const arrItemsClone = [...arrItems];
-    //Tìm kiếm trong mảng item cần đổi isSelected
+    const indexItemMatched = timItemTrongMang(arrItemsClone, id);
+    daoGiaTriIsSelected(arrItemsClone, indexItemMatched);
+    setArrResult(arrItemsClone);
+  };
+  const timItemTrongMang = (arrItemsClone, id) => {
     const indexItemMatched = arrItemsClone.findIndex((i) => i.id === id);
+    return indexItemMatched;
+  };
+  const daoGiaTriIsSelected = (arrItemsClone, indexItemMatched) => {
     if (indexItemMatched !== -1) {
       arrItemsClone[indexItemMatched].isSelected =
         !arrItemsClone[indexItemMatched].isSelected;
-      setArrResult(arrItemsClone);
     }
   };
-  //Cb chính xác nhận item chọn truyền lên props chính
   const chotItemsHandler = () => {
     getArrResult(arrResult);
   };
-  //Side effect thiết lập mảng render
+  //SIDE EFFECT
   useEffect(() => {
     setArrResult(arrItems);
   }, [arrItems]);
-  //Tách lấy mảng học trò của giáo viên
   return (
     <div className={classes.lichContainer}>
       <h3>{type === "thu" ? "Chọn thứ" : "Chọn học sinh cho thứ đã chọn"}</h3>
@@ -69,27 +72,18 @@ const ChonItemPage = (props) => {
 };
 
 const GanLichChoHsPage = (props) => {
+  //VARIABLES
+  const router = useRouter();
   const notiCtx = useContext(NotiContext);
   const { arrHocTroCaNhan } = props;
   const giaoVien = DataGiaoVien.giaoVienChonData;
-  //Xử lý lấy arrThu và arrHocSInh để chọn cho phần gán lịch
   const arrThuGot = arrThu();
   let arrHocTro = [];
-  if (giaoVien && arrHocTroCaNhan && arrHocTroCaNhan.length > 0) {
-    const arrPlus = arrHocTroCaNhan.map((hocsinh) => {
-      return {
-        id: hocsinh.hocSinhId,
-        shortName: hocsinh.shortName,
-        soPhutHocMotTiet: hocsinh.soPhutHocMotTiet,
-        isSelected: false,
-      };
-    });
-    arrHocTro = sortArtByLastShortName(arrPlus);
-  }
-  //State 2 mảng chứa
   const [arrHsDuocChon, setArrHsDuocChon] = useState([]);
   const [arrThuDuocChon, setArrThuDuocChon] = useState([]);
-  //Cb lấy mảng thứ được chọn từ ChonItemPage ở trên
+
+  //CALLBACKS
+  //Cb lấy mảng thứ và mảng học sinh được chọn từ comp phụ
   const getThuDuocChon = (arr) => {
     if (arr.length > 0) {
       const arrFilter = arr.filter((i) => i.isSelected);
@@ -107,12 +101,40 @@ const GanLichChoHsPage = (props) => {
           isSelected: i.isSelected,
         };
       });
+      sortArtByLastShortName(arrFilterReconvert);
       setArrHsDuocChon(arrFilterReconvert);
     }
   };
-  //Cb chốt thêm lịch cho học sinh, fetch cập nhật
+
+  //FUNCTIONS
+  //Xử lý lấy arrThu và arrHocSInh để chọn cho phần gán lịch
+  const isValidGiaoVienData = () => {
+    return giaoVien && arrHocTroCaNhan && arrHocTroCaNhan.length > 0;
+  };
+  const layArrHocTroDeChon = () => {
+    const arrHandler = arrHocTroCaNhan.map((hocsinh) => {
+      return {
+        id: hocsinh.hocSinhId,
+        shortName: hocsinh.shortName,
+        soPhutHocMotTiet: hocsinh.soPhutHocMotTiet,
+        isSelected: false,
+      };
+    });
+    sortArtByLastShortName(arrHandler);
+    return arrHandler;
+  };
+  if (isValidGiaoVienData()) {
+    arrHocTro = layArrHocTroDeChon();
+  }
+  //fetch thêm lịch cho học sinh
   const themLichHocSinhHandler = async () => {
-    //Tổng hợp lại obj data submit
+    const dataSubmit = tongHopDataSubmit();
+    const { statusCode, dataGot } = await GiaoVien.updateLichGiaoVien(
+      dataSubmit
+    );
+    dayThongBao(statusCode, dataGot);
+  };
+  const tongHopDataSubmit = () => {
     const dataSubmit = {
       giaoVienId: giaoVien.id,
       arrThu: arrThuDuocChon.map((i) => {
@@ -126,50 +148,75 @@ const GanLichChoHsPage = (props) => {
         };
       }),
     };
-    //Fetch update lịch cho giaó viên thôi
-    const { statusCode, dataGot } = await GiaoVien.updateLichGiaoVien(
-      dataSubmit
-    );
-    //Đẩy thông báo
+    return dataSubmit;
+  };
+  const dayThongBao = (statusCode, dataGot) => {
     setTimeout(() => {
       notiCtx.clearNoti();
-      setArrHsDuocChon([]);
-      setArrThuDuocChon([]);
-      // router.reload();
+      clearArrHocSinhChon();
+      clearArrThuChon();
     }, process.env.DELAY_TIME_NOTI);
     window.scrollTo(0, 0);
     notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
-  //Cb hủy thêm lịch học sinh
-  const huyThemLichHocSinhHandler = () => {};
-  //Xử lý mảng nào sẽ được truyễn xuống render
-  let arrThuRender = arrThuGot;
-  if (arrThuDuocChon.length > 0) {
-    arrThuDuocChon.forEach((thu) => {
-      const indexMatched = arrThuRender.findIndex((i) => i.id === thu.id);
+  const clearArrHocSinhChon = () => {
+    setArrHsDuocChon([]);
+  };
+  const clearArrThuChon = () => {
+    setArrThuDuocChon([]);
+  };
+  const huyThemLichHocSinhHandler = () => {
+    router.replace("/giao-vien/lich-giao-vien");
+  };
+
+  //Xử lý mảng thứ cuối để truyền xuống render
+  const layMangThuTruyenXuongRender = () => {
+    //Xử lý mảng nào sẽ được truyễn xuống render
+    let arrThuRender = arrThuGot;
+    if (arrThuDuocChon.length > 0) {
+      arrThuDuocChon.forEach((thu) => {
+        timIndexThuTheoIdVaDanhIsSelectedTrue(arrThuRender, thu);
+      });
+    }
+    return arrThuRender;
+  };
+  const timIndexThuTheoIdVaDanhIsSelectedTrue = (arrThuRender, thu) => {
+    const indexMatched = arrThuRender.findIndex((i) => i.id === thu.id);
+    if (indexMatched !== -1) {
       arrThuRender[indexMatched].isSelected = true;
+    }
+  };
+  const arrThuRender = layMangThuTruyenXuongRender();
+
+  const layMangHocSinhTruyenXuongRender = () => {
+    let arrHocTroRender = arrHocTro;
+    if (arrHsDuocChon.length > 0) {
+      arrHsDuocChon.forEach((hs) => {
+        timIndexHocSinhTheoIdVaDanhIsSelectedTrue(arrHocTroRender, hs);
+      });
+    }
+    //Phải làm cái này vì trượg hop dâta truyền ngược lại từ comp phụ id sẽ có props hocSInhid chứ không phải id
+    const arrHocTroConvertRender = arrHocTroRender.map((i) => {
+      return {
+        id: i.hocSinhId ? i.hocSinhId : i.id,
+        shortName: i.shortName,
+        isSelected: i.isSelected,
+        soPhutHocMotTiet: +i.soPhutHocMotTiet,
+      };
     });
-  }
-  let arrHocTroRender = arrHocTro;
-  if (arrHsDuocChon.length > 0) {
-    arrHsDuocChon.forEach((hs) => {
-      const indexMatched = arrHocTroRender.findIndex(
-        (i) => i.hocSinhId === hs.hocSinhId
-      );
-      if (indexMatched !== -1) {
-        arrHocTroRender[indexMatched].isSelected = true;
-      }
-    });
-  }
-  //Cuối cùng phải convert lài hocSinhId thành id để truyền xuống com ChonItemPage
-  const arrHocTroConvertRender = arrHocTroRender.map((i) => {
-    return {
-      id: i.hocSinhId ? i.hocSinhId : i.id,
-      shortName: i.shortName,
-      isSelected: i.isSelected,
-      soPhutHocMotTiet: i.soPhutHocMotTiet,
-    };
-  });
+    return arrHocTroConvertRender;
+  };
+  const timIndexHocSinhTheoIdVaDanhIsSelectedTrue = (arrHocTroRender, hs) => {
+    const indexMatched = arrHocTroRender.findIndex(
+      (i) => i.hocSinhId === hs.hocSinhId
+    );
+    if (indexMatched !== -1) {
+      arrHocTroRender[indexMatched].isSelected = true;
+    }
+  };
+  const arrHocTroRender = layMangHocSinhTruyenXuongRender();
+
+
   return (
     <Card>
       <Layout28>
@@ -182,12 +229,12 @@ const GanLichChoHsPage = (props) => {
             <section className={classes.bigArea}>
               <div className={classes.lichArea}>
                 <ChonItemPage
-                  arrItems={arrThuGot}
+                  arrItems={arrThuRender}
                   getArrResult={getThuDuocChon}
                   type="thu"
                 />
                 <ChonItemPage
-                  arrItems={arrHocTroConvertRender}
+                  arrItems={arrHocTroRender}
                   getArrResult={getHocSinhDuocChon}
                   type="hocsinh"
                 />

@@ -9,11 +9,10 @@ import { BsCheckLg } from "react-icons/bs";
 import HocSinh from "../../classes/HocSinh";
 
 const ThemHsPage = (props) => {
+  //CÁC THIẾT LẬP GIÁ TRỊ
   const notiCtx = useContext(NotiContext);
   const notiData = notiCtx.noti;
-  //Mong đợi mode dể render tương ứngmessage
   const { renderMode, dataHocSinh } = props;
-  //Ref value cho input
   const gioiTinhRef = useRef();
   const tenHocSinhRef = useRef();
   const shortNameRef = useRef();
@@ -25,8 +24,6 @@ const ThemHsPage = (props) => {
   const thongTinCoBanRef = useRef();
   const hocPhiCaNhanRef = useRef();
   const hocPhiNhomRef = useRef();
-
-  //State lấy nhóm hay cá nhân
   const [isCanhan, setIsCanhan] = useState(
     dataHocSinh ? dataHocSinh.lopHoc.find((item) => item === "canhan") : false
   );
@@ -38,44 +35,27 @@ const ThemHsPage = (props) => {
       ? dataHocSinh.lopHoc.find((item) => item === "tangcuong")
       : false
   );
-
-  //State cho bấm nút hay không
   const [isSubmit, setIsSubmit] = useState(false);
 
-  //Cb clear input
-  const clearInput = () => {
-    setIsCanhan(false);
-    setIsNhom(false);
-    setIsSubmit(false);
-    gioiTinhRef.current.value = "";
-    tenHocSinhRef.current.value = "";
-    shortNameRef.current.value = "";
-    ngaySinhRef.current.value = "";
-    soPhutHocMotTietRef.current.value = 60;
-    tenPhuHuynhRef.current.value = "";
-    soDienThoaiRef.current.value = "";
-    diaChiRef.current.value = "";
-    thongTinCoBanRef.current.value = "";
-    hocPhiCaNhanRef.current.value = 300000;
-    hocPhiNhomRef.current.value = 90000;
-  };
-
-  //Cb đánh check
+  //CB SET STATE
   const toggleCanhanHandler = () => {
     setIsCanhan(!isCanhan);
   };
-  //Cb đánh check
   const toggleNhomHandler = () => {
     setIsNhom(!isNhom);
   };
-  //Cb đánh check
   const toggleTangCuongHandler = () => {
     setIsTangCuong(!isTangCuong);
   };
 
-  //Cb chính fetch thêm hs
+  //FUNCTION
   const themHocSinhMoiHandler = async (e) => {
     e.preventDefault();
+    const hocSinhMoi = taoInstanceHocSinhMoi();
+    const { statusCode, dataGot } = await hocSinhMoi.themHocSinhMoi();
+    dayThongBao(statusCode, dataGot);
+  };
+  const taoInstanceHocSinhMoi = () => {
     const hocSinhMoi = new HocSinh({
       lopHoc: [
         isCanhan ? "canhan" : null,
@@ -94,8 +74,9 @@ const ThemHsPage = (props) => {
       diaChi: diaChiRef.current.value,
       thongTinCoBan: thongTinCoBanRef.current.value,
     });
-    //Thêm mới thoi
-    const { statusCode, dataGot } = await hocSinhMoi.themHocSinhMoi();
+    return hocSinhMoi;
+  };
+  const dayThongBao = (statusCode, dataGot) => {
     //Đẩy thông báo thôi
     setTimeout(() => {
       notiCtx.clearNoti();
@@ -109,54 +90,46 @@ const ThemHsPage = (props) => {
       message: dataGot.thongbao,
     });
   };
-  //Cb chính fetch sưa hs
+  const clearInput = () => {
+    resetState();
+    gioiTinhRef.current.value = "";
+    tenHocSinhRef.current.value = "";
+    shortNameRef.current.value = "";
+    ngaySinhRef.current.value = "";
+    soPhutHocMotTietRef.current.value = 60;
+    tenPhuHuynhRef.current.value = "";
+    soDienThoaiRef.current.value = "";
+    diaChiRef.current.value = "";
+    thongTinCoBanRef.current.value = "";
+    hocPhiCaNhanRef.current.value = 300000;
+    hocPhiNhomRef.current.value = 90000;
+  };
+  const resetState = () => {
+    setIsCanhan(false);
+    setIsNhom(false);
+    setIsSubmit(false);
+  };
   const suaHocSinhHandler = async (e) => {
     e.preventDefault();
-    //Dùng class sửa hs ở đây
-    const hocSinhUpdate = new HocSinh({
-      lopHoc: [
-        isCanhan ? "canhan" : null,
-        isNhom ? "nhom" : null,
-        isTangCuong ? "tangcuong" : null,
-      ],
-      gioiTinh: gioiTinhRef.current.value,
-      tenHocSinh: tenHocSinhRef.current.value,
-      shortName: shortNameRef.current.value,
-      ngaySinh: ngaySinhRef.current.value,
-      soPhutHocMotTiet: soPhutHocMotTietRef.current.value,
-      hocPhiCaNhan: hocPhiCaNhanRef.current.value,
-      hocPhiNhom: hocPhiNhomRef.current.value,
-      tenPhuHuynh: tenPhuHuynhRef.current.value,
-      soDienThoai: soDienThoaiRef.current.value,
-      diaChi: diaChiRef.current.value,
-      thongTinCoBan: thongTinCoBanRef.current.value,
-    });
-    //Sửa thôi
+    const hocSinhUpdate = taoInstanceHocSinhMoi();
     const { statusCode, dataGot } = await hocSinhUpdate.suaHocSinh(
       dataHocSinh.id
     );
-    //Đẩy thông báo thôi
-    setTimeout(() => {
-      notiCtx.clearNoti();
-      if (statusCode === 200 || statusCode === 201) {
-        clearInput();
-      }
-    }, process.env.DELAY_TIME_NOTI);
-    window.scrollTo(0, 0);
-    notiCtx.pushNoti({
-      status: statusCode,
-      message: dataGot.thongbao,
-    });
+    dayThongBao(statusCode, dataGot);
   };
-  //Side effect
+
+  //SIDE EFFECT
   useEffect(() => {
-    //Xêt có được bấm submit hay không
-    if (isCanhan || isNhom || isTangCuong) {
-      setIsSubmit(true);
-    } else {
-      setIsSubmit(false);
-    }
+    const checkSubmit = () => {
+      if (isCanhan || isNhom || isTangCuong) {
+        setIsSubmit(true);
+      } else {
+        setIsSubmit(false);
+      }
+    };
+    checkSubmit();
   }, [isCanhan, isNhom, isTangCuong]);
+
   return (
     <Card>
       {renderMode === "them" && (

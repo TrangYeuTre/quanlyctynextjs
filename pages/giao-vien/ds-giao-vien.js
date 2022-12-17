@@ -3,9 +3,15 @@ import ConnectMongoDb from "../../helper/connectMongodb";
 import DataGiaoVien from "../../classes/DataGiaoVien";
 import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
+import { layMangChuyenDoiDataTuMongodb } from "../../helper/uti";
 
 const DsHocSinhCaNhanRoute = (props) => {
+  //VARIABLES
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const { arrGiaoVien } = props;
+  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
+
+  //SIDE EFFECT
   useEffect(() => {
     getSession().then((session) => {
       if (session) {
@@ -16,19 +22,20 @@ const DsHocSinhCaNhanRoute = (props) => {
       }
     });
   }, []);
-  if (!isLoggedIn) {
+
+  const isProcessing = () => {
+    return !isLoggedIn || !arrGiaoVien;
+  };
+  if (isProcessing()) {
     return <h1>Đang xử lý ...</h1>;
   }
 
-  const { arrGiaoVien } = props;
-  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
   return <DanhSachGiaoVienPage />;
 };
 
-//SSG lấy mảng giáo viên về nào
+//SSG
 export async function getStaticProps() {
   let client, db;
-  //Kết nối đến db nào
   try {
     const { clientGot, dbGot } = await ConnectMongoDb();
     client = clientGot;
@@ -37,23 +44,18 @@ export async function getStaticProps() {
     return {
       notFound: true,
     };
-  } // End t-c kết nối db
-  //Tiến hành load ds giáo viên thôi
+  }
+
   try {
     const arrGiaoVienGot = await db.collection("giaoviens").find().toArray();
-    //Map lại mảng giáo viên với _id thành id string
-    //Chú ý: chỉ map lại mảng có các prop cần thiết
-    const arrGiaoVienConvert = arrGiaoVienGot.map((gv) => {
-      return {
-        id: gv._id.toString(),
-        shortName: gv.shortName,
-        gioiTinh: gv.gioiTinh,
-      };
-    });
-    //Ok xong thì trả lại thôi
+    const arrNeededProps = ["id", "shortName", "gioiTinh"];
+    const arrGiaoVienConvertedId = layMangChuyenDoiDataTuMongodb(
+      arrGiaoVienGot,
+      arrNeededProps
+    );
     client.close();
     return {
-      props: { arrGiaoVien: arrGiaoVienConvert },
+      props: { arrGiaoVien: arrGiaoVienConvertedId },
       revalidate: 10,
     };
   } catch (err) {

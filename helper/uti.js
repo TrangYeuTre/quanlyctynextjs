@@ -246,3 +246,47 @@ export const xuLyGopLoaiLop = (loaiLopTruoc, loaiLopSau) => {
   }
   return [loaiLopTruoc];
 };
+
+//Redirect trang và reset dùng window.location.href
+export const redirectPageAndResetState = (destination = "/") => {
+  window.location.href = destination;
+};
+
+//Func hỗ trợ chuyển hóa một obj đọc được từ mongodb về obj cần thiết thao tác trong dự án
+export const layObjChuyenDoiDataTuMongodb = (
+  objDataIn = {},
+  arrNeededProps = []
+) => {
+  if (arrNeededProps.length === 0 || Object.keys(objDataIn).length === 0) {
+    return;
+  }
+  let objResult = {};
+  arrNeededProps.forEach((item) => {
+    if (item === "id") {
+      objResult.id = objDataIn._id.toString();
+    } else if (item === "hocSinhId") {
+      objResult.hocSinhId = objDataIn._id.toString();
+    } else {
+      objResult[item] = objDataIn[item];
+    }
+  });
+  return objResult;
+};
+//Func hỗ trợ chuyến hóa data đọc được từ mongodb về mảng các props cần thiết
+export const layMangChuyenDoiDataTuMongodb = (
+  arrDataIn = [],
+  arrNeededProps = []
+) => {
+  if (arrNeededProps.length === 0 || arrDataIn.length === 0) {
+    return;
+  }
+  let arrResult = [];
+  arrDataIn.forEach((objData) => {
+    const objDataConverted = layObjChuyenDoiDataTuMongodb(
+      objData,
+      arrNeededProps
+    );
+    arrResult.push(objDataConverted);
+  });
+  return arrResult;
+};
