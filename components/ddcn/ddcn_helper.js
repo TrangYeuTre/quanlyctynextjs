@@ -59,6 +59,9 @@ export const layMangHsTangCuongDeChon = (
 ) => {
   //Xử lý lấy màng học trò cá nhân của giáo viên -> lọc lại mảng học sinh không có trong ngày để dạy tăng cường
   let arrHsTangCuong = [];
+  if (arrHocSinhChon.length === 0 && dataGiaoVienDuocChon) {
+    return dataGiaoVienDuocChon.hocTroCaNhan;
+  }
   if (arrHocSinhChon.length > 0 && dataGiaoVienDuocChon) {
     //Mảng học trò
     const arrHocTroCaNhanClone = [...dataGiaoVienDuocChon.hocTroCaNhan];
