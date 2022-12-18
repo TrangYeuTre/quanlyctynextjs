@@ -5,6 +5,7 @@ import ChonNguoiProvider from "../../context/chonNguoiProvider";
 import {
   getFirstLastDateOfPrevMonth,
   getFirstLastDateOfThisMonth,
+  redirectPageAndResetState,
 } from "../../helper/uti";
 import { useState, useEffect } from "react";
 import DataGiaoVien from "../../classes/DataGiaoVien";
@@ -12,31 +13,24 @@ import DataDiemDanhCaNhan from "../../classes/DataDiemDanhCaNhan";
 import { getSession } from "next-auth/react";
 
 const ThongKeGiaoVienRoute = (props) => {
+  //VARIABLES
   const { arrGiaoVien, arrDiemDanhCaNhanFilter } = props;
+  const [isLoggedIn, setLoggedIn] = useState(false);
   DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
   DataDiemDanhCaNhan.loadArrDiemDanhCaNhan(arrDiemDanhCaNhanFilter);
-  //State loading
-  const [loading, setLoading] = useState(true);
-  const [isLoggedIn, setLoggedIn] = useState(false);
+
+  //SIDE EFFECT
   useEffect(() => {
     getSession().then((session) => {
       if (session) {
         setLoggedIn(true);
       } else {
         setLoggedIn(false);
-        window.location.href = "/auth/login";
+        redirectPageAndResetState("/auth/login");
       }
     });
   }, []);
 
-  //   Side effect set loading
-  useEffect(() => {
-    if (arrGiaoVien && arrDiemDanhCaNhanFilter) {
-      setLoading(false);
-    } else {
-      setLoading(true);
-    }
-  }, [arrGiaoVien, arrDiemDanhCaNhanFilter]);
   
   if (!isLoggedIn) {
     return <h1>Đang xử lý ...</h1>;
@@ -45,8 +39,7 @@ const ThongKeGiaoVienRoute = (props) => {
   return (
     <GiaoVienProvider>
       <ChonNguoiProvider>
-        {loading && <h1 style={{ color: "var(--mauMh4--)" }}>Đang load ...</h1>}
-        {!loading && <ThongKeGiaoVienPage />}
+        <ThongKeGiaoVienPage />
       </ChonNguoiProvider>
     </GiaoVienProvider>
   );
