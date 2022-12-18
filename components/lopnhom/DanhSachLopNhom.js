@@ -4,32 +4,34 @@ import LopNhomBar from "../UI/LopNhomBar";
 import { useRouter } from "next/router";
 import { useContext } from "react";
 import NotiContext from "../../context/notiContext";
-import { removeDomItem } from "../../helper/uti";
+import { removeDomItem, redirectPageAndResetState } from "../../helper/uti";
 import LopNhom from "../../classes/LopNhom";
 import DataLopNhom from "../../classes/DataLopNhom";
 
 const DanhSachLopNhomPage = (props) => {
+  //VARIABLES
   const router = useRouter();
-  //Ctx thông báo
   const notiCtx = useContext(NotiContext);
-  //Lấy data từ props
   const arrLopNhom = DataLopNhom.arrLopNhom;
-  //Cb xóa lớp nhóm
-  const xoaLopNhomHandler = async (id) => {
-    const { statusCode, dataGot } = await LopNhom.xoaLopNhom(id);
-    //Đẩy thông báo
+
+  //FUNCTIONS
+  const xoaLopNhomHandler = async (lopNhomId) => {
+    const { statusCode, dataGot } = await LopNhom.xoaLopNhom(lopNhomId);
+    dayThongBao(statusCode, dataGot, lopNhomId);
+  };
+  const dayThongBao = (statusCode, dataGot, lopNhomId) => {
     setTimeout(() => {
       notiCtx.clearNoti();
       if (statusCode == 200 || statusCode === 201) {
-        removeDomItem(id);
+        removeDomItem(lopNhomId);
       }
     }, process.env.DELAY_TIME_NOTI);
     notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
-  //Cb sửa lớp nhom
-  const suaLopNhomHandler = (id) => {
-    router.push(`/lop-nhom/sua/${id}`);
+  const suaLopNhomHandler = (lopNhomId) => {
+    redirectPageAndResetState(`/lop-nhom/sua/${lopNhomId}`);
   };
+
   return (
     <Card>
       <div className={classes.container}>

@@ -6,35 +6,44 @@ import DataGiaoVien from "../../../classes/DataGiaoVien";
 import DataLopNhom from "../../../classes/DataLopNhom";
 import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
+import {
+  redirectPageAndResetState,
+  layObjChuyenDoiDataTuMongodb,
+} from "../../../helper/uti";
 
 const SuaLopNhomRoute = (props) => {
+  //VARIABLE
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const { lopNhom, arrHocSinhNhom, arrGiaoVien } = props;
+  DataHocSinh.loadArrHocSinhNhom(arrHocSinhNhom);
+  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
+  DataLopNhom.loadLopNhomData(lopNhom);
+  //SIDE EFFECT
   useEffect(() => {
     getSession().then((session) => {
       if (session) {
         setLoggedIn(true);
       } else {
         setLoggedIn(false);
-        window.location.href = "/auth/login";
+        redirectPageAndResetState("/auth/login");
       }
     });
   }, []);
-  if (!isLoggedIn) {
+
+  const isProcessing = () => {
+    return !isLoggedIn || !lopNhom || !arrHocSinhNhom || !arrGiaoVien;
+  };
+  if (isProcessing()) {
     return <h1>Đang xử lý ...</h1>;
   }
 
-  const { lopNhom, arrHocSinhNhom, arrGiaoVien } = props;
-  DataHocSinh.loadArrHocSinhNhom(arrHocSinhNhom);
-  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
-  DataLopNhom.loadLopNhomData(lopNhom);
   return <SuaLopNhomPage />;
 };
 
 //SSG
 export async function getStaticProps(context) {
-  //Lấy id lớp nhóm được chọn
   const lopNhomId = context.params.lopNhomId;
-  //Kết nối đến db
+
   let client, db;
   try {
     const { clientGot, dbGot } = await ConnectMongodb();
@@ -45,22 +54,24 @@ export async function getStaticProps(context) {
       notFound: true,
     };
   }
-  //Biến truyền props
+
   let lopNhom;
   let arrGiaoVien = [];
   let arrHocSinhNhom = [];
-  //Tìm lớp nhóm tương ứng đế lấy data sửa
   try {
     const lopNhomFound = await db
       .collection("lopnhoms")
       .findOne({ _id: ObjectId(lopNhomId) });
-    //Đổi lại _id của obj thành string
-    const lopNhomConvert = {
-      lopNhomId: lopNhomFound._id.toString(),
-      tenLopNhom: lopNhomFound.tenLopNhom,
-      giaoVienLopNhom: lopNhomFound.giaoVienLopNhom,
-      hocSinhLopNhom: lopNhomFound.hocSinhLopNhom,
-    };
+    const arrNeededProps = [
+      "lopNhomId",
+      "tenLopNhom",
+      "giaoVienLopNhom",
+      "hocSinhLopNhom",
+    ];
+    const lopNhomConvert = layObjChuyenDoiDataTuMongodb(
+      lopNhomFound,
+      arrNeededProps
+    );
     lopNhom = lopNhomConvert;
   } catch (err) {
     client.close();
@@ -68,13 +79,11 @@ export async function getStaticProps(context) {
       notFound: true,
     };
   }
-  //Lấy mảng học sinh nhóm
   try {
     const arrHsNhomGot = await db
       .collection("hocsinhs")
       .find({ lopHoc: { $in: ["nhom"] } })
       .toArray();
-    //COnver nó lại với _id để xài được
     arrHocSinhNhom = arrHsNhomGot.map((hs) => {
       return {
         id: hs._id.toString(),
@@ -88,7 +97,6 @@ export async function getStaticProps(context) {
       notFound: true,
     };
   }
-  //Lấy mảng giáo viên
   try {
     const arrGiaoVienGot = await db.collection("giaoviens").find().toArray();
     //COnver nó lại với _id để xài được
@@ -106,7 +114,6 @@ export async function getStaticProps(context) {
       notFound: true,
     };
   }
-  //Trả cuối
   client.close();
   return {
     props: {
@@ -120,7 +127,6 @@ export async function getStaticProps(context) {
 
 //SSP
 export async function getStaticPaths() {
-  //Kết nối đến db
   let client, db;
   try {
     const { clientGot, dbGot } = await ConnectMongodb();
@@ -132,7 +138,6 @@ export async function getStaticPaths() {
       fallback: false,
     };
   }
-  //Lấy mảng id của lớp nhóm về
   try {
     const arrLopNhomGot = await db.collection("lopnhoms").find().toArray();
     const arrPath = arrLopNhomGot.map((lopnhom) => {

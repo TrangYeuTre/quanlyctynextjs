@@ -10,116 +10,166 @@ import LopNhom from "../../classes/LopNhom";
 import DataHocSinh from "../../classes/DataHocSinh";
 import DataGiaoVien from "../../classes/DataGiaoVien";
 import DataLopNhom from "../../classes/DataLopNhom";
+import { redirectPageAndResetState } from "../../helper/uti";
 
 const SuaLopNhomPage = (props) => {
-  //Lấy data sửa
+  //VARIABLES
   const router = useRouter();
-  //Ctx thông báo
   const notiCtx = useContext(NotiContext);
-  //Ctx lấy mảng được chọn
   const chonNguoiCtx = useContext(ChonNguoiContext);
   const arrGiaoVienChon = chonNguoiCtx.arrGiaoVien;
   const arrHocSinhChon = chonNguoiCtx.arrHocSinh;
-  //Cần từ props mảng học sinh nhóm và giáo viên ở đây
   const arrHocSinhNhom = DataHocSinh.arrHocSinhNhom;
   const arrGiaoVien = DataGiaoVien.arrGiaoVien;
   const lopNhom = DataLopNhom.lopNhomChonData;
-  //Từ lớp nhóm lấy 2 mảng học sinh nhóm và giáo viên nhớm đã tồn tại
   const { giaoVienLopNhom, hocSinhLopNhom } = lopNhom;
-  //Chạy lặp từng id của 2 mảng trên để đánh lại isSelected của mảng chính
-  //Đánh lại isSelected của hs nhóm
-  if (hocSinhLopNhom) {
+  const tenLopNhomRef = useRef();
+
+  //FUNCTIONS
+  //Dựa vào 2 mảng giaoVienLopNhom và hocSinhLopNhom ban đầu truyền xuống comp này, đánh isSelected để chọn mặc định cho data sưa này
+  //Đánh chọn mặc định học sinh nhóm
+  const danhIsSelectedArrHsNhomMacDinhTrue = (
+    hocSinhLopNhom,
+    arrHocSinhNhom
+  ) => {
+    if (!isValidHocSinhLopNhom(hocSinhLopNhom)) {
+      return;
+    }
     hocSinhLopNhom.forEach((hocsinh) => {
-      const hsNhomMatched = arrHocSinhNhom.find(
-        (i) => i.id === hocsinh.hocSinhId
-      );
+      const hsNhomMatched = timHocSinhNhom(hocsinh.hocSinhId, arrHocSinhNhom);
       if (hsNhomMatched) {
         hsNhomMatched.isSelected = true;
       }
     });
-  }
-  //Đánh lại isSelected của giáo viên
-  if (giaoVienLopNhom) {
+  };
+  const isValidHocSinhLopNhom = (hocSinhLopNhom) => {
+    return hocSinhLopNhom;
+  };
+  const timHocSinhNhom = (hocSinhId, arrHsNhom) => {
+    const hsNhomMatched = arrHsNhom.find((item) => item.id === hocSinhId);
+    if (!hsNhomMatched) {
+      return;
+    }
+    return hsNhomMatched;
+  };
+  danhIsSelectedArrHsNhomMacDinhTrue(hocSinhLopNhom, arrHocSinhNhom);
+
+  //Đánh chọn mặc định giáo viên nhóm
+  const danhIsSelectedArrGiaoVienMacDinhTrue = (
+    giaoVienLopNhom,
+    arrGiaoVien
+  ) => {
+    if (!isValidGiaoVienLopNhom(giaoVienLopNhom)) {
+      return;
+    }
     giaoVienLopNhom.forEach((giaovien) => {
-      const giaoVienMatched = arrGiaoVien.find(
-        (i) => i.id === giaovien.giaoVienId
-      );
+      const giaoVienMatched = timGiaoVien(arrGiaoVien, giaovien.giaoVienId);
       if (giaoVienMatched) {
         giaoVienMatched.isSelected = true;
       }
     });
-  }
-
-  //Ref lấy tên
-  const tenLopNhomRef = useRef();
-  //Nếu arr giáo viên / hs trên chọn người trên ctx có tồn tại thì lấy mảng này render
-  let arrGiaoVienRender = arrGiaoVien;
-  let arrHocSinhRender = arrHocSinhNhom;
-  if (arrGiaoVienChon.length > 0) {
-    arrGiaoVienRender = arrGiaoVienChon;
-  }
-  if (arrHocSinhChon.length > 0) {
-    arrHocSinhRender = arrHocSinhChon;
-  }
-
-  //CB chính submit thêm lớp nhóm
-  const suaLopNhomHandler = async () => {
-    //Lấy tên, phần này nếu tên rỗng thì api trả lại lỗi
-    const tenLopNhom = tenLopNhomRef.current.value;
-
-    const arrGiaoVienRenderFilter = arrGiaoVienRender.filter(
-      (i) => i.isSelected
+  };
+  const isValidGiaoVienLopNhom = (giaoVienLopNhom) => {
+    return giaoVienLopNhom;
+  };
+  const timGiaoVien = (arrGiaoVien, giaoVienId) => {
+    const giaoVienMatched = arrGiaoVien.find(
+      (giaovien) => giaovien.id === giaoVienId
     );
+    if (!giaoVienMatched) {
+      return;
+    }
+    return giaoVienMatched;
+  };
+  danhIsSelectedArrGiaoVienMacDinhTrue(giaoVienLopNhom, arrGiaoVien);
 
-    //Xử lý lấy mảng hoc sinh và giáo viên
-    const arrGiaoVienLopNhom = arrGiaoVienRenderFilter.map((gv) => {
-      return {
-        giaoVienId: gv.id,
-        luongNhom: gv.luongNhom,
-        shortName: gv.shortName,
-      };
-    });
-    const arrHocSinhRenderFilter = arrHocSinhRender.filter((i) => i.isSelected);
+  //Load lần đầu thì lấy mảng hs và gv được đánh isSelected sẽ khác khi có thao tác chọn thêm, tách biệt cac màng để chọn render phù hợp như dưới
+  const chotArrGiaoVienRender = (arrGiaoVien, arrGiaoVienChon) => {
+    let arrGiaoVienRender = arrGiaoVien;
+    if (arrGiaoVienChon.length > 0) {
+      arrGiaoVienRender = arrGiaoVienChon;
+    }
+    return arrGiaoVienRender;
+  };
+  const chotArrHocSinhRender = (arrHocSinhNhom, arrHocSinhChon) => {
+    let arrHocSinhRender = arrHocSinhNhom;
+    if (arrHocSinhChon.length > 0) {
+      arrHocSinhRender = arrHocSinhChon;
+    }
+    return arrHocSinhRender;
+  };
+  const arrGiaoVienRender = chotArrGiaoVienRender(arrGiaoVien, arrGiaoVienChon);
+  const arrHocSinhRender = chotArrHocSinhRender(arrHocSinhNhom, arrHocSinhChon);
 
-    const arrHocSinhLopNhom = arrHocSinhRenderFilter.map((hs) => {
-      return {
-        hocSinhId: hs.id,
-        shortName: hs.shortName,
-      };
+  //CHú ý: 2 mảng render trên là full hs/gv có các hs/gv được đánh isSelected -> lọc lại mảng chỉ isSelected hs/gv để submit
+  const locArrGiaoVienDataSubmit = (arrGiaoVienRender) => {
+    const arrGiaoVienSelected = locArrNguoiSelected(arrGiaoVienRender);
+    if (arrGiaoVienSelected.length > 0) {
+      const arrResult = arrGiaoVienSelected.map((giaovien) => {
+        return {
+          giaoVienId: giaovien.id,
+          luongNhom: giaovien.luongNhom,
+          shortName: giaovien.shortName,
+        };
+      });
+      return arrResult;
+    }
+  };
+  const locArrHocSinhDataSubmit = (arrHocSinhRender) => {
+    const arrHocSinhSelected = locArrNguoiSelected(arrHocSinhRender);
+    if (arrHocSinhSelected.length > 0) {
+      const arrResult = arrHocSinhSelected.map((hocsinh) => {
+        return {
+          hocSinhId: hocsinh.id,
+          shortName: hocsinh.shortName,
+        };
+      });
+      return arrResult;
+    }
+  };
+  const locArrNguoiSelected = (arrNguoi) => {
+    let arrResult = [];
+    if (arrNguoi.length > 0) {
+      arrResult = arrNguoi.filter((giaovien) => giaovien.isSelected);
+    }
+    return arrResult;
+  };
+  const arrGiaoVienDataSubmit = locArrGiaoVienDataSubmit(arrGiaoVienRender);
+  const arrHocSinhDataSubmit = locArrHocSinhDataSubmit(arrHocSinhRender);
+
+  const layTenLopNhom = () => {
+    return tenLopNhomRef.current.value;
+  };
+  const createNewInstanceLopNhom = () => {
+    const instanceLopNhom = new LopNhom({
+      tenLopNhom: layTenLopNhom() || "",
+      giaoVienLopNhom: arrGiaoVienDataSubmit,
+      hocSinhLopNhom: arrHocSinhDataSubmit,
     });
-    //Class
-    const lopNhomUpdate = new LopNhom({
-      tenLopNhom: tenLopNhom,
-      giaoVienLopNhom: arrGiaoVienLopNhom,
-      hocSinhLopNhom: arrHocSinhLopNhom,
-    });
-    //Fetch sửa
+    return instanceLopNhom;
+  };
+
+  const suaLopNhomHandler = async () => {
+    const lopNhomUpdate = createNewInstanceLopNhom();
     const { statusCode, dataGot } = await lopNhomUpdate.suaLopNhom(
       lopNhom.lopNhomId
     );
-    //Đẩy thông báo
+    dayThongBao(statusCode, dataGot);
+  };
+  const dayThongBao = (statusCode, dataGot) => {
     setTimeout(() => {
       notiCtx.clearNoti();
       if (statusCode === 200 || statusCode == 201) {
-        router.replace("/lop-nhom/ds-lop-nhom");
+        redirectPageAndResetState("/lop-nhom/ds-lop-nhom");
       }
     }, process.env.DELAY_TIME_NOTI);
     window.scrollTo(0, 0);
     notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
-  //Cb Hủy thêm
   const huySuaLopNhomHandler = () => {
-    console.log("Hủy thêm");
+    redirectPageAndResetState("/lop-nhom/ds-lop-nhom");
   };
-  //Xử lý biến tĩnh quyết định có được chốt không
-  let disChot = true;
-  const arrGvDaChon = arrGiaoVienRender.filter((i) => i.isSelected);
-  const arrHsDaChon = arrHocSinhRender.filter((i) => i.isSelected);
-  if (arrGvDaChon.length > 0 && arrHsDaChon.length > 0) {
-    disChot = false;
-  }
 
-  //Trả
   return (
     <Card>
       <section className={classes.container}>
@@ -149,7 +199,6 @@ const SuaLopNhomPage = (props) => {
             doAction1={suaLopNhomHandler}
             doAction2={huySuaLopNhomHandler}
             description="Phải chọn giáo viên và học sinh mới được Chốt nhé."
-            disAction1={disChot}
           />
         </div>
       </section>

@@ -266,6 +266,8 @@ export const layObjChuyenDoiDataTuMongodb = (
       objResult.id = objDataIn._id.toString();
     } else if (item === "hocSinhId") {
       objResult.hocSinhId = objDataIn._id.toString();
+    } else if (item === "lopNhomId") {
+      objResult.lopNhomId = objDataIn._id.toString();
     } else {
       objResult[item] = objDataIn[item];
     }

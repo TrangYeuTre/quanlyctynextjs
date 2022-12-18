@@ -3,31 +3,41 @@ import ConnectMongodb from "../../helper/connectMongodb";
 import DataLopNhom from "../../classes/DataLopNhom";
 import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
+import {
+  redirectPageAndResetState,
+  layMangChuyenDoiDataTuMongodb,
+} from "../../helper/uti";
 
 const DanhSachLopNhomRoute = (props) => {
+  //VARIABLES
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const { arrLopNhom } = props;
+  DataLopNhom.loadArrLopNhom(arrLopNhom);
+
+  //SIDE EFFECT
   useEffect(() => {
     getSession().then((session) => {
       if (session) {
         setLoggedIn(true);
       } else {
         setLoggedIn(false);
-        window.location.href = "/auth/login";
+        redirectPageAndResetState("/auth/login");
       }
     });
   }, []);
-  if (!isLoggedIn) {
+
+  const isProcessing = () => {
+    return !isLoggedIn || !arrLopNhom;
+  };
+  if (isProcessing()) {
     return <h1>Đang xử lý ...</h1>;
   }
 
-  const { arrLopNhom } = props;
-  DataLopNhom.loadArrLopNhom(arrLopNhom);
   return <DanhSachLopNhomPage />;
 };
 
-//SSG đẻ load ds lớp nhóm
+//SSG
 export async function getStaticProps() {
-  //Kết nối db
   let client, db;
   try {
     const { clientGot, dbGot } = await ConnectMongodb();
@@ -38,18 +48,18 @@ export async function getStaticProps() {
       notFound: true,
     };
   }
-  //Lấy ds lớp nhóm nào
   try {
     const arrLopNhomGot = await db.collection("lopnhoms").find().toArray();
-    const arrLopNhom = arrLopNhomGot.map((lopnhom) => {
-      return {
-        id: lopnhom._id.toString(),
-        tenLopNhom: lopnhom.tenLopNhom,
-        giaoVienLopNhom: lopnhom.giaoVienLopNhom,
-        hocSinhLopNhom: lopnhom.hocSinhLopNhom,
-      };
-    });
-    //Trả
+    const arrNeededProps = [
+      "id",
+      "tenLopNhom",
+      "giaoVienLopNhom",
+      "hocSinhLopNhom",
+    ];
+    const arrLopNhom = layMangChuyenDoiDataTuMongodb(
+      arrLopNhomGot,
+      arrNeededProps
+    );
     client.close();
     return {
       props: {
@@ -58,7 +68,6 @@ export async function getStaticProps() {
       revalidate: 10,
     };
   } catch (err) {
-    console.log(err);
     client.close();
     return {
       notFound: true,

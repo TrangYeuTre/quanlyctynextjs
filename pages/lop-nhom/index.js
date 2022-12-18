@@ -2,32 +2,40 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Loading from "../../components/UI/Loading";
 import { getSession } from "next-auth/react";
+import { redirectPageAndResetState } from "../../helper/uti";
 
 const LopNhomRoute = (props) => {
+  //VARIABLES
   const router = useRouter();
-  //State loading
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setLoggedIn] = useState(false);
+
+  //SIDE EFFECT
   useEffect(() => {
     getSession().then((session) => {
       if (session) {
         setLoggedIn(true);
       } else {
         setLoggedIn(false);
-        window.location.href = "/auth/login";
+        redirectPageAndResetState("/auth/login");
       }
     });
   }, []);
-  //Side effect set loading
   useEffect(() => {
-    if (router.asPath && router.asPath === "/lop-nhom/them") {
+    const isExistedPath = () => {
+      return router.asPath && router.asPath === "/lop-nhom/them";
+    };
+    if (isExistedPath()) {
       setLoading(false);
     } else {
-      router.replace("/lop-nhom/them");
+      redirectPageAndResetState("/lop-nhom/them");
     }
   }, [router]);
-  
-  if (!isLoggedIn) {
+
+  const isProcessing = () => {
+    return !isLoggedIn;
+  };
+  if (isProcessing()) {
     return <h1>Đang xử lý ...</h1>;
   }
 

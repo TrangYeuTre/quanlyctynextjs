@@ -12,80 +12,101 @@ import DataGiaoVien from "../../classes/DataGiaoVien";
 
 const ThemLopNhomPage = (props) => {
   const router = useRouter();
-  //Ctx thông báo
   const notiCtx = useContext(NotiContext);
-  //Ctx lấy mảng được chọn
   const chonNguoiCtx = useContext(ChonNguoiContext);
   const arrGiaoVienChon = chonNguoiCtx.arrGiaoVien;
   const arrHocSinhChon = chonNguoiCtx.arrHocSinh;
-  //Cần từ props mảng học sinh nhóm và giáo viên ở đây
   const arrHocSinhNhom = DataHocSinh.arrHocSinhNhom;
   const arrGiaoVien = DataGiaoVien.arrGiaoVien;
-  //Ref lấy tên
   const tenLopNhomRef = useRef();
-  //Nếu arr giáo viên / hs trên chọn người trên ctx có tồn tại thì lấy mảng này render
-  let arrGiaoVienRender = arrGiaoVien;
-  let arrHocSinhRender = arrHocSinhNhom;
-  if (arrGiaoVienChon.length > 0) {
-    arrGiaoVienRender = arrGiaoVienChon;
-  }
-  if (arrHocSinhChon.length > 0) {
-    arrHocSinhRender = arrHocSinhChon;
-  }
 
-  //CB chính submit thêm lớp nhóm
+  // Mảng gv/hs dùng render ban đầu sẽ khác với khi có 1 hs/gv được chọn kich hoạt ctx - dùng function queyes định mảng nào renderÏ
+  const chotArrGiaoVienRender = (arrGiaoVien, arrGiaoVienChon) => {
+    let arrGiaoVienRender = arrGiaoVien;
+    if (arrGiaoVienChon.length > 0) {
+      arrGiaoVienRender = arrGiaoVienChon;
+    }
+    return arrGiaoVienRender;
+  };
+  const chotArrHocSinhRender = (arrHocSinhNhom, arrHocSinhChon) => {
+    let arrHocSinhRender = arrHocSinhNhom;
+    if (arrHocSinhChon.length > 0) {
+      arrHocSinhRender = arrHocSinhChon;
+    }
+    return arrHocSinhRender;
+  };
+  const arrGiaoVienRender = chotArrGiaoVienRender(arrGiaoVien, arrGiaoVienChon);
+  const arrHocSinhRender = chotArrHocSinhRender(arrHocSinhNhom, arrHocSinhChon);
+
+  //CHú ý: 2 mảng render trên là full hs/gv có các hs/gv được đánh isSelected -> lọc lại mảng chỉ isSelected hs/gv để submit
+  const locArrGiaoVienDataSubmit = (arrGiaoVienRender) => {
+    const arrGiaoVienSelected = locArrNguoiSelected(arrGiaoVienRender);
+    if (arrGiaoVienSelected.length > 0) {
+      const arrResult = arrGiaoVienSelected.map((giaovien) => {
+        return {
+          giaoVienId: giaovien.id,
+          luongNhom: giaovien.luongNhom,
+          shortName: giaovien.shortName,
+        };
+      });
+      return arrResult;
+    }
+  };
+  const locArrHocSinhDataSubmit = (arrHocSinhRender) => {
+    const arrHocSinhSelected = locArrNguoiSelected(arrHocSinhRender);
+    if (arrHocSinhSelected.length > 0) {
+      const arrResult = arrHocSinhSelected.map((hocsinh) => {
+        return {
+          hocSinhId: hocsinh.id,
+          shortName: hocsinh.shortName,
+        };
+      });
+      return arrResult;
+    }
+  };
+  const locArrNguoiSelected = (arrNguoi) => {
+    let arrResult = [];
+    if (arrNguoi.length > 0) {
+      arrResult = arrNguoi.filter((giaovien) => giaovien.isSelected);
+    }
+    return arrResult;
+  };
+  const arrGiaoVienDataSubmit = locArrGiaoVienDataSubmit(arrGiaoVienRender);
+  const arrHocSinhDataSubmit = locArrHocSinhDataSubmit(arrHocSinhRender);
+
   const themLopNhomHandler = async () => {
-    //Lấy tên, phần này nếu tên rỗng thì api trả lại lỗi
-    const tenLopNhom = tenLopNhomRef.current.value;
-    const arrGiaoVienRenderFilter = arrGiaoVienRender.filter(
-      (i) => i.isSelected
-    );
-    //Xử lý lấy mảng hoc sinh và giáo viên
-    const arrGiaoVienLopNhom = arrGiaoVienRenderFilter.map((gv) => {
-      return {
-        giaoVienId: gv.id,
-        luongNhom: gv.luongNhom,
-        shortName: gv.shortName,
-      };
-    });
-    const arrHocSinhRenderFilter = arrHocSinhRender.filter((i) => i.isSelected);
-    const arrHocSinhLopNhom = arrHocSinhRenderFilter.map((hs) => {
-      return {
-        hocSinhId: hs.id,
-        shortName: hs.shortName,
-      };
-    });
-    //Class
-    const lopNhomMoi = new LopNhom({
-      tenLopNhom: tenLopNhom,
-      giaoVienLopNhom: arrGiaoVienLopNhom,
-      hocSinhLopNhom: arrHocSinhLopNhom,
-    });
-    //Fetch
+    const lopNhomMoi = createNewInstanceLopNhom();
     const { statusCode, dataGot } = await lopNhomMoi.themLopNhom();
-    //Đẩy thông báo
+    dayThongBao(statusCode, dataGot);
+  };
+  const createNewInstanceLopNhom = () => {
+    const instanceLopNhom = new LopNhom({
+      tenLopNhom: layTenLopNhom() || "",
+      giaoVienLopNhom: arrGiaoVienDataSubmit,
+      hocSinhLopNhom: arrHocSinhDataSubmit,
+    });
+    return instanceLopNhom;
+  };
+  const layTenLopNhom = () => {
+    return tenLopNhomRef.current.value;
+  };
+  const dayThongBao = (statusCode, dataGot) => {
     setTimeout(() => {
       notiCtx.clearNoti();
       if (statusCode === 200 || statusCode == 201) {
-        router.reload();
+        reloadPage();
       }
     }, process.env.DELAY_TIME_NOTI);
     window.scrollTo(0, 0);
     notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
-  //Cb Hủy thêm
   const huyThemLopNhomHandler = () => {
+    reloadPage();
+  };
+  const reloadPage = () => {
     router.reload();
   };
-  //Xử lý biến tĩnh quyết định có được chốt không
-  let disChot = true;
-  const arrGvDaChon = arrGiaoVienRender.filter((i) => i.isSelected);
-  const arrHsDaChon = arrHocSinhRender.filter((i) => i.isSelected);
-  if (arrGvDaChon.length > 0 && arrHsDaChon.length > 0) {
-    disChot = false;
-  }
 
-  //Trả
   return (
     <Card>
       <section className={classes.container}>
@@ -109,7 +130,6 @@ const ThemLopNhomPage = (props) => {
             doAction1={themLopNhomHandler}
             doAction2={huyThemLopNhomHandler}
             description="Phải chọn giáo viên và học sinh mới được Chốt nhé."
-            disAction1={disChot}
           />
         </div>
       </section>
