@@ -128,6 +128,7 @@ const handler = async (req, res) => {
           dataEdit[prop] = req.body[prop];
         }
       }
+
       //Tiến hành sửa
       await db
         .collection("hocsinhs")

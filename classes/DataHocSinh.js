@@ -1,4 +1,5 @@
 import { sortArtByLastShortName } from "../helper/uti";
+const API_GET_DATA_HOCSINH_ROUTE = "/api/hocsinh/getDataHocSinh";
 
 class DataHocSinh {
   static arrHocSinhCaNhan = [];
@@ -42,6 +43,17 @@ class DataHocSinh {
     if (hsMatched) {
       return hsMatched;
     }
+  };
+
+  static loadDataHocSinhTheoId = async (hocSinhId) => {
+    const response = await fetch(API_GET_DATA_HOCSINH_ROUTE, {
+      method: "POST",
+      body: JSON.stringify(hocSinhId),
+      headers: { "Content-Type": "application/json" },
+    });
+    const statusCode = response.status;
+    const dataGot = await response.json();
+    return { statusCode, dataGot };
   };
 }
 export default DataHocSinh;

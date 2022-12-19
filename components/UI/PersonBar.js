@@ -35,7 +35,7 @@ const PersonBar = (props) => {
       {/* Phần nút actions */}
       <div className={classes.actions}>
         <div className={classes.editBtn}>
-          <Link href={`/${mainRoute}/sua/${id}`}>
+          <Link href={`/${mainRoute}/sua?hocSinhId=${id}`}>
             <p>Sửa</p>
           </Link>
         </div>

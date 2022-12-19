@@ -113,7 +113,8 @@ const ThemHsPage = (props) => {
     e.preventDefault();
     const hocSinhUpdate = taoInstanceHocSinhMoi();
     const { statusCode, dataGot } = await hocSinhUpdate.suaHocSinh(
-      dataHocSinh.id
+      //Fetch ở FE nên không có chuyển đổi id, dùng _ id
+      dataHocSinh._id
     );
     dayThongBao(statusCode, dataGot);
   };
