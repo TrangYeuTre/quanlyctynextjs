@@ -1,5 +1,7 @@
 import { sortArtByLastShortName } from "../helper/uti";
 
+const API_GETDATA_GIAOVIEN_ROUTE = "/api/giaovien/getDataGiaoVien";
+
 class DataGiaoVien {
   static arrGiaoVien = [];
   static giaoVienChonData = {};
@@ -46,6 +48,17 @@ class DataGiaoVien {
       }
     }
     return arrGiaoVienClone;
+  };
+
+  static loadDataGiaoVienTheoId = async (id) => {
+    const response = await fetch(API_GETDATA_GIAOVIEN_ROUTE, {
+      method: "POST",
+      body: JSON.stringify(id),
+      headers: { "Content-Type": "application/json" },
+    });
+    const statusCode = response.status;
+    const dataGot = await response.json();
+    return { statusCode, dataGot };
   };
 }
 export default DataGiaoVien;

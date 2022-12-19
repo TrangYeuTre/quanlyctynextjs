@@ -8,14 +8,13 @@ import { convertInputDateFormat } from "../../helper/uti";
 import { useContext } from "react";
 import NotiContext from "../../context/notiContext";
 import { useRouter } from "next/router";
-import DataGiaoVien from "../../classes/DataGiaoVien";
 
 const ThemGvPage = (props) => {
   //VARIABLES
   const notiCtx = useContext(NotiContext);
   const router = useRouter();
-  const { renderMode } = props;
-  const dataGiaoVien = DataGiaoVien.giaoVienChonData;
+  const { renderMode, dataGiaoVienSua } = props;
+  const dataGiaoVien = dataGiaoVienSua;
   const gioiTinhRef = useRef();
   const tenGiaoVienRef = useRef();
   const shortNameRef = useRef();
@@ -53,7 +52,7 @@ const ThemGvPage = (props) => {
     e.preventDefault();
     const giaoVienUpdate = createInstanceGiaoVien();
     const { statusCode, dataGot } = await giaoVienUpdate.suaGiaoVien(
-      dataGiaoVien.id
+      dataGiaoVien._id
     );
     dayThongBao(statusCode, dataGot);
   };
@@ -77,7 +76,7 @@ const ThemGvPage = (props) => {
     luongCaNhanRef.current.value = 160000;
     luongNhomRef.current.value = 90000;
   };
-  
+
   return (
     <Card>
       {renderMode === "them" && (
