@@ -2,7 +2,7 @@ import classes from "./DiemDanhCaNhan.module.css";
 import Card from "../UI/Card";
 import Layout28 from "../layout/layout-2-8";
 import PickGiaoVienBar from "../UI/PickGiaoVienBar";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { getArrDdcnByGvNThisMonth } from "./ddcn_helper";
 import { removeDomItem } from "../../helper/uti";
 import GiaoVienContext from "../../context/giaoVienContext";
@@ -16,7 +16,13 @@ import DataDiemDanhCaNhan from "../../classes/DataDiemDanhCaNhan";
 
 const ThongKeGiaoVienPage = (props) => {
   const arrGiaoVien = DataGiaoVien.arrGiaoVien;
-  const arrDiemDanhCaNhan = DataDiemDanhCaNhan.arrDiemDanhCaNhan;
+  const {
+    ngayThongKe,
+    thietLapNgayThongKe,
+    arrDdcnOfThisMonth,
+    thietLapGiaoVienChonId,
+  } = props;
+  // const arrDiemDanhCaNhan = DataDiemDanhCaNhan.arrDiemDanhCaNhan;
   //State render giao diện sửa cho hs
   const [hocSinhSua, setHocSinhSua] = useState(null);
   //Cb thiết lập data hs sua
@@ -32,14 +38,14 @@ const ThongKeGiaoVienPage = (props) => {
   //Lấy context giáo viên đẻ lấy id giáo viên được pick từ PickGiaoVienBar
   const giaoVienChonId = gvCtx.giaoVienSelectedId;
   //State ngày được chọn để điểm danh
-  const [ngayDiemDanh, setNgayDiemDanh] = useState(new Date());
-  const curTimeView = new Date(ngayDiemDanh).toLocaleString("en-GB", {
+  // const [ngayDiemDanh, setNgayDiemDanh] = useState(new Date());
+  const curTimeView = new Date(ngayThongKe).toLocaleString("en-GB", {
     month: "numeric",
     year: "numeric",
   });
   //Cb đổi ngày điểm danh
   const layNgayHandler = (date) => {
-    setNgayDiemDanh(new Date(date));
+    thietLapNgayThongKe(date);
   };
   //Cb xóa ngày điểm danh
   const xoaNgayDiemDanhHandler = async (ngayDiemDanhId) => {
@@ -58,13 +64,11 @@ const ThongKeGiaoVienPage = (props) => {
       message: dataGot.thongbao,
     });
   };
+  let arrDdcnByGvNThisMonth = arrDdcnOfThisMonth;
 
-  //Lấy lại mảng lọc điểm danh theo giáo viên id và tháng này
-  const arrDdcnByGvNThisMonth = getArrDdcnByGvNThisMonth(
-    arrDiemDanhCaNhan,
-    giaoVienChonId,
-    ngayDiemDanh
-  );
+  useEffect(() => {
+    thietLapGiaoVienChonId(giaoVienChonId);
+  }, [giaoVienChonId, thietLapGiaoVienChonId]);
   return (
     <Card>
       <Layout28>
