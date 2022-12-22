@@ -1,49 +1,44 @@
 import classes from "./DiemDanhCaNhan.module.css";
 import ChonNguoi from "../UI/ChonNguoi";
-import { laylabelThuTuNgay, layTenThuTuNgay } from "../../helper/uti";
-import { locMangHsDayChinh } from "./ddcn_helper";
+import { laylabelThuTuNgay } from "../../helper/uti";
+import { locMangHsDayChinhTheoThuLabel } from "./ddcn_helper";
 import { useEffect, useContext } from "react";
 import ChonNguoiContext from "../../context/chonNguoiContext";
 import NgayChot from "../UI/NgayChot";
 
 const DayChinh = (props) => {
-  //Lấy data giáo viên về đã
   const { dataGiaoVien, ngayDiemDanh, arrHocSinhTangCuong } = props;
-  //Lấy ctx chon người
   const chonNguoiCtx = useContext(ChonNguoiContext);
   const arrHocSinhCtx = chonNguoiCtx.arrHocSinh;
-  //Ở đay lấy mảng giáo viên ctx ctrong chọn người để render tạm cho phần hs tăng cường
   const arrHsTangCuongCtx = chonNguoiCtx.arrGiaoVien;
-  //Từ quyết định arr hs tăng cường nào được render
-  let arrHsTangCuongRender = arrHocSinhTangCuong;
-  if (arrHsTangCuongCtx && arrHsTangCuongCtx.length > 0) {
-    arrHsTangCuongRender = arrHsTangCuongCtx;
-  }
-
-  //Xử lý mảng học sinh nghỉ khi bỏ chọn ở mảng chính
-  let arrHocSinhNghi = [];
-  if (arrHocSinhCtx) {
-    arrHocSinhNghi = arrHocSinhCtx.filter((hocsinh) => !hocsinh.isSelected);
-  }
-  //Lấy thứ từ ngày điểm danh để lọc ra hs của ngày được chọn
   const labelThuNgayDiemDanh = laylabelThuTuNgay(ngayDiemDanh).toLowerCase();
 
-  //Side effect load mảng hc dạy chính
+  //HANDLERS
+  const arrHsTangCuongRender = xuLyLayArrHsTangCuongRender(
+    arrHocSinhTangCuong,
+    arrHsTangCuongCtx
+  );
+  const arrHocSinhNghi = xuLyLayArrHsNghiKhiBoChonHsChinh(arrHocSinhCtx);
+
+  //SIDE EFFECT
   useEffect(() => {
-    //Lấy lại mảng lich dạy cá nhâ
-    let arrLichDayCaNhan = [];
-    if (dataGiaoVien) {
-      arrLichDayCaNhan = dataGiaoVien.lichDayCaNhan;
-    }
-    //Xử lý lấy mảng học sinh của giáo viên được chọn auto theo ngày được chọn
-    const arrHsChonTrue = locMangHsDayChinh(
+    //GHI CHÚ: ví dụ hôm nay là thứ sáu thì label là fri, load theo lịch học trò của giáo viên này những hs học thứ sáu thì auto đánh selected true
+    //Phần dependencies nếu thêm ctx như gợi ý sẽ loop vô cực
+    const arrLichDayCaNhan = dataGiaoVien.lichDayCaNhan;
+    const isDungXuLyChonHsDayChinhMacDinhTheoThu = () => {
+      if (!arrLichDayCaNhan || arrLichDayCaNhan.length === 0) {
+        return;
+      }
+    };
+    isDungXuLyChonHsDayChinhMacDinhTheoThu();
+
+    const arrHsChinhMacDinhTrueCuaGiaoVien = locMangHsDayChinhTheoThuLabel(
       arrLichDayCaNhan,
-      labelThuNgayDiemDanh,
+      labelThuNgayDiemDanh
     );
-    //Xử lý ưu tiên nếu arrhocSinhCtx có thì dùng cái này
-    chonNguoiCtx.chonHocSinh(arrHsChonTrue);
+    chonNguoiCtx.chonHocSinh(arrHsChinhMacDinhTrueCuaGiaoVien);
   }, [labelThuNgayDiemDanh, dataGiaoVien]);
-  
+
   return (
     <div className={classes.container}>
       {/* Vùng chọn hs dạy chính */}
@@ -81,6 +76,25 @@ const DayChinh = (props) => {
       <ChonNguoi arrPeople={arrHsTangCuongRender} type="giaovien" />
     </div>
   );
+};
+
+//SUB FUNCTIONS
+const xuLyLayArrHsTangCuongRender = (
+  arrHocSinhTangCuong,
+  arrHsTangCuongCtx
+) => {
+  let arrHsTangCuongRender = arrHocSinhTangCuong;
+  if (arrHsTangCuongCtx && arrHsTangCuongCtx.length > 0) {
+    arrHsTangCuongRender = arrHsTangCuongCtx;
+  }
+  return arrHsTangCuongRender;
+};
+const xuLyLayArrHsNghiKhiBoChonHsChinh = (arrHocSinhCtx) => {
+  let arrHocSinhNghi = [];
+  if (arrHocSinhCtx) {
+    arrHocSinhNghi = arrHocSinhCtx.filter((hocsinh) => !hocsinh.isSelected);
+  }
+  return arrHocSinhNghi;
 };
 
 export default DayChinh;

@@ -6,6 +6,7 @@ import DataGiaoVien from "../../classes/DataGiaoVien";
 import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
 import { redirectPageAndResetState } from "../../helper/uti";
+import Loading from "../../components/UI/Loading";
 
 const ThemLopNhomRoute = (props) => {
   //VARIABLES
@@ -30,7 +31,7 @@ const ThemLopNhomRoute = (props) => {
     return !isLoggedIn || !arrHsNhom || !arrGiaoVien;
   };
   if (isProcessing()) {
-    return <h1>Đang xử lý ...</h1>;
+    return <Loading />;
   }
 
   return (

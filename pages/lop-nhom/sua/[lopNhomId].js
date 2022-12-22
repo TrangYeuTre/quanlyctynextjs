@@ -10,6 +10,7 @@ import {
   redirectPageAndResetState,
   layObjChuyenDoiDataTuMongodb,
 } from "../../../helper/uti";
+import Loading from "../../../components/UI/Loading";
 
 const SuaLopNhomRoute = (props) => {
   //VARIABLE
@@ -34,7 +35,7 @@ const SuaLopNhomRoute = (props) => {
     return !isLoggedIn || !lopNhom || !arrHocSinhNhom || !arrGiaoVien;
   };
   if (isProcessing()) {
-    return <h1>Đang xử lý ...</h1>;
+    return <Loading />;
   }
 
   return <SuaLopNhomPage />;

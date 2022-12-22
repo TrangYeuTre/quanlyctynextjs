@@ -20,7 +20,7 @@ export const xoaItemHocSinhTrungTrongMang = (arr) => {
   return arrResult;
 };
 //Support cho comp Diểm danh cá nhân
-export const locMangHsDayChinh = (arrLichDayCaNhan, labelThuNgayDiemDanh) => {
+export const locMangHsDayChinhTheoThuLabel = (arrLichDayCaNhan, labelThuNgayDiemDanh) => {
   //Lọc lại mảng này theo théu
   let arrLichDayCaNhanByThu = [];
   if (arrLichDayCaNhan.length > 0) {
@@ -405,35 +405,29 @@ export const getDataSubmitSuaNgayDiemDanh = (
 };
 
 //PHÂN NAY THONG KE HOC SINH
-export const getArrDataDdcnThangHocSinhRender = (
-  arrDdcn,
-  ngayLoc,
-  hocSinhChonId
-) => {
-  //Tạo mảng chưa
+export const getArrDataDdcnThangHocSinhRender = (arrDdcn, hocSinhChonId) => {
+  if (
+    !arrDdcn ||
+    arrDdcn.length === 0 ||
+    !hocSinhChonId ||
+    hocSinhChonId === ""
+  ) {
+    return;
+  }
   let arrResult = [];
-  //Thag lọc
-  const locMonth = new Date(ngayLoc).getMonth();
-  //Lọc theo tháng
-  const arrFilterMonth = arrDdcn.filter(
-    (item) => new Date(item.ngayDiemDanh).getMonth() === locMonth
-  );
-  //Lọc theo id học sinh chọn
-  const arrFilterByHocSinh = arrFilterMonth.filter((item) =>
-    item.hasOwnProperty(hocSinhChonId)
-  );
-  console.log(hocSinhChonId);
-  console.log(arrFilterMonth);
-  //Đẩy kết quả
-  arrFilterByHocSinh.forEach((item) => {
+  arrDdcn.forEach((item) => {
     arrResult.push({
       ngayDiemDanh: item.ngayDiemDanh,
       gvShortName: item.shortName,
-      type: item[hocSinhChonId].type,
-      soPhutHocMotTiet: item[hocSinhChonId].soPhutHocMotTiet || null,
+      type: item[hocSinhChonId] ? item[hocSinhChonId].type : null,
+      soPhutHocMotTiet: item[hocSinhChonId]
+        ? item[hocSinhChonId].soPhutHocMotTiet
+        : null,
     });
   });
   //sort lại theo ngày
-  arrResult.sort((a, b) => (new Date(a) < new Date(b) ? -1 : 1));
+  arrResult.sort((a, b) =>
+    new Date(a.ngayDiemDanh) < new Date(b.ngayDiemDanh) ? -1 : 1
+  );
   return arrResult;
 };

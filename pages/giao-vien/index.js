@@ -33,7 +33,7 @@ const GiaoVienRoute = (props) => {
   };
 
   if (isProcessing()) {
-    return <h1>Đang xử lý ...</h1>;
+    return <Loading />;
   }
 
   return loading && <Loading />;

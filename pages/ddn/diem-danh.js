@@ -5,26 +5,38 @@ import DataGiaoVien from "../../classes/DataGiaoVien";
 import DataLopNhom from "../../classes/DataLopNhom";
 import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
+import Loading from "../../components/UI/Loading";
+import {
+  redirectPageAndResetState,
+  layMangChuyenDoiDataTuMongodb,
+} from "../../helper/uti";
 
 const DiemDanhNhomRoute = (props) => {
+  //VARIABLES
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const { arrLopNhom, arrGiaoVien } = props;
+  DataLopNhom.loadArrLopNhom(arrLopNhom);
+  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
+
+  //SIDE EFFECT
   useEffect(() => {
     getSession().then((session) => {
       if (session) {
         setLoggedIn(true);
       } else {
         setLoggedIn(false);
-        window.location.href = "/auth/login";
+        redirectPageAndResetState("/auth/login");
       }
     });
   }, []);
-  if (!isLoggedIn) {
-    return <h1>Đang xử lý ...</h1>;
+
+  const isProcessing = () => {
+    return !isLoggedIn || !arrLopNhom || !arrGiaoVien;
+  };
+  if (isProcessing()) {
+    return <Loading />;
   }
 
-  const { arrLopNhom, arrGiaoVien } = props;
-  DataLopNhom.loadArrLopNhom(arrLopNhom);
-  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
   return (
     <ChonNguoiProvider>
       <DiemDanhNhomPage />
@@ -32,9 +44,8 @@ const DiemDanhNhomRoute = (props) => {
   );
 };
 
-//SSG lấy lớp nhóm
+//SSG
 export async function getStaticProps() {
-  //Kết nối db trước
   let client, db;
   try {
     const { clientGot, dbGot } = await ConnectMongo();
@@ -45,44 +56,30 @@ export async function getStaticProps() {
       notFound: true,
     };
   }
-  //Lấy mảng lớp nhóm
+
   let arrLopNhom = [];
-  //Lấy mảng giáo viên để chọn thêm nếu cần
   let arrGiaoVien = [];
   try {
     const arrLopNhomGot = await db.collection("lopnhoms").find().toArray();
-    const arrLopNHomConvert = arrLopNhomGot.map((item) => {
-      return {
-        id: item._id.toString(),
-        tenLopNhom: item.tenLopNhom,
-        giaoVienLopNhom: item.giaoVienLopNhom,
-      };
-    });
-    arrLopNhom = arrLopNHomConvert;
+    const arrNeededProps = ["id", "tenLopNhom", "giaoVienLopNhom"];
+    arrLopNhom = layMangChuyenDoiDataTuMongodb(arrLopNhomGot, arrNeededProps);
   } catch (err) {
     client.close();
     return {
       notFound: true,
     };
-  } //end try-catch lấy ds lớpn nhom
+  }
   try {
     const arrGvGot = await db.collection("giaoviens").find().toArray();
-    const arrGvConvert = arrGvGot.map((item) => {
-      return {
-        id: item._id.toString(),
-        shortName: item.shortName,
-        luongNhom: item.luongNhom,
-      };
-    });
-    arrGiaoVien = arrGvConvert;
+    const arrNeededProps = ["id", "shortName", "luongNhom"];
+    arrGiaoVien = layMangChuyenDoiDataTuMongodb(arrGvGot, arrNeededProps);
   } catch (err) {
     client.close();
     return {
       notFound: true,
     };
-  } //end try-catch lấy ds giáo viên
+  }
 
-  //Trả cuối
   return {
     props: {
       arrLopNhom,

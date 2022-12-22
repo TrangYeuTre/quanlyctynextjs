@@ -20,34 +20,27 @@ import DataGiaoVien from "../../classes/DataGiaoVien";
 import DataLopNhom from "../../classes/DataLopNhom";
 
 const DiemDanhNhomPage = (props) => {
+  //VARIABLES
   const arrGiaoVien = DataGiaoVien.arrGiaoVien;
   const arrLopNhom = DataLopNhom.arrLopNhom;
   const router = useRouter();
-  //Lấy context chọn người
   const chonNguoiCtx = useContext(ChonNguoiContext);
   const arrGiaoVienCtx = chonNguoiCtx.arrGiaoVien;
-  //Lấy context thông báo
   const notiCtx = useContext(NotiContext);
-
-  //State kiểm soát id lớp nhóm được chọn
   const [lopNhomChonId, setLopNhomChonId] = useState();
-  //Tạo một state dis actons1 của ActionBar, khi bấm nút thêm thì dis nó, đến khi res thành công mới mở lại
   const [disChot, setDisChot] = useState(false);
-  //Lấy tên lớp nhóm chọn
   const tenLopNhomChon = DataLopNhom.traTenLopNhomChon(lopNhomChonId);
-  //State kiểm soát ngày được chọn để điểm danh
   const [ngayChon, setNgayChon] = useState(new Date());
 
-  //Cb lấy ngày được chọn
+  //CALLBACKS
   const layNgayDiemDanhNhomHandler = (date) => {
     setNgayChon(date);
   };
-
-  //cb lấy lớp nhóm được chọn
   const layLopNhomChonIdHandler = (idLopNhom) => {
     setLopNhomChonId(idLopNhom);
   };
 
+  //HANDLERS
   //Lấy mảng giáo viên trong lớp nhóm trước
   const arrGiaoVienCuaLopNhom = layArrGvCuaLopNhom(arrLopNhom, lopNhomChonId);
   //Từ mảng giáo viên full isSelected false -> đánh giáo viên trong lớp nhóm trong mảng này isSelected true
@@ -55,26 +48,32 @@ const DiemDanhNhomPage = (props) => {
     arrGiaoVien,
     arrGiaoVienCuaLopNhom
   );
+  const chotArrGiaoVienRender = (arrGiaoVienDefault, arrGiaoVienCtx) => {
+    let arrGiaoVienRender = arrGiaoVienDefault;
+    if (arrGiaoVienCtx && arrGiaoVienCtx.length > 0) {
+      arrGiaoVienRender = arrGiaoVienCtx;
+    }
+    return arrGiaoVienRender;
+  };
+  const arrGiaoVienRender = chotArrGiaoVienRender(
+    arrGiaoVienDefault,
+    arrGiaoVienCtx
+  );
 
-  //QUyết định mảng nào được render
-  let arrGiaoVienRender = arrGiaoVienDefault;
-  if (arrGiaoVienCtx && arrGiaoVienCtx.length > 0) {
-    arrGiaoVienRender = arrGiaoVienCtx;
-  }
-  //Cb chính ddn
+  //FUNTIONS
   const diemDanhNhomHandler = async () => {
     setDisChot(true);
-    //Lấy data submit
     const { instanceDdnMoi, objGiaoVien } = layObjSubmit(
       ngayChon,
       arrGiaoVienRender,
       lopNhomChonId,
       tenLopNhomChon
     );
-    //Fetch thôi
     const { statusCode, dataGot } =
       await instanceDdnMoi.themNgayDiemDanhNhomMoi(objGiaoVien);
-    //Đẩy thông báo
+    dayThongBao(statusCode, dataGot);
+  };
+  const dayThongBao = (statusCode, dataGot) => {
     setTimeout(() => {
       notiCtx.clearNoti();
       setDisChot(false);
@@ -82,10 +81,10 @@ const DiemDanhNhomPage = (props) => {
     window.scrollTo(0, 0);
     notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
-  //Cb té ddn
   const huyDiemDanhNhomHandler = () => {
     router.reload();
   };
+
   return (
     <Card>
       <Layout28>

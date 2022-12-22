@@ -2,24 +2,25 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Loading from "../../components/UI/Loading";
 import { getSession } from "next-auth/react";
+import { redirectPageAndResetState } from "../../helper/uti";
 
 const DiemDanhNhomRoute = (props) => {
+  //VARIABELS
   const router = useRouter();
-  //State loading
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setLoggedIn] = useState(false);
+
+  //SIDE EFFECT
   useEffect(() => {
     getSession().then((session) => {
       if (session) {
         setLoggedIn(true);
       } else {
         setLoggedIn(false);
-        window.location.href = "/auth/login";
+        redirectPageAndResetState("/auth/login");
       }
     });
   }, []);
-
-  //Side effect set loading
   useEffect(() => {
     if (router.asPath && router.asPath === "/ddn/diem-danh") {
       setLoading(false);
@@ -29,7 +30,7 @@ const DiemDanhNhomRoute = (props) => {
   }, [router]);
 
   if (!isLoggedIn) {
-    return <h1>Đang xử lý ...</h1>;
+    return <Loading />;
   }
 
   return loading && <Loading />;

@@ -7,6 +7,7 @@ import {
   redirectPageAndResetState,
   layMangChuyenDoiDataTuMongodb,
 } from "../../helper/uti";
+import Loading from "../../components/UI/Loading";
 
 const DsHocSinhNhomRoute = (props) => {
   //VARIABLES
@@ -25,7 +26,7 @@ const DsHocSinhNhomRoute = (props) => {
   }, []);
 
   if (!isLoggedIn) {
-    return <h1>Đang xử lý ...</h1>;
+    return <Loading />;
   }
   //Tạo class data hs
   DataHocSinh.loadArrHocSinhNhom(arrHocSinh);

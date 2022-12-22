@@ -2,6 +2,7 @@ import ThemHsPage from "../../components/hocsinh/ThemHs";
 import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
 import { redirectPageAndResetState } from "../../helper/uti";
+import Loading from "../../components/UI/Loading";
 
 const ThemHocSinhRoute = (props) => {
   //VARIABLE
@@ -19,9 +20,9 @@ const ThemHocSinhRoute = (props) => {
   }, []);
 
   if (!isLoggedIn) {
-    return <h1>Đang xử lý ...</h1>;
+    return <Loading />;
   }
-  
+
   return <ThemHsPage renderMode="them" />;
 };
 

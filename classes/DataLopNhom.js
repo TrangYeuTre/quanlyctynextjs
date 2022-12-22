@@ -1,4 +1,3 @@
-
 class DataLopNhom {
   static arrLopNhom = [];
   static lopNhomChonData = {};

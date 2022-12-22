@@ -2,9 +2,8 @@ import classes from "./DiemDanhCaNhan.module.css";
 import Card from "../UI/Card";
 import Layout28 from "../layout/layout-2-8";
 import PickGiaoVienBar from "../UI/PickGiaoVienBar";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import GiaoVienContext from "../../context/giaoVienContext";
-import { convertInputDateFormat } from "../../helper/uti";
 import {
   layMangHsTangCuongDeChon,
   lay3MangHsSubmit,
@@ -19,52 +18,57 @@ import ActionBar from "../UI/ActionBar";
 import { useRouter } from "next/router";
 import DataGiaoVien from "../../classes/DataGiaoVien";
 
-//Comp chính
 const DiemDanhCaNhanPage = (props) => {
-  // const { arrGiaoVien } = props;
-  const arrGiaoVien = DataGiaoVien.arrGiaoVien;
   const router = useRouter();
+  const arrGiaoVien = DataGiaoVien.arrGiaoVien;
   const gvCtx = useContext(GiaoVienContext);
   const notiCtx = useContext(NotiContext);
-  //Lấy context giáo viên đẻ lấy id giáo viên được pick từ PickGiaoVienBar
-  const giaoVienChonId = gvCtx.giaoVienSelectedId;
-  //Thêm ctx  chọn người ở đây để truyền xuống render và lấy ds học sinh chonhj luôn
   const chonNguoiCtx = useContext(ChonNguoiContext);
+  const giaoVienChonId = gvCtx.giaoVienSelectedId;
   const arrHocSinhChon = chonNguoiCtx.arrHocSinh;
-  //Mảng hs tăng cường chọn đã được lưu tạm trong arrGiaoVien trong chonNguoiCtx
   const arrHocSinhTangCuongCtx = chonNguoiCtx.arrGiaoVien;
-  //Lấy lại 2 mảng chính nghỉ và dạy chính của học sinh
-  const arrHocSinhNghi = arrHocSinhChon.filter((item) => !item.isSelected);
-  const arrHocSinhDayChinh = arrHocSinhChon.filter((item) => item.isSelected);
-  //State ngày được chọn để điểm danh
   const [ngayDiemDanh, setNgayDiemDanh] = useState(new Date());
-
-  //Cb đổi ngày điểm danh
-  const layNgayHandler = (date) => {
-    setNgayDiemDanh(new Date(date));
-  };
-  //Lọc lại data giáo viên được chọn để truyền xuống phần chọn hóc sinh điểm danh chính
   const dataGiaoVienDuocChon =
     DataGiaoVien.timKiemGiaoVienTheoId(giaoVienChonId);
 
+  //CALLBACKS
+  const layNgayHandler = (date) => {
+    setNgayDiemDanh(new Date(date));
+  };
+  const locLaiArrHsNghi = (arrHsChon) => {
+    if (!arrHsChon || arrHsChon.length === 0) {
+      return;
+    }
+    const result = arrHsChon.filter((item) => !item.isSelected);
+    return result;
+  };
+  const locLaiArrHsDayChinh = (arrHsChon) => {
+    if (!arrHsChon || arrHsChon.length === 0) {
+      return;
+    }
+    const result = arrHsChon.filter((item) => item.isSelected);
+    return result;
+  };
 
+  //HANDLERS
   //Xử lý lấy mảng hs tăng cường để chọn ban đầu
-  const arrHocSinhTangCuong = layMangHsTangCuongDeChon(
+  const arrHocSinhTangCuongChonBanDau = layMangHsTangCuongDeChon(
     arrHocSinhChon,
     dataGiaoVienDuocChon
   );
-
   //xử lý lấy mảng hs tăng cường cuối đẻ submit
-  const arrHsTangCuongFinal = layMangHsTangCuongDeSubmit(
-    arrHocSinhTangCuong,
+  const arrHsTangCuongSubmit = layMangHsTangCuongDeSubmit(
+    arrHocSinhTangCuongChonBanDau,
     arrHocSinhTangCuongCtx
   );
 
+  const arrHocSinhDayChinhSubmit = locLaiArrHsDayChinh(arrHocSinhChon);
+  const arrHocSinhNghiSubmit = locLaiArrHsNghi(arrHocSinhChon);
   //Convert format lại các mảng cần cho submit
   const { arrHsHocChinh, arrHsNghi, arrHsTangCuong } = lay3MangHsSubmit(
-    arrHocSinhDayChinh,
-    arrHocSinhNghi,
-    arrHsTangCuongFinal
+    arrHocSinhDayChinhSubmit,
+    arrHocSinhNghiSubmit,
+    arrHsTangCuongSubmit
   );
 
   //Chuyển mảng trên và các info cần thiét thành objSubmit, obj này là instance của class DDCN
@@ -77,14 +81,15 @@ const DiemDanhCaNhanPage = (props) => {
     dataGiaoVienDuocChon
   );
 
-  //CB chính submit
+  //FUNCITONS
   const diemDanhCaNhanHandler = async () => {
     const { statusCode, dataGot } =
       await instanceDdcnMoi.themDiemDanhDayChinhMoi(objHocSinhData);
-    //Chạy push noti
+    dayThongBao(statusCode, dataGot);
+  };
+  const dayThongBao = (statusCode, dataGot) => {
     setTimeout(() => {
       notiCtx.clearNoti();
-      // router.reload();
     }, process.env.DELAY_TIME_NOTI);
     notiCtx.pushNoti({
       status: statusCode,
@@ -92,8 +97,10 @@ const DiemDanhCaNhanPage = (props) => {
     });
     window.scrollTo(0, 0);
   };
-  //CB hủy điể danh
-  const huyDiemDanhHandler = () => {};
+
+  const huyDiemDanhHandler = () => {
+    router.reload();
+  };
 
   return (
     <Card>
@@ -112,7 +119,7 @@ const DiemDanhCaNhanPage = (props) => {
                 <DayChinh
                   dataGiaoVien={dataGiaoVienDuocChon}
                   ngayDiemDanh={ngayDiemDanh}
-                  arrHocSinhTangCuong={arrHocSinhTangCuong}
+                  arrHocSinhTangCuong={arrHocSinhTangCuongChonBanDau}
                 />
               </div>
             )}

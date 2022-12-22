@@ -4,6 +4,7 @@ import DataGiaoVien from "../../classes/DataGiaoVien";
 import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
 import { layMangChuyenDoiDataTuMongodb } from "../../helper/uti";
+import Loading from "../../components/UI/Loading";
 
 const DsHocSinhCaNhanRoute = (props) => {
   //VARIABLES
@@ -27,7 +28,7 @@ const DsHocSinhCaNhanRoute = (props) => {
     return !isLoggedIn || !arrGiaoVien;
   };
   if (isProcessing()) {
-    return <h1>Đang xử lý ...</h1>;
+    return <Loading />;
   }
 
   return <DanhSachGiaoVienPage />;

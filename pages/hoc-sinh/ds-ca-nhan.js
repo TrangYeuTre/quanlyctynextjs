@@ -7,6 +7,7 @@ import {
   redirectPageAndResetState,
   layMangChuyenDoiDataTuMongodb,
 } from "../../helper/uti";
+import Loading from "../../components/UI/Loading";
 
 const DsHocSinhCaNhanRoute = (props) => {
   //VARIABLES
@@ -26,7 +27,7 @@ const DsHocSinhCaNhanRoute = (props) => {
   }, []);
 
   if (!isLoggedIn) {
-    return <h1>Đang xử lý ...</h1>;
+    return <Loading />;
   }
   return <DanhSachHocSinhCaNhanPage />;
 };

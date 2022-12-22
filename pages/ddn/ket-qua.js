@@ -1,42 +1,49 @@
 import ConnectMongo from "../../helper/connectMongodb";
 import KetQuaDiemDanhNhomPage from "../../components/ddn/KetQuaDiemDanhNhom";
 import ChonNguoiProvider from "../../context/chonNguoiProvider";
-import {
-  getFirstLastDateOfThisMonth,
-  getFirstLastDateOfPrevMonth,
-} from "../../helper/uti";
 import DataLopNhom from "../../classes/DataLopNhom";
 import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
+import Loading from "../../components/UI/Loading";
+import {
+  redirectPageAndResetState,
+  layMangChuyenDoiDataTuMongodb,
+} from "../../helper/uti";
 
 const KetQuaDiemDanhNhomRoute = (props) => {
+  //VARIABLES
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const { arrLopNhom } = props;
+  DataLopNhom.loadArrLopNhom(arrLopNhom);
+
+  //SIDE EFFECT
   useEffect(() => {
     getSession().then((session) => {
       if (session) {
         setLoggedIn(true);
       } else {
         setLoggedIn(false);
-        window.location.href = "/auth/login";
+        redirectPageAndResetState("/auth/login");
       }
     });
   }, []);
-  if (!isLoggedIn) {
-    return <h1>Đang xử lý ...</h1>;
+
+  const isProcessing = () => {
+    return !isLoggedIn || !arrLopNhom;
+  };
+  if (isProcessing()) {
+    return <Loading />;
   }
 
-  const { arrDiemDanhNhomFilter, arrLopNhom } = props;
-  DataLopNhom.loadArrLopNhom(arrLopNhom);
   return (
     <ChonNguoiProvider>
-      <KetQuaDiemDanhNhomPage arrDdnFitler={arrDiemDanhNhomFilter} />
+      <KetQuaDiemDanhNhomPage />
     </ChonNguoiProvider>
   );
 };
 
-//SSG lấy lớp nhóm
+//SSG
 export async function getStaticProps() {
-  //Kết nối db trước
   let client, db;
   try {
     const { clientGot, dbGot } = await ConnectMongo();
@@ -48,66 +55,25 @@ export async function getStaticProps() {
     };
   }
 
-  //Tạo biến ngày hiện tại để lọc data
-  const now = new Date();
-  //Từ biến now này lấy ngày đầu của tháng trước và ngày cuối của tháng này để làm biên lọc data mongodb
-  const { firstDateOfThisMonth, lastDateOfThisMonth } =
-    getFirstLastDateOfThisMonth(now);
-  const { firstDateOfPrevMonth, lastDateOfPrevMonth } =
-    getFirstLastDateOfPrevMonth(now);
-  //Ta có 2 biên lọc
-  //   console.log(firstDateOfPrevMonth, lastDateOfThisMonth);
-  let arrDiemDanhNhomFilter = [];
-  //Lấy mảng điểm danh cá nhân
   try {
-    const arrDdn = await db
-      .collection("diemdanhnhoms")
-      .find({
-        ngayDiemDanh: {
-          $gte: firstDateOfPrevMonth,
-          $lte: lastDateOfThisMonth,
-        },
-      })
-      .toArray();
-    //Convert id
-    arrDdn.forEach((item) => {
-      item.id = item._id.toString();
-      delete item._id;
-    });
-    arrDiemDanhNhomFilter = arrDdn;
+    const arrLopNhomGot = await db.collection("lopnhoms").find().toArray();
+    const arrNeededProps = ["id", "tenLopNhom"];
+    const arrLopNhom = layMangChuyenDoiDataTuMongodb(
+      arrLopNhomGot,
+      arrNeededProps
+    );
+    return {
+      props: {
+        arrLopNhom,
+      },
+      revalidate: 10,
+    };
   } catch (err) {
     client.close();
     return {
       notFound: true,
     };
   }
-  //Lấy mảng lớp nhóm
-  let arrLopNhom = [];
-  try {
-    const arrLopNhomGot = await db.collection("lopnhoms").find().toArray();
-    const arrLopNHomConvert = arrLopNhomGot.map((item) => {
-      return {
-        id: item._id.toString(),
-        tenLopNhom: item.tenLopNhom,
-      };
-    });
-    arrLopNhom = arrLopNHomConvert;
-  } catch (err) {
-    client.close();
-    return {
-      notFound: true,
-    };
-  } //end try-catch lấy ds lớpn nhom
-
-  //Trả cuối
-  client.close();
-  return {
-    props: {
-      arrDiemDanhNhomFilter,
-      arrLopNhom,
-    },
-    revalidate: 10,
-  };
 }
 
 export default KetQuaDiemDanhNhomRoute;

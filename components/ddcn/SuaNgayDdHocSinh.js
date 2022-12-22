@@ -7,11 +7,10 @@ import NotiContext from "../../context/notiContext";
 import DiemDanhCaNhan from "../../classes/DiemDanhCaNhan";
 
 const SuaNgayDiemDanhCuaHocSinhPage = (props) => {
+  //VARIABLES
   const { data, arrGiaoVien, tatTrangSua } = props;
   const router = useRouter();
   const notiCtx = useContext(NotiContext);
-  //Des ra các prop chung
-  //2 props quan trọng : ngayDiemDanhId để tìm trực tiếp obj trên db đẻ sửa, hocSInhId để tìm học sinh trong obj đéo để sửa
   const {
     ngayDiemDanhId,
     hocSinhId,
@@ -22,59 +21,40 @@ const SuaNgayDiemDanhCuaHocSinhPage = (props) => {
     giaoVienDayTheId,
     giaoVienDayBuId,
   } = data;
-
-  //Ref var
-
-  //State quan sát type điểm danh để trong trường hợp đổi loại điểm danh cho ngày thì load form phù hợp
   const [typeDd, setTypeDd] = useState();
-
-  //State quan sát giáo viên dạy thế id
   const [gvDayTheId, setGvDayTheId] = useState("none");
-  //State quan sát giáo viên dạy thế id
   const [gvDayBuId, setGvDayBuId] = useState("none");
-  //State ngày nghỉ trước đó để chọn dạy bù
-  //State ngày dạy bù
   const [ngayDayBu, setNgayDayBu] = useState(
     convertInputDateFormat(new Date())
   );
-  //State hệ số haonf tiền
   const [heSoHoanTien, setHeSoHoanTien] = useState(0.7);
-  //State số phút học một tiêt
   const [timeHocMotTiet, setTimeHocMotTiet] = useState(
     soPhutHocMotTiet ? soPhutHocMotTiet : 45
   );
 
-  //Cb thiết lập laoij điểm danh
+  //CALLBACKS
   const thietLapLoaiDdHandler = (e) => {
     setTypeDd(e.target.value);
   };
-  //Cb thiết lập gv dạy thế id
   const thietLapGvTheIdHandler = (e) => {
     setGvDayTheId(e.target.value);
   };
-  //Cb thiết lập dạy bù id
   const thietLapGvBuIdHandler = (e) => {
     setGvDayBuId(e.target.value);
   };
-
-  //Cb thiết lập ngày dạy bù
   const thietLapNgayBuHandler = (e) => {
     setNgayDayBu(e.target.value);
   };
-  //Cb thiết lập hệ số hoàn tiền
   const thietLapHeSoHoanTienHandler = (e) => {
     setHeSoHoanTien(+e.target.value);
   };
-  //Cb thiết lập hệ số hoàn tiền
   const thietLapSoPhutHocHandler = (e) => {
     setTimeHocMotTiet(+e.target.value);
   };
-  //Cb tăt trang sửa, trở lại trang thống kê
   const tatTrangSuaHandler = () => {
     tatTrangSua();
   };
 
-  //Tổng hợp data submit
   const dataSubmit = getDataSubmitSuaNgayDiemDanh(
     ngayDiemDanhId,
     hocSinhId,
@@ -88,34 +68,24 @@ const SuaNgayDiemDanhCuaHocSinhPage = (props) => {
     heSoHoanTien,
     shortName
   );
-  //Cb chính sửa lại ngày điểm dánh
+
+  //FUNCTIONS
   const suaNgayDiemDanhHandler = async (e) => {
     e.preventDefault();
-    //Fetch
     const { statusCode, dataGot } = await DiemDanhCaNhan.suaNgayDiemDanhCaNhan(
       dataSubmit
     );
-    //Chạy push noti
-    setTimeout(() => {
-      notiCtx.clearNoti();
-      if (statusCode === 200 || statusCode === 201) {
-        tatTrangSuaHandler();
-        router.reload();
-      }
-    }, process.env.DELAY_TIME_NOTI);
-    window.scrollTo(0, 0);
-    notiCtx.pushNoti({
-      status: statusCode,
-      message: dataGot.thongbao,
-    });
+    dayThongBao(statusCode, dataGot);
   };
-  //Cb chính xóa ngày điểm dánh
   const xoaHocSinhDiemDanhHandler = async (hocSinhId) => {
-    const { statusCode, dataGot } = await DiemDanhCaNhan.xoaHocSinhTrongNgayDiemDanhCaNhan(
-      hocSinhId,
-      ngayDiemDanhId
-    );
-    //Chạy push noti
+    const { statusCode, dataGot } =
+      await DiemDanhCaNhan.xoaHocSinhTrongNgayDiemDanhCaNhan(
+        hocSinhId,
+        ngayDiemDanhId
+      );
+    dayThongBao(statusCode, dataGot);
+  };
+  const dayThongBao = (statusCode, dataGot) => {
     setTimeout(() => {
       notiCtx.clearNoti();
       if (statusCode === 200 || statusCode === 201) {
@@ -130,7 +100,7 @@ const SuaNgayDiemDanhCuaHocSinhPage = (props) => {
     });
   };
 
-  //Side effect sửa lại type
+  //SIDE ECFFECT
   useEffect(() => {
     setTypeDd(type);
     if (giaoVienDayTheId) {

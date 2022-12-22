@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
 import { redirectPageAndResetState } from "../../../helper/uti";
 import { useRouter } from "next/router";
+import Loading from "../../../components/UI/Loading";
 
 const SuaGiaoVienRoute = (props) => {
   //VARIABLES
@@ -40,7 +41,7 @@ const SuaGiaoVienRoute = (props) => {
     return !isLoggedIn || !dataGiaoVienSua;
   };
   if (isProcessing()) {
-    return <h1>Đang xử lý ...</h1>;
+    return <Loading />;
   }
 
   return <ThemGvPage dataGiaoVienSua={dataGiaoVienSua} renderMode="sua" />;

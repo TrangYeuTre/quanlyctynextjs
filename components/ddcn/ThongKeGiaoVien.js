@@ -3,7 +3,6 @@ import Card from "../UI/Card";
 import Layout28 from "../layout/layout-2-8";
 import PickGiaoVienBar from "../UI/PickGiaoVienBar";
 import { useContext, useState, useEffect } from "react";
-import { getArrDdcnByGvNThisMonth } from "./ddcn_helper";
 import { removeDomItem } from "../../helper/uti";
 import GiaoVienContext from "../../context/giaoVienContext";
 import NotiContext from "../../context/notiContext";
@@ -12,9 +11,9 @@ import ItemNgayDdcn from "./ItemNgayDdcn";
 import SuaNgayDiemDanhCuaHocSinhPage from "./SuaNgayDdHocSinh";
 import DiemDanhCaNhan from "../../classes/DiemDanhCaNhan";
 import DataGiaoVien from "../../classes/DataGiaoVien";
-import DataDiemDanhCaNhan from "../../classes/DataDiemDanhCaNhan";
 
 const ThongKeGiaoVienPage = (props) => {
+  //VARIABLES
   const arrGiaoVien = DataGiaoVien.arrGiaoVien;
   const {
     ngayThongKe,
@@ -22,37 +21,37 @@ const ThongKeGiaoVienPage = (props) => {
     arrDdcnOfThisMonth,
     thietLapGiaoVienChonId,
   } = props;
-  // const arrDiemDanhCaNhan = DataDiemDanhCaNhan.arrDiemDanhCaNhan;
-  //State render giao diện sửa cho hs
   const [hocSinhSua, setHocSinhSua] = useState(null);
-  //Cb thiết lập data hs sua
+  const gvCtx = useContext(GiaoVienContext);
+  const notiCtx = useContext(NotiContext);
+  const giaoVienChonId = gvCtx.giaoVienSelectedId;
+  const curTimeView = new Date(ngayThongKe).toLocaleString("en-GB", {
+    month: "numeric",
+    year: "numeric",
+  });
+  const arrDdcnByGvNThisMonth = arrDdcnOfThisMonth.sort((a, b) =>
+    new Date(a.ngayDiemDanh) < new Date(b.ngayDiemDanh) ? -1 : 1
+  );
+
+  //CALLBACKS
   const renderTrangSuaHocSinhHandler = (data) => {
     setHocSinhSua(data);
   };
   const huyRenderTrangSuaHsHandler = () => {
     setHocSinhSua(null);
   };
-  //Lấy ctx
-  const gvCtx = useContext(GiaoVienContext);
-  const notiCtx = useContext(NotiContext);
-  //Lấy context giáo viên đẻ lấy id giáo viên được pick từ PickGiaoVienBar
-  const giaoVienChonId = gvCtx.giaoVienSelectedId;
-  //State ngày được chọn để điểm danh
-  // const [ngayDiemDanh, setNgayDiemDanh] = useState(new Date());
-  const curTimeView = new Date(ngayThongKe).toLocaleString("en-GB", {
-    month: "numeric",
-    year: "numeric",
-  });
-  //Cb đổi ngày điểm danh
   const layNgayHandler = (date) => {
     thietLapNgayThongKe(date);
   };
-  //Cb xóa ngày điểm danh
+
+  //FUNCTIONS
   const xoaNgayDiemDanhHandler = async (ngayDiemDanhId) => {
     const { statusCode, dataGot } = await DiemDanhCaNhan.xoaNgayDiemDanhCaNhan(
       ngayDiemDanhId
     );
-    //Chạy push noti
+    dayThongBao(statusCode, dataGot, ngayDiemDanhId);
+  };
+  const dayThongBao = (statusCode, dataGot, ngayDiemDanhId) => {
     setTimeout(() => {
       notiCtx.clearNoti();
       if (statusCode === 200 || statusCode === 201) {
@@ -64,11 +63,12 @@ const ThongKeGiaoVienPage = (props) => {
       message: dataGot.thongbao,
     });
   };
-  let arrDdcnByGvNThisMonth = arrDdcnOfThisMonth;
 
+  //SIDE EFFECT
   useEffect(() => {
     thietLapGiaoVienChonId(giaoVienChonId);
   }, [giaoVienChonId, thietLapGiaoVienChonId]);
+
   return (
     <Card>
       <Layout28>

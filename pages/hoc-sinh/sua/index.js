@@ -1,15 +1,10 @@
 import ThemHsPage from "../../../components/hocsinh/ThemHs";
-// import ConnectMongoDb from "../../../helper/connectMongodb";
-// import { ObjectId } from "mongodb";
 import { useEffect, useState } from "react";
 import { getSession } from "next-auth/react";
-import {
-  redirectPageAndResetState,
-  layObjChuyenDoiDataTuMongodb,
-  layMangChuyenDoiDataTuMongodb,
-} from "../../../helper/uti";
+import { redirectPageAndResetState } from "../../../helper/uti";
 import { useRouter } from "next/router";
 import DataHocSinh from "../../../classes/DataHocSinh";
+import Loading from "../../../components/UI/Loading";
 
 const SuaHocSinhRoute = (props) => {
   //VARIABLES
@@ -46,7 +41,7 @@ const SuaHocSinhRoute = (props) => {
   };
 
   if (isProcessing()) {
-    return <h1>Đang xử lý ...</h1>;
+    return <Loading />;
   }
 
   return <ThemHsPage renderMode="sua" dataHocSinh={dataHocSinhSua} />;

@@ -9,6 +9,7 @@ import {
   layObjChuyenDoiDataTuMongodb,
   layMangChuyenDoiDataTuMongodb,
 } from "../../../helper/uti";
+import Loading from "../../../components/UI/Loading";
 
 const GanLichChoHocTroCuaGiaoVienDuocChonRoute = (props) => {
   //VARIABLE
@@ -33,7 +34,7 @@ const GanLichChoHocTroCuaGiaoVienDuocChonRoute = (props) => {
     return !isLoggedIn || !giaoVien || Object.keys(giaoVien).length === 0;
   };
   if (isProcessing()) {
-    return <h1>Đang xử lý ...</h1>;
+    return <Loading />;
   }
 
   return <GanLichChoHsPage arrHocTroCaNhan={hocTroCaNhan} />;

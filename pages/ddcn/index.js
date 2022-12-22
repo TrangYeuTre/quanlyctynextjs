@@ -33,7 +33,7 @@ const DdnROute = (props) => {
   }, [router]);
 
   if (!isLoggedIn) {
-    return <h1>Đang xử lý ...</h1>;
+    return <Loading />;
   }
 
   return loading && <Loading />;

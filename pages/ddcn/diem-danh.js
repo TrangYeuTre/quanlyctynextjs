@@ -9,6 +9,7 @@ import {
   redirectPageAndResetState,
   layMangChuyenDoiDataTuMongodb,
 } from "../../helper/uti";
+import Loading from "../../components/UI/Loading";
 
 const DiemDanhCaNhanRoute = (props) => {
   //VARIABLES
@@ -31,7 +32,7 @@ const DiemDanhCaNhanRoute = (props) => {
     return !isLoggedIn || !arrGiaoVien;
   };
   if (isProcessing()) {
-    return <h1>Đang xử lý ...</h1>;
+    return <Loading />;
   }
 
   return (

@@ -2,11 +2,15 @@ import ThongKeGiaoVienPage from "../../components/ddcn/ThongKeGiaoVien";
 import ConnectMongo from "../../helper/connectMongodb";
 import ChonNguoiProvider from "../../context/chonNguoiProvider";
 import { redirectPageAndResetState } from "../../helper/uti";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import DataGiaoVien from "../../classes/DataGiaoVien";
 import DataDiemDanhCaNhan from "../../classes/DataDiemDanhCaNhan";
+import Loading from "../../components/UI/Loading";
 import { getSession } from "next-auth/react";
-import { convertInputDateFormat } from "../../helper/uti";
+import {
+  convertInputDateFormat,
+  layMangChuyenDoiDataTuMongodb,
+} from "../../helper/uti";
 
 const ThongKeGiaoVienRoute = (props) => {
   //VARIABLES
@@ -77,7 +81,7 @@ const ThongKeGiaoVienRoute = (props) => {
     return !isLoggedIn || isFetching;
   };
   if (isProcessing()) {
-    return <h1>Đang xử lý ...</h1>;
+    return <Loading />;
   }
 
   return (
@@ -94,7 +98,6 @@ const ThongKeGiaoVienRoute = (props) => {
 
 //SSG
 export async function getStaticProps() {
-  //Kết nối db trước
   let client, db;
   try {
     const { clientGot, dbGot } = await ConnectMongo();
@@ -105,64 +108,26 @@ export async function getStaticProps() {
       notFound: true,
     };
   }
-  //Lấy mảng giáo viên về
-  let arrGiaoVien = [];
-  //Lấy mảng điêm danh cá nhân của giáo viên
+
   try {
     const arrGiaoVienGot = await db.collection("giaoviens").find().toArray();
-    //Map lại mảng giáo viên với _id thành id string
-    //Chú ý: chỉ map lại mảng có các prop cần thiết
-    const arrGiaoVienConvert = arrGiaoVienGot.map((gv) => {
-      return {
-        id: gv._id.toString(),
-        shortName: gv.shortName,
-      };
-    });
-    arrGiaoVien = arrGiaoVienConvert;
+    const arrNeededProps = ["id", "shortName"];
+    const arrGiaoVien = layMangChuyenDoiDataTuMongodb(
+      arrGiaoVienGot,
+      arrNeededProps
+    );
+    client.close();
+    return {
+      props: {
+        arrGiaoVien,
+      },
+    };
   } catch (err) {
     client.close();
     return {
       notFound: true,
     };
-  } //end try-catch lấy ds giáo viên
-  // //Tạo biến ngày hiện tại để lọc data
-  // const now = new Date();
-  // //Từ biến now này lấy ngày đầu của tháng trước và ngày cuối của tháng này để làm biên lọc data mongodb
-  // const { firstDateOfThisMonth, lastDateOfThisMonth } =
-  //   getFirstLastDateOfThisMonth(now);
-  // const { firstDateOfPrevMonth, lastDateOfPrevMonth } =
-  //   getFirstLastDateOfPrevMonth(now);
-  // //Ta có 2 biên lọc
-  // //   console.log(firstDateOfPrevMonth, lastDateOfThisMonth);
-  // let arrDiemDanhCaNhanFilter = [];
-  // //Lấy mảng điểm danh cá nhân
-  // try {
-  //   const arrDdcn = await db
-  //     .collection("diemdanhcanhans")
-  //     .find({
-  //       ngayDiemDanh: {
-  //         $gte: firstDateOfPrevMonth,
-  //         $lte: lastDateOfThisMonth,
-  //       },
-  //     })
-  //     .toArray();
-  //   //Convert id
-  //   arrDdcn.forEach((item) => (item._id = item._id.toString()));
-  //   arrDiemDanhCaNhanFilter = arrDdcn;
-  // } catch (err) {
-  //   client.close();
-  //   return {
-  //     notFound: true,
-  //   };
-  // }
-  //Trả cuối
-  client.close();
-  return {
-    props: {
-      arrGiaoVien,
-      // arrDiemDanhCaNhanFilter,
-    },
-  };
+  }
 }
 
 export default ThongKeGiaoVienRoute;
