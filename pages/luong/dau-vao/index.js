@@ -4,25 +4,37 @@ import LuongDauVaoPage from "../../../components/luong/dauVao/LuongDauVao";
 import DataGiaoVien from "../../../classes/DataGiaoVien";
 import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
+import {
+  redirectPageAndResetState,
+  layMangChuyenDoiDataTuMongodb,
+} from "../../../helper/uti";
+import Loading from "../../../components/UI/Loading";
 
 const LuongDauVaoRoute = (props) => {
+  //VARIABLES
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const { arrGiaoVien } = props;
+  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
+
+  //SIDE EFFECT
   useEffect(() => {
     getSession().then((session) => {
       if (session) {
         setLoggedIn(true);
       } else {
         setLoggedIn(false);
-        window.location.href = "/auth/login";
+        redirectPageAndResetState("/auth/login");
       }
     });
   }, []);
-  if (!isLoggedIn) {
-    return <h1>Đang xử lý ...</h1>;
+
+  const isProcessing = () => {
+    return !isLoggedIn || !arrGiaoVien;
+  };
+  if (isProcessing()) {
+    return <Loading />;
   }
 
-  const { arrGiaoVien } = props;
-  DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
   return (
     <ChonNguoiProvider>
       <LuongDauVaoPage />
@@ -30,11 +42,9 @@ const LuongDauVaoRoute = (props) => {
   );
 };
 
-//SSG lây mảng học sinh cá nhân ở để tính
+//SSG
 export async function getStaticProps() {
-  //Fetch trực tiếp lên mongodb đẻ lấy mảng học sinh luôn, không cần thông api nội bộ làm gì
   let client, db;
-  //Kết nối db trước
   try {
     const { clientGot, dbGot } = await ConnectMongoDb();
     client = clientGot;
@@ -42,24 +52,23 @@ export async function getStaticProps() {
   } catch (err) {
     return { notFound: true };
   }
-  // Lấy về mảng học sinh
   try {
     const arrGiaoVienGot = await db.collection("giaoviens").find().toArray();
-    const arrGiaoVienConvertId = arrGiaoVienGot.map((item) => {
-      return {
-        id: item._id.toString(),
-        tenGiaoVien: item.tenGiaoVien,
-        shortName: item.shortName,
-        luongCaNhan: item.luongCaNhan,
-        luongNhom: item.luongNhom,
-      };
-    });
-    //Đóng client
+    const arrNeededProps = [
+      "id",
+      "tenGiaoVien",
+      "shortName",
+      "luongCaNhan",
+      "luongNhom",
+    ];
+    const arrGiaoVien = layMangChuyenDoiDataTuMongodb(
+      arrGiaoVienGot,
+      arrNeededProps
+    );
     client.close();
-    //Trả
     return {
       props: {
-        arrGiaoVien: arrGiaoVienConvertId,
+        arrGiaoVien,
       },
       revalidate: 10,
     };

@@ -3,11 +3,8 @@ import LichItemViewOnly from "./LichItemViewOnly";
 import { Fragment } from "react";
 
 const LichSua = (props) => {
-  //Mong từ props ngày được chọn để lọc lịch theo tháng
-  //Chú ý khi truyền xuống thì ngayChon đã là ngày của tháng sau đê tính hp tháng sau, cơ chế ở comp này đang là tính thoe ngày chọn chứ không tự động công thêm 1 tháng
+  //VARIABLES
   const { ngayChon, lichDaChonNgay } = props;
-
-  //Lấy title
   const title = new Date(ngayChon).toLocaleString("en-GB", {
     month: "numeric",
     year: "numeric",

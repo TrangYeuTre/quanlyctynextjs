@@ -3,20 +3,32 @@ import ActionBar from "../../UI/ActionBar";
 import { useState, useEffect, useRef } from "react";
 
 const SuaNgayTrongLich = (props) => {
+  //VARIABLES
   const { huySua, dataNgayChon, getDataNgaySua } = props;
-  //State mảng lớp học để chọn
   const [arrLopHoc, setArrLopHoc] = useState([]);
-  //Ref cho các hệ số
   const hsCaNhanRef = useRef();
   const hsNhomRef = useRef();
   const hsTangCuongRef = useRef();
 
-  //Callback
+  //CALLBACKS
   const huySuaHandler = () => {
     huySua();
   };
-  const suaHandler = () => {
-    //Xử lý đánh lại hệ số
+
+  //FUNCTIONS
+  const suaMotCellLichHandler = () => {
+    capNhatHeSoChoCacLopHocDuocChon({
+      hsCaNhanRef: hsCaNhanRef,
+      hsNhomRef: hsNhomRef,
+      hsTangCuongRef: hsTangCuongRef,
+      arrLopHoc: arrLopHoc,
+    });
+    const arrCacLopHocDuocChon = capNhatCacLopHocDuocChon(arrLopHoc);
+    const dataCellUpdate = tongHopLaiDataCuaCellLichSua(arrCacLopHocDuocChon);
+    getDataNgaySua(dataCellUpdate);
+  };
+  const capNhatHeSoChoCacLopHocDuocChon = (data) => {
+    const { hsCaNhanRef, hsNhomRef, hsTangCuongRef, arrLopHoc } = data;
     if (hsCaNhanRef.current) {
       arrLopHoc[0].heso = +hsCaNhanRef.current.value;
     }
@@ -26,57 +38,82 @@ const SuaNgayTrongLich = (props) => {
     if (hsTangCuongRef.current) {
       arrLopHoc[2].heso = +hsTangCuongRef.current.value;
     }
-    //Filter lại mảng lớp học isSelected true
-    const arrFilter = arrLopHoc.filter((item) => item.isSelected);
-    //Conver nó thành obj data kiểu {canhan:2,nhom:1}
+  };
+  const capNhatCacLopHocDuocChon = (arrLopHoc) => {
+    if (!arrLopHoc || arrLopHoc.length === 0) {
+      return;
+    }
+    const arrCacLopHocChon = arrLopHoc.filter((item) => item.isSelected);
+    return arrCacLopHocChon;
+  };
+  const tongHopLaiDataCuaCellLichSua = (arrCacLopHocDuocChon) => {
+    //GHi chú: kq có dạng {idCell,canhan:2,nhom:1,donghanh:3}
     let objData = {};
-    arrFilter.forEach((item) => (objData[item.id] = item.heso));
-    //Add thêm prop idCell
+    arrCacLopHocDuocChon.forEach((item) => (objData[item.id] = item.heso));
     objData = {
       ...objData,
       idCell: dataNgayChon.idCell,
     };
-    //Cuối cùng trả lại comp trên
-    getDataNgaySua(objData);
+    return objData;
   };
-  //Cb chọn lớp học
-  const chonLopHocHandler = (id) => {
-    //Lấy mảng truóc đó
+
+  const chonLopHocHandler = (lopHocId) => {
     const preArrLopHoc = [...arrLopHoc];
-    //Đánh isSelect cho magnr này
-    if (preArrLopHoc.length > 0) {
-      const indexMatched = preArrLopHoc.findIndex((item) => item.id === id);
-      if (indexMatched !== -1) {
-        preArrLopHoc[indexMatched].isSelected =
-          !preArrLopHoc[indexMatched].isSelected;
-      }
+    if (!preArrLopHoc || preArrLopHoc.length === 0) {
+      return;
     }
-    //Set lại mảng
+    const lopHocMatched = timLopHocTheoId(preArrLopHoc, lopHocId);
+    switchChonLopHoc(lopHocMatched);
     setArrLopHoc(preArrLopHoc);
   };
-  //Side effect thiết lập mảng lớp học chọn
+  const timLopHocTheoId = (arrLopHoc, lopHocId) => {
+    if (!arrLopHoc || arrLopHoc.length === 0) {
+      return;
+    }
+    const lopHocMatched = arrLopHoc.find((item) => item.id === lopHocId);
+    if (!lopHocMatched) {
+      return;
+    }
+    return lopHocMatched;
+  };
+  const switchChonLopHoc = (lopHoc) => {
+    if (!lopHoc) {
+      return;
+    }
+    lopHoc.isSelected = !lopHoc.isSelected;
+  };
+
+  //SIDE EFFECT
   useEffect(() => {
-    //Tạo mảng mẫu chọn 3 loại lớp cá nhân, nhóm ,đồng hành
     let ARR_CHON_LOP = [
       { id: "canhan", name: "Cá nhân", heso: 1, isSelected: false },
       { id: "nhom", name: "Nhóm", heso: 1, isSelected: false },
       { id: "donghanh", name: "Đồng hành", heso: 1, isSelected: false },
     ];
-    if (dataNgayChon && dataNgayChon.loaiLop.length > 0) {
-      console.log("run ?");
-      //Trường hợp cần load loại lớp chọn sẵn khi có data truyền xuống
-      const arrLoaiLopDefault = dataNgayChon.loaiLop;
-      arrLoaiLopDefault.forEach((item) => {
-        const itemMatched = ARR_CHON_LOP.find((i) => i.id === item.loaiLop);
-        if (itemMatched) {
-          itemMatched.isSelected = true;
-          itemMatched.heso = item.heso;
-        }
-      });
-    } //end if
-    //Set mảng render ban đầu
-    setArrLopHoc(ARR_CHON_LOP);
+    const arrLopHocDefault = loadDataMacDinhCuaNgayDuocChonVaoUiSua(
+      ARR_CHON_LOP,
+      dataNgayChon
+    );
+    setArrLopHoc(arrLopHocDefault);
   }, [dataNgayChon]);
+  const loadDataMacDinhCuaNgayDuocChonVaoUiSua = (
+    ARR_CHON_LOP,
+    dataNgayChon
+  ) => {
+    if (!dataNgayChon || dataNgayChon.loaiLop.length === 0) {
+      return ARR_CHON_LOP;
+    }
+    const arrDataDefault = dataNgayChon.loaiLop;
+    arrDataDefault.forEach((item) => {
+      const itemMatched = ARR_CHON_LOP.find((i) => i.id === item.loaiLop);
+      if (itemMatched) {
+        itemMatched.isSelected = true;
+        itemMatched.heso = item.heso;
+      }
+    });
+    return ARR_CHON_LOP;
+  };
+
   return (
     <div className={classes.container}>
       <div className={classes.controls}>
@@ -135,7 +172,7 @@ const SuaNgayTrongLich = (props) => {
           action1="Té"
           action2="Sửa"
           doAction1={huySuaHandler}
-          doAction2={suaHandler}
+          doAction2={suaMotCellLichHandler}
           description="Muốn xóa thì bỏ chọn hết các lớp nhé."
         />
       </div>

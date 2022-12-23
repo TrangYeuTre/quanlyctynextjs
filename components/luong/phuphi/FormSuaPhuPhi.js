@@ -3,24 +3,21 @@ import { convertInputDateFormat } from "../../../helper/uti";
 import { useRef } from "react";
 
 const FormSuaPhuPhi = (props) => {
+  //VARIABLES
   const { dataNgayPhuPhi, suaNgayPhuPhi, huySua } = props;
-  //Các ref lấy value
   const ngayRef = useRef();
   const phuPhiRef = useRef();
   const ghiChuRef = useRef();
 
+  //CB
   const clearInput = () => {
     ghiChuRef.current.value = "";
     phuPhiRef.current.value = 0;
     document.getElementById("ghiChuPhuPhi").focus();
   };
-
-  //cb hủy sửa trở lại giao diện thêm
   const huySuaHandler = () => {
     huySua();
   };
-
-  //Cb lấy data ngày ghi chú
   const layDataNgayGhiChuHandler = (e) => {
     e.preventDefault();
     const data = {
@@ -33,6 +30,7 @@ const FormSuaPhuPhi = (props) => {
     huySua();
     clearInput();
   };
+  
   return (
     <form className={classes.formSuaPhuPhi} onSubmit={layDataNgayGhiChuHandler}>
       <div className={classes.control}>

@@ -5,37 +5,56 @@ import ConnectMongoDb from "../../helper/connectMongodb";
 import SuaLuongPage from "../../components/luong/SuaLuong";
 import DataGiaoVien from "../../classes/DataGiaoVien";
 import { getSession } from "next-auth/react";
+import {
+  redirectPageAndResetState,
+  layMangChuyenDoiDataTuMongodb,
+} from "../../helper/uti";
+import Loading from "../../components/UI/Loading";
 
 const SuaLuongRoute = (props) => {
+  //VARIABLES
   const router = useRouter();
   const { arrGiaoVien } = props;
-  //Lấy id lương tháng sửa
   const luongThangId = router.query.luongThangId;
   const giaoVienId = router.query.giaoVienId;
   const thangTinh = router.query.thangTinh;
-  //TÌm data giáo viên chọn
   DataGiaoVien.loadArrGiaoVien(arrGiaoVien);
   const giaoVienChonData = DataGiaoVien.timKiemGiaoVienTheoId(giaoVienId);
   DataGiaoVien.loadDataGiaoVienDuocChon(giaoVienChonData);
-
-  //State lấy data lương thagns tìm được
   const [dataLuongThang, setDataLuongThang] = useState({});
   const [arrDdcn, setArrDdcn] = useState([]);
   const [arrDdn, setArrDdn] = useState([]);
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+
+  //CB
+  const startFetching = () => {
+    setIsFetching(true);
+  };
+  const endFetching = () => {
+    setIsFetching(false);
+  };
+
+  //SIDE EFFECT
   useEffect(() => {
     getSession().then((session) => {
       if (session) {
         setLoggedIn(true);
       } else {
         setLoggedIn(false);
-        window.location.href = "/auth/login";
+        redirectPageAndResetState("/auth/login");
       }
     });
   }, []);
-  //Side effct lấy data lương tháng
   useEffect(() => {
+    const isAllowLayDataLuongThang = () => {
+      return luongThangId && luongThangId !== "";
+    };
+    if (!isAllowLayDataLuongThang()) {
+      return;
+    }
     const layDataLuongThang = async () => {
+      startFetching();
       const response = await fetch("/api/luong/layDataLuongThang", {
         method: "POST",
         body: JSON.stringify(luongThangId),
@@ -46,8 +65,19 @@ const SuaLuongRoute = (props) => {
       if (statusCode === 201) {
         setDataLuongThang(dataGot.data);
       }
+      endFetching();
     };
+    layDataLuongThang();
+  }, [luongThangId]);
+  useEffect(() => {
+    const isAllowLayDataDiemDanh = () => {
+      return giaoVienId && thangTinh && giaoVienId !== "" && thangTinh !== "";
+    };
+    if (!isAllowLayDataDiemDanh()) {
+      return;
+    }
     const layDataDiemDanh = async () => {
+      startFetching();
       const response = await fetch("/api/luong/layDataDiemDanh", {
         method: "POST",
         body: JSON.stringify({
@@ -62,15 +92,16 @@ const SuaLuongRoute = (props) => {
         setArrDdcn(dataGot.arrDdcn);
         setArrDdn(dataGot.arrDdn);
       }
+      endFetching();
     };
-    if (luongThangId && giaoVienId && thangTinh) {
-      layDataLuongThang();
-      layDataDiemDanh();
-    }
-  }, [luongThangId, arrGiaoVien, giaoVienId, thangTinh]);
+    layDataDiemDanh();
+  }, [giaoVienId, thangTinh]);
 
-  if (!isLoggedIn) {
-    return <h1>Đang xử lý ...</h1>;
+  const isProcessing = () => {
+    return !isLoggedIn || isFetching || !arrGiaoVien;
+  };
+  if (isProcessing()) {
+    return <Loading />;
   }
 
   return (
@@ -81,7 +112,6 @@ const SuaLuongRoute = (props) => {
       <SuaLuongPage
         arrDdcn={arrDdcn}
         arrDdn={arrDdn}
-        // giaoVienChonData={giaoVienChonData}
         ngayDauThang={chuyenThangViewThanhNgay(thangTinh)}
         dataLuongThang={dataLuongThang}
       />
@@ -89,10 +119,9 @@ const SuaLuongRoute = (props) => {
   );
 };
 
-//SSG lấy data học sinh cần sửa
+//SSG
 export async function getStaticProps() {
   let db, client;
-  //Kết nối db
   try {
     const { clientGot, dbGot } = await ConnectMongoDb();
     db = dbGot;
@@ -102,22 +131,18 @@ export async function getStaticProps() {
       notFound: true,
     };
   }
-  //Lấy về giáo viên theo id nào
+
   try {
     const arrGiaoVienGot = await db.collection("giaoviens").find().toArray();
-    const arrGiaoVienConvert = arrGiaoVienGot.map((item) => {
-      return {
-        id: item._id.toString(),
-        shortName: item.shortName,
-        luongCaNhan: item.luongCaNhan,
-        luongNhom: item.luongNhom,
-      };
-    });
+    const arrNeededProps = ["id", "shortName", "luongCaNhan", "luongNhom"];
+    const arrGiaoVien = layMangChuyenDoiDataTuMongodb(
+      arrGiaoVienGot,
+      arrNeededProps
+    );
     client.close();
-    //Trả thôi
     return {
       props: {
-        arrGiaoVien: arrGiaoVienConvert,
+        arrGiaoVien,
       },
       revalidate: 10,
     };

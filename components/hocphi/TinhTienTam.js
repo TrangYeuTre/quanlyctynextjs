@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { viewSplitMoney } from "../../helper/uti";
 
 const TinhTienTam = (props) => {
+  //VARIABLES
   const {
     thongKeLich,
     hpCaNhan,
@@ -12,19 +13,15 @@ const TinhTienTam = (props) => {
     arrNghiKhongBuKoPhep,
     arrNghiCoBu,
     arrTangCuong,
-    tongNgayNghiCoBu,
-    tongNgayTangCuong,
-    tienNghiCoBu,
     tienNghiKhongBuCoPhep,
     tienNghiKhongBuKoPhep,
     tienTangCuong,
   } = props;
-  // console.log(arrNghiKhongBuCoPhep);
-  //State quan sát học phí của 3 loại lớp
   const [hpCn, setHpCn] = useState();
   const [hpN, setHpN] = useState();
   const [hpDh, setHpDh] = useState(300000);
-  //Cb format view lại cho ngày
+
+  //CALLBACKS
   const formatViewNgay = (date) => {
     return new Date(date).toLocaleString("en-GB", {
       day: "numeric",
@@ -32,7 +29,6 @@ const TinhTienTam = (props) => {
       year: "numeric",
     });
   };
-  //Cb onChange quan sát thay đổi của các input
   const getHpCaNhanHandler = (e) => {
     setHpCn(e.target.value);
   };
@@ -42,22 +38,46 @@ const TinhTienTam = (props) => {
   const getHpDongHanhHandler = (e) => {
     setHpDh(e.target.value);
   };
-  //TÍnh kết quả
-  const tienCaNhan = thongKeLich.canhan * hpCn;
-  const tienNhom = thongKeLich.nhom * hpN;
-  const tienDongHanh = thongKeLich.donghanh * hpDh;
-  const tienTong =
-    tienCaNhan +
-    tienNhom +
-    tienDongHanh -
-    tienNghiKhongBuCoPhep -
-    tienNghiKhongBuKoPhep +
-    tienTangCuong;
-  //Side effect load học phí lần đầu
+
+  //HANDLERS
+  const tinhToanCacThongSo = (dataIn) => {
+    const {
+      thongKeLich,
+      hpCn,
+      hpN,
+      hpDh,
+      tienNghiKhongBuCoPhep,
+      tienNghiKhongBuKoPhep,
+      tienTangCuong,
+    } = dataIn;
+    const tienCaNhan = thongKeLich.canhan * hpCn;
+    const tienNhom = thongKeLich.nhom * hpN;
+    const tienDongHanh = thongKeLich.donghanh * hpDh;
+    const tienTong =
+      tienCaNhan +
+      tienNhom +
+      tienDongHanh -
+      tienNghiKhongBuCoPhep -
+      tienNghiKhongBuKoPhep +
+      tienTangCuong;
+    return { tienCaNhan, tienNhom, tienDongHanh, tienTong };
+  };
+  const { tienCaNhan, tienNhom, tienDongHanh, tienTong } = tinhToanCacThongSo({
+    thongKeLich,
+    hpCn,
+    hpN,
+    hpDh,
+    tienNghiKhongBuCoPhep,
+    tienNghiKhongBuKoPhep,
+    tienTangCuong,
+  });
+
+  //SIDE EFFECT
   useEffect(() => {
     setHpCn(hpCaNhan);
     setHpN(hpNhom);
   }, [hpCaNhan, hpNhom]);
+
   return (
     <Fragment>
       {Object.keys(thongKeLich).length === 0 && (

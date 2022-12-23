@@ -2,24 +2,26 @@ import { useRouter } from "next/router";
 import Loading from "../../components/UI/Loading";
 import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
+import { redirectPageAndResetState } from "../../helper/uti";
 
 const LuongRoute = (props) => {
+  //VARIABLES
   const router = useRouter();
-  //State loading
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setLoggedIn] = useState(false);
+
+  //SIDE EFFECT
   useEffect(() => {
     getSession().then((session) => {
       if (session) {
         setLoggedIn(true);
       } else {
         setLoggedIn(false);
-        window.location.href = "/auth/login";
+        redirectPageAndResetState("/auth/login");
       }
     });
   }, []);
 
-  //Side effect set loading
   useEffect(() => {
     if (router.asPath && router.asPath === "/luong/dau-vao") {
       setLoading(false);
@@ -29,7 +31,7 @@ const LuongRoute = (props) => {
   }, [router]);
 
   if (!isLoggedIn) {
-    return <h1>Đang xử lý ...</h1>;
+    return <Loading />;
   }
 
   return loading && <Loading />;

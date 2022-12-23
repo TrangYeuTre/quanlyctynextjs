@@ -90,12 +90,12 @@ const SuaLuongPage = (props) => {
     if (dataLuongThang && dataLuongThang.dataPhuPhi.length > 0) {
       setDataPhuPhi(dataLuongThang.dataPhuPhi);
     }
-  }, []);
+  }, [dataLuongThang]);
   //Tạo một helper tính tổng lương tất cả ở đây
   const tongLuong = tinhTongLuong(dataLuongCaNhan, dataLuongNhom, dataPhuPhi);
   //Trả
   return (
-    <Card>
+    <Card isSubBg={true}>
       <h3>
         Tính lương tháng cho giáo viên{" "}
         <span style={{ color: "var(--mauMh4--)" }}>

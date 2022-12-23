@@ -12,8 +12,7 @@ import { Fragment } from "react";
 import ActionBar from "../../UI/ActionBar";
 
 const Lich = (props) => {
-  //Mong từ props ngày được chọn để lọc lịch theo tháng
-  //Chú ý khi truyền xuống thì ngayChon đã là ngày của tháng sau đê tính hp tháng sau, cơ chế ở comp này đang là tính thoe ngày chọn chứ không tự động công thêm 1 tháng
+  //VARIABLES
   const {
     ngayChon,
     dataNhieuNgayChon,
@@ -22,45 +21,37 @@ const Lich = (props) => {
     layDataThongKe,
     layLichSubmit,
   } = props;
-  //Từ ngày chọn format lại date để render ngay tháng này
   const thoiGianThangNay = new Date(ngayChon);
-  //Lấy ngày cuối tháng và thứ ngày đầu tháng
   const { ngayCuoiThang, thuNgayDauThang, title } =
     layNgayCuoiThangVaThuNgayDauThang(thoiGianThangNay);
-  //Lấy arr 42 ngày ban đầu
-  const arrDatesInit = taoInitArr42Ngay();
-  //Lấy mảng lịch tháng này để render
-  const arrDatesRender = loadLichRender(
-    arrDatesInit,
+
+  //HANDLERS
+  const arrInitTable42Cells = taoInitArr42Ngay();
+  const arrDatesOfThisMonth = loadLichRender(
+    arrInitTable42Cells,
     ngayCuoiThang,
     thuNgayDauThang
   );
-  //Từ data của chọn nhiều ngày áp vào đẻ có mảng lịch full
-  const arrDatesWithData = themDataChonNhieuNgayVaoLich(
-    arrDatesRender,
+  const arrDatesDaThemDataNhieuNgay = themDataChonNhieuNgayVaoLich(
+    arrDatesOfThisMonth,
     dataNhieuNgayChon
   );
-  //Load mảng lịch sau khi có data của ngày được sửa
-  const arrLichDaSuaNgay = suaDataNgayTrongLich(
-    arrDatesWithData,
+  const arrDatesCoNgayDuocSuaData = suaDataNgayTrongLich(
+    arrDatesDaThemDataNhieuNgay,
     arrDataNgaySua
   );
+  const dataLichThongKe = layThongKeDataLich(arrDatesCoNgayDuocSuaData);
 
-  //Lấy thống kê data lịch
-  const thongKeLich = layThongKeDataLich(arrLichDaSuaNgay);
-
-  // Cb lấy id của một cell lịch được chọn
+  //CALLBACKS
   const getCellIdHandler = (id) => {
-    //Lấy data của cell
-    const dataDate = arrLichDaSuaNgay.find((item) => +item.idCell === +id);
-    //Kích hoạt show ui sủa ngày được chọn và truyền ngược lên data của ngày được chọn
+    const dataDate = arrDatesCoNgayDuocSuaData.find(
+      (item) => +item.idCell === +id
+    );
     showNgaySua(dataDate);
   };
-
-  //Cb chốt data thống kê cho comp trên dùng
-  const layDataLichHandler = () => {
-    layDataThongKe(thongKeLich);
-    layLichSubmit(arrLichDaSuaNgay);
+  const chotDataLichDeTinhToanHandler = () => {
+    layDataThongKe(dataLichThongKe);
+    layLichSubmit(arrDatesCoNgayDuocSuaData);
   };
 
   return (
@@ -90,7 +81,7 @@ const Lich = (props) => {
           {/* Render 42 ô lịch - chia làm 6 hàng data */}
           <tbody>
             <tr className={classes.datas}>
-              {arrLichDaSuaNgay.map((date) => {
+              {arrDatesCoNgayDuocSuaData.map((date) => {
                 if (date.idCell >= 0 && date.idCell <= 6) {
                   return (
                     <LichItem
@@ -103,7 +94,7 @@ const Lich = (props) => {
               })}
             </tr>
             <tr className={classes.datas}>
-              {arrLichDaSuaNgay.map((date) => {
+              {arrDatesCoNgayDuocSuaData.map((date) => {
                 if (date.idCell >= 7 && date.idCell <= 13) {
                   return (
                     <LichItem
@@ -116,7 +107,7 @@ const Lich = (props) => {
               })}
             </tr>
             <tr className={classes.datas}>
-              {arrLichDaSuaNgay.map((date) => {
+              {arrDatesCoNgayDuocSuaData.map((date) => {
                 if (date.idCell >= 14 && date.idCell <= 20) {
                   return (
                     <LichItem
@@ -129,7 +120,7 @@ const Lich = (props) => {
               })}
             </tr>
             <tr className={classes.datas}>
-              {arrLichDaSuaNgay.map((date) => {
+              {arrDatesCoNgayDuocSuaData.map((date) => {
                 if (date.idCell >= 21 && date.idCell <= 27) {
                   return (
                     <LichItem
@@ -142,7 +133,7 @@ const Lich = (props) => {
               })}
             </tr>
             <tr className={classes.datas}>
-              {arrLichDaSuaNgay.map((date) => {
+              {arrDatesCoNgayDuocSuaData.map((date) => {
                 if (date.idCell >= 28 && date.idCell <= 34) {
                   return (
                     <LichItem
@@ -155,7 +146,7 @@ const Lich = (props) => {
               })}
             </tr>
             <tr className={classes.datas}>
-              {arrLichDaSuaNgay.map((date) => {
+              {arrDatesCoNgayDuocSuaData.map((date) => {
                 if (date.idCell >= 35 && date.idCell <= 41) {
                   return (
                     <LichItem
@@ -171,7 +162,7 @@ const Lich = (props) => {
         </table>
         <ActionBar
           action1="Chốt Lịch"
-          doAction1={layDataLichHandler}
+          doAction1={chotDataLichDeTinhToanHandler}
           description="Thao tác xong thì phải bấm 'Chốt Lịch' để cập nhật phần kết quả tạm tính bên dưới"
         />
       </div>

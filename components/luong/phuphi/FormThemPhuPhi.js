@@ -3,19 +3,18 @@ import { convertInputDateFormat } from "../../../helper/uti";
 import { useRef } from "react";
 
 const FormThemPhuPhi = (props) => {
+  //VARIABLES
   const { themNgayPhuPhi } = props;
-  //Các ref lấy value
   const ngayRef = useRef();
   const phuPhiRef = useRef();
   const ghiChuRef = useRef();
 
+  //CB
   const clearInput = () => {
     ghiChuRef.current.value = "";
     phuPhiRef.current.value = 0;
     document.getElementById("ghiChuPhuPhi").focus();
   };
-
-  //Cb lấy data ngày ghi chú
   const layDataNgayGhiChuHandler = (e) => {
     e.preventDefault();
     const data = {
@@ -26,6 +25,7 @@ const FormThemPhuPhi = (props) => {
     themNgayPhuPhi(data);
     clearInput();
   };
+
   return (
     <form
       className={classes.formThemPhuPhi}
@@ -55,7 +55,6 @@ const FormThemPhuPhi = (props) => {
       <div className={classes.control}>
         <textarea
           id="ghiChuPhuPhi"
-          //   defaultValue="Nhập ghi chú ..."
           rows="5"
           ref={ghiChuRef}
           placeholder="Nhập ghi chú ..."

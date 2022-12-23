@@ -18,14 +18,11 @@ const lamTron = (num) => {
 };
 
 const SuaLuongCaNhan = (props) => {
-  //Lấy mảng ddcn
+  //VARIABLES
   const { arrDdcn, giaoVienChonData, layDataLuongCaNhan, dataLuongCaNhan } =
     props;
-  //State mảng data cuối cùng để render lương cá nhân
   const [arrDataLuongCaNhan, setArrDataLuongCn] = useState([]);
-  //Một heler xử lý chuyển mảng ddcn về dạng thống ke theo học sinh cho giáo viên
   const arrDataInitLuongCaNhan = layDataLuongCaNhanTuArrDdcn(arrDdcn);
-  //Đánh hệ số tính cho magnr init khi có data sủa
   const arrDataDanhHeSoInit = danhHeSoLuongCaNhanSua(
     arrDataInitLuongCaNhan,
     dataLuongCaNhan
@@ -34,31 +31,36 @@ const SuaLuongCaNhan = (props) => {
     arrDataDanhHeSoInit,
     giaoVienChonData.luongCaNhan
   );
-  //Xử lý đánh hệ số cho arr init bên trên
-  //Cb thêm hệ số
+
+  //CALLBACKS
   const themHeso45 = (hocSinhId) => {
-    let arrHandler = [];
-    if (arrDataLuongCaNhan.length === 0) {
-      //Lấy mảng init xử lý
-      arrHandler = [...arrDataDanhHeSo];
-    } else {
-      arrHandler = [...arrDataLuongCaNhan];
-    }
-    //Tìm và đánh hệ số
-    const hsMatched = arrHandler.find((item) => item.hocSinhId === hocSinhId);
-    if (hsMatched) {
-      hsMatched.heSoTinh = 45;
-    }
-    //Chạy tính toán lại nào
-    const arrResult = tinhLaiArrLuongCaNhan(
-      arrHandler,
-      giaoVienChonData.luongCaNhan
+    const arrHandler = chotArrLuongCaNhanCanDungChoThemHeSo(
+      arrDataDanhHeSo,
+      arrDataLuongCaNhan
     );
-    //Set lại mảng state
-    setArrDataLuongCn(arrResult);
-    layDataLuongCaNhan(arrResult);
+    timHocSinhVaDanhHeSoTinh(arrHandler, hocSinhId, 45);
+    const arrLuongCaNhanTinhLai = tinhLaiArrLuongCaNhanCapNhat(
+      arrHandler,
+      giaoVienChonData
+    );
+    updateArrLuongCnRenderVaTruyenDataLenCompTren(arrLuongCaNhanTinhLai);
   };
   const themHeso60 = (hocSinhId) => {
+    const arrHandler = chotArrLuongCaNhanCanDungChoThemHeSo(
+      arrDataDanhHeSo,
+      arrDataLuongCaNhan
+    );
+    timHocSinhVaDanhHeSoTinh(arrHandler, hocSinhId, 60);
+    const arrLuongCaNhanTinhLai = tinhLaiArrLuongCaNhanCapNhat(
+      arrHandler,
+      giaoVienChonData
+    );
+    updateArrLuongCnRenderVaTruyenDataLenCompTren(arrLuongCaNhanTinhLai);
+  };
+  const chotArrLuongCaNhanCanDungChoThemHeSo = (
+    arrDataDanhHeSo,
+    arrDataLuongCaNhan
+  ) => {
     let arrHandler = [];
     if (arrDataLuongCaNhan.length === 0) {
       //Lấy mảng init xử lý
@@ -66,29 +68,36 @@ const SuaLuongCaNhan = (props) => {
     } else {
       arrHandler = [...arrDataLuongCaNhan];
     }
-    //Tìm và đánh hệ số
+    return arrHandler;
+  };
+  const timHocSinhVaDanhHeSoTinh = (arrHandler, hocSinhId, heSoTinh) => {
     const hsMatched = arrHandler.find((item) => item.hocSinhId === hocSinhId);
-    if (hsMatched) {
-      hsMatched.heSoTinh = 60;
+    if (!hsMatched) {
+      return;
     }
-    //Chạy tính toán lại nào
+    hsMatched.heSoTinh = +heSoTinh;
+  };
+  const tinhLaiArrLuongCaNhanCapNhat = (arrHandler, giaoVienChonData) => {
     const arrResult = tinhLaiArrLuongCaNhan(
       arrHandler,
       giaoVienChonData.luongCaNhan
     );
-    //Set lại mảng state
+    return arrResult;
+  };
+  const updateArrLuongCnRenderVaTruyenDataLenCompTren = (arrResult) => {
     setArrDataLuongCn(arrResult);
     layDataLuongCaNhan(arrResult);
   };
 
-  //Xử lý lấy mảng cuối render
-  let arrRender = arrDataDanhHeSo;
-  if (arrDataLuongCaNhan.length > 0) {
-    arrRender = arrDataLuongCaNhan;
-  }
+  //CALLBACKS
+  //Xử lý lấy mảng cuối render, dùng lại cb
+  const arrRender = chotArrLuongCaNhanCanDungChoThemHeSo(
+    arrDataDanhHeSo,
+    arrDataLuongCaNhan
+  );
   //Tính tổng tiền nào
   const tongTienLuongCaNhan = tinhTongTienLuongCaNhan(arrRender);
-  //Trả
+
   return (
     <div className={classes.container}>
       <h4>Tính lương cá nhân</h4>

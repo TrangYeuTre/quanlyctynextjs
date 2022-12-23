@@ -16,24 +16,14 @@ import DataHocSinh from "../../../classes/DataHocSinh";
 import HocPhiHocSinh from "../../../classes/HocPhiHocSinh";
 
 const HocPhiDauVaoPage = (props) => {
-  //CTx noti
+  //VARIABLES
   const notiCtx = useContext(NotiContext);
-  //Láy ctx chọn người đẻ lấy học sinh được chọn
   const chonNguoiCtx = useContext(ChonNguoiContext);
   const hocSinhChonId = chonNguoiCtx.nguoiDuocChonId;
-  const hocSinhChonShortName = DataHocSinh.traHsCaNhanData(hocSinhChonId)
-    ? DataHocSinh.traHsCaNhanData(hocSinhChonId).shortName
-    : "";
-  //State load ui đầu vào hay ui đã xử lý fetch data về
   const [showDauVao, setShowDauVao] = useState(true);
-  //State lấy keyword từ search để lọc
   const [keySearch, setKeySearch] = useState();
-  //State lấy ngày chọn
   const [ngayChon, setNgayChon] = useState(new Date());
-  //State lấy kết quả lọc sau khi fetch
   const [kqLoc, setKqLoc] = useState();
-
-  //Lấy view tháng sau từ ngày chọn để render phần ôption
   const { firstDateOfNextMonth } = getFirstLastDateOfNextMonth(ngayChon);
   const viewNextMonth = new Date(firstDateOfNextMonth).toLocaleString("en-GB", {
     month: "numeric",
@@ -43,34 +33,37 @@ const HocPhiDauVaoPage = (props) => {
     month: "numeric",
     year: "numeric",
   });
+  const hocSinhChonShortName = DataHocSinh.traHsCaNhanData(hocSinhChonId)
+    ? DataHocSinh.traHsCaNhanData(hocSinhChonId).shortName
+    : "";
+  const arrHocSinhRender = DataHocSinh.timKiemHsCaNhanTheoShortName(keySearch);
 
-  //Cb trở lại giao diện lọc ban đầu
+  //CALLBACKS
   const showUiDauVaoHandler = () => {
     setShowDauVao(true);
   };
-
-  //Cb lấy key từ comp Search
   const layKeySearchHandler = (value) => {
     setKeySearch(value);
   };
-  //Cb lấy ngày được chọn
   const layNgayChonHandler = (date) => {
     setNgayChon(date);
   };
-  //Lọc lại mảng hs theo key để render
-  const arrHocSinhRender = DataHocSinh.timKiemHsCaNhanTheoShortName(keySearch);
 
-  //Cb xử lý lấy thông tin đầu vào và fetch lên db đẻ lọc data cần lấy về
+  //FUNCITONS
   const xuLyThongTinDauVaoHandler = async () => {
-    //Lấy data submit
+    const dataSubmit = layDataSubmit(hocSinhChonId, ngayChon);
+    const { statusCode, dataGot } = await HocPhiHocSinh.xuLyDauVao(dataSubmit);
+    setKqLoc(dataGot.data);
+    dayThongBao(statusCode, dataGot);
+  };
+  const layDataSubmit = (hocSinhChonId, ngayChon) => {
     const dataSubmit = {
       hocSinhId: hocSinhChonId || null,
       ngayChon: convertInputDateFormat(ngayChon) || null,
     };
-    //Fetch
-    const { statusCode, dataGot } = await HocPhiHocSinh.xuLyDauVao(dataSubmit);
-    setKqLoc(dataGot.data);
-    //Đẩy thông báo nào
+    return dataSubmit;
+  };
+  const dayThongBao = (statusCode, dataGot) => {
     setTimeout(() => {
       notiCtx.clearNoti();
       if (statusCode === 200 || statusCode === 201) {

@@ -5,12 +5,13 @@ import { useState, useEffect } from "react";
 import NgayBar from "../../UI/NgayBar";
 
 const LuongNhom = (props) => {
+  //VARIABALES
   const { dataLuongNhom, layDataLuongNhom } = props;
-  //State lấy giá trị của ô ghi chú
   const [ghiChuVal, setGhiChuVal] = useState("");
-  //State mảng lương nhóm render
   const [arrLuongNhom, setArrLuongNhom] = useState([]);
-  //Cb lấy giá trị ghi chú
+  const tongLuongNhom = tinhTongLuongNhom(arrLuongNhom);
+
+  //CALLBACKS
   let delay;
   const layGiaTriGhiChuHandler = (e) => {
     clearTimeout(delay);
@@ -18,26 +19,39 @@ const LuongNhom = (props) => {
       setGhiChuVal(e.target.value);
     }, 500);
   };
-  //Tính tổng lương nhớm
-  const tongLuongNhom = tinhTongLuongNhom(arrLuongNhom);
-  //Cb thêm ghi chú cho ngày nhóm
+  
   const themGhiChuNgayNhomHandler = (ngayDiemDanh) => {
-    //Tìm trong mảng ngày tương ứng để thêm ghi chú
     const arrDdnClone = [...arrLuongNhom];
-    const ngayMatched = arrDdnClone.find(
+    const ngayMatched = timNgayDiemDanhNhom(arrDdnClone, ngayDiemDanh);
+    updateGhiChuChoNgayDiemDanhNhom(ngayMatched, ghiChuVal);
+    console.log(arrDdnClone);
+    updateMangDdnRenderVaTruyenDataLenCompTren(arrDdnClone);
+  };
+  const timNgayDiemDanhNhom = (arrDdn, ngayDiemDanh) => {
+    const ngayMatched = arrDdn.find(
       (item) => item.ngayDiemDanh === ngayDiemDanh
     );
-    if (ngayMatched) {
-      ngayMatched.ghiChu = ghiChuVal;
+    if (!ngayMatched) {
+      return;
     }
-    layDataLuongNhom(arrDdnClone);
-    setArrLuongNhom(arrDdnClone);
+    return ngayMatched;
   };
-  //Side effect load data sưa lần đầu
+  const updateGhiChuChoNgayDiemDanhNhom = (ngayMatched, ghiChuVal) => {
+    if (!ngayMatched) {
+      return;
+    }
+    ngayMatched.ghiChu = ghiChuVal;
+  };
+  const updateMangDdnRenderVaTruyenDataLenCompTren = (arrHandler) => {
+    layDataLuongNhom(arrHandler);
+    setArrLuongNhom(arrHandler);
+  };
+
+  //SIDE EFFECT
   useEffect(() => {
     setArrLuongNhom(dataLuongNhom);
   }, [dataLuongNhom]);
-  console.log(arrLuongNhom);
+
   return (
     <div className={classes.container}>
       <h4>Tính lương nhóm</h4>

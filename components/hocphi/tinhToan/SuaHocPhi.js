@@ -1,6 +1,7 @@
 import classes from "./TinhToan.module.css";
 import Card from "../../UI/Card";
 import CTA from "../../UI/CTA";
+import Loading from "../../UI/Loading";
 import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import {
@@ -13,16 +14,19 @@ import Lich from "../lich/Lich";
 import ChonNhieuNgay from "../chonNhieuNgay/ChonNhieuNGay";
 import SuaNgayTrongLich from "../lich/SuaNgay";
 import TinhTienTam from "../TinhTienTam";
-import { convertInputDateFormat } from "../../../helper/uti";
+import {
+  convertInputDateFormat,
+  redirectPageAndResetState,
+} from "../../../helper/uti";
 import HocPhiHocSinh from "../../../classes/HocPhiHocSinh";
 import DataHocSinh from "../../../classes/DataHocSinh";
 
 const SuaHocPhiPage = (props) => {
+  //VARIABLES
   const { hocSinhId: hocSinhChonId, thangTinh } = props;
+  const API_GET_DDCN_THANGTRUOC_ROUTE = "/api/hocphi/layDdcnThangTruoc";
+  const API_GET_HOCPHISUA_ROUTE = "/api/hocphi/layHocPhiSua";
   const notiCtx = useContext(NotiContext);
-  const router = useRouter();
-  const arrHocSinh = DataHocSinh.arrHocSinhCaNhan;
-  //Tra thông tin hoc sinh
   const hocSinhShortName = DataHocSinh.traHsCaNhanData(hocSinhChonId)
     ? DataHocSinh.traHsCaNhanData(hocSinhChonId).shortName
     : "";
@@ -32,38 +36,13 @@ const SuaHocPhiPage = (props) => {
   const hpNhom = DataHocSinh.traHsCaNhanData(hocSinhChonId)
     ? +DataHocSinh.traHsCaNhanData(hocSinhChonId).hocPhiNhom
     : 0;
-  //State lấy ngày được chọn
+  const [isFetching, setIsFetching] = useState(false);
   const [ngayChon, setNgayChon] = useState(new Date());
-  //Side effect lấy tháng tính truyền xuống
-  useEffect(() => {
-    setNgayChon(chuyenThangViewThanhNgay(thangTinh));
-  }, [thangTinh]);
-  //State data điểm danh cá nhân tháng trước của học sinh để load tính phí tăng cường, nghỉ bù
   const [arrDdcnThangTruoc, setArrDdcnThangTruoc] = useState([]);
-  //State lấy data của ngày được chọn
   const [dataNgayChon, setDataNgayChon] = useState({});
-  //State lấy data ngày sửa để sửa lại lịch
   const [arrDataNgaySua, setArrDataNgaySua] = useState([]);
-  //State lấy data thống kê lịch cuối cùng
   const [thongKeLich, setThongkeLich] = useState({});
-  //State toggle ẩn hiển phần chọn nhiều ngày / sửa ngày được chọn
   const [showChonNhieuNgay, changeShowNhieuNgay] = useState(true);
-  const showChonNhieuNgayHandler = () => {
-    changeShowNhieuNgay(true);
-    setDataNgayChon({});
-    setTimeout(() => {
-      document.getElementById("chonnhieungay").scrollIntoView();
-    }, 200);
-  };
-  const showSuaNgayChonHandler = (dataDate) => {
-    changeShowNhieuNgay(false);
-    //Chú set data ngay chọn bên dưới là để load ban đầu cho giao diện sửa ngày
-    setDataNgayChon(dataDate);
-    setTimeout(() => {
-      document.getElementById("suangayduocchon").scrollIntoView();
-    }, 200);
-  };
-  //State lấy nhiều ngày được chọnh
   const [dataNhieuNgayChon, setNhieuNgayChon] = useState({
     Mon: [],
     Tue: [],
@@ -73,125 +52,205 @@ const SuaHocPhiPage = (props) => {
     Sat: [],
     Sun: [],
   });
-  //State lấy mảng lịch với ngày đã chọn để submit
   const [lichDaChonNgay, setLichChonNgay] = useState([]);
-  const setLichChonNgayHandler = (arr) => {
-    setLichChonNgay(arr);
+
+  //CALLBACKS
+  const startFetching = () => {
+    setIsFetching(true);
   };
-  //Cb lấy data từ lấy nhiều ngày
-  const layDataNhieuNgayHandler = (data) => {
-    const { type, arrThuChon, loaiLop, heso } = data;
-    //Clone lại preState để xử lý
-    const preDataNhieuNgayChon = { ...dataNhieuNgayChon };
-    //Reset
-    if (type === "reset") {
-      setNhieuNgayChon({
-        Mon: [],
-        Tue: [],
-        Wed: [],
-        Thu: [],
-        Fri: [],
-        Sat: [],
-        Sun: [],
-      });
-    }
-    //Xóa nhiều
-    if (type === "xoa") {
-      //Chạy lặp xử lý xóa
-      arrThuChon.forEach((item) => (preDataNhieuNgayChon[item.value] = []));
-      //Trả
-      setNhieuNgayChon(preDataNhieuNgayChon);
-    }
-    //THêm nhiều
-    if (type === "them") {
-      //Chạy lặp arrThuChon submit lên để xử lý
-      arrThuChon.forEach((item) => {
-        const curThu = item.value;
-        if (preDataNhieuNgayChon[curThu].length > 0) {
-          //Tìm xem item đã tồn tại chưa
-          const indexItemExisted = preDataNhieuNgayChon[curThu].findIndex(
-            (item) => item.loaiLop === loaiLop
-          );
-          if (indexItemExisted === -1) {
-            //Đẩy vào mảng thôi
-            preDataNhieuNgayChon[curThu].push({ loaiLop: loaiLop, heso: heso });
-          } else {
-            //Tìm thấy thì chỉnh lại hệ số
-            preDataNhieuNgayChon[curThu][indexItemExisted].heso = heso;
-          }
-        } // end if
-        if (preDataNhieuNgayChon[curThu].length === 0) {
-          //Đẩy vào thảng thôi
-          preDataNhieuNgayChon[curThu].push({ loaiLop: loaiLop, heso: heso });
-        }
-        //Xử lý xong thì update lại
-        setNhieuNgayChon(preDataNhieuNgayChon);
-      });
-    }
+  const endFetching = () => {
+    setIsFetching(false);
   };
-  //CB lấy data đã sửa của ngày được sửa để chỉnh lại lịch
-  const getDataNgaySuaHandler = (data) => {
-    const preArrDataNgaySua = [...arrDataNgaySua];
-    //Data {idCell, ngay , nhom:1, canha:2}
-    if (arrDataNgaySua.length === 0) {
-      preArrDataNgaySua.push(data);
-    } else {
-      const indexItemMatched = preArrDataNgaySua.findIndex(
-        (item) => item.idCell === data.idCell
-      );
-      if (indexItemMatched === -1) {
-        preArrDataNgaySua.push(data);
-      } else {
-        preArrDataNgaySua.splice(indexItemMatched, 1);
-        preArrDataNgaySua.push(data);
-      }
-    } //end if xử lý chính
-    //Cập nhật lại
-    setArrDataNgaySua(preArrDataNgaySua);
-  };
-  //CB lấy data thống kê cuối cùng của lịch
+
   const getDataThongKeLich = (data) => {
     setThongkeLich(data);
   };
+  const setLichChonNgayHandler = (arr) => {
+    setLichChonNgay(arr);
+  };
+
+  const showChonNhieuNgayHandler = () => {
+    changeShowNhieuNgay(true);
+    setDataNgayChon({});
+    scrollToIdView("chonnhieungay");
+  };
+  const showSuaNgayChonHandler = (dataDate) => {
+    changeShowNhieuNgay(false);
+    setDataNgayChon(dataDate);
+    scrollToIdView("suangayduocchon");
+  };
+  const scrollToIdView = (id) => {
+    setTimeout(() => {
+      document.getElementById(id).scrollIntoView();
+    }, 200);
+  };
+
+  //Cb reset lịch, xóa nhiều ngày chọn, thêm nhiều ngày chọn
+  const layDataNhieuNgayHandler = (data) => {
+    const { type, arrThuChon, loaiLop, heso } = data;
+    const preDataNhieuNgayChon = { ...dataNhieuNgayChon };
+    if (type === "reset") {
+      resetDataToanBoNgayTrongLich();
+    }
+    if (type === "xoa") {
+      xoaDataNhieuNgayChonTrongLich(arrThuChon, preDataNhieuNgayChon);
+    }
+    if (type === "them") {
+      themDataNhieuNgayChonTrongLich(
+        arrThuChon,
+        preDataNhieuNgayChon,
+        loaiLop,
+        heso
+      );
+    }
+  };
+  const resetDataToanBoNgayTrongLich = () => {
+    setNhieuNgayChon({
+      Mon: [],
+      Tue: [],
+      Wed: [],
+      Thu: [],
+      Fri: [],
+      Sat: [],
+      Sun: [],
+    });
+  };
+  const xoaDataNhieuNgayChonTrongLich = (arrThuChon, preDataNhieuNgayChon) => {
+    arrThuChon.forEach((item) => (preDataNhieuNgayChon[item.value] = []));
+    setNhieuNgayChon(preDataNhieuNgayChon);
+  };
+  const themDataNhieuNgayChonTrongLich = (
+    arrThuChon,
+    preDataNhieuNgayChon,
+    loaiLop,
+    heso
+  ) => {
+    arrThuChon.forEach((item) => {
+      const curThu = item.value;
+      //Ghi chú: preDataNhieuNgayChon[curThu] ~ {Mon:[...],Tue:[...], .... }
+      const arrCurPropsWeekday = preDataNhieuNgayChon[curThu]; // tức dạng Mon:[...] ~ array
+      if (arrCurPropsWeekday.length > 0) {
+        const indexItemExisted = timIndexLoaiLopTrongArrThuocPropsWeekday(
+          arrCurPropsWeekday,
+          loaiLop
+        );
+        if (indexItemExisted === -1) {
+          themMoiDataLoaiLop(arrCurPropsWeekday, loaiLop, heso);
+        } else {
+          updateDataLoaiLop(arrCurPropsWeekday, indexItemExisted, heso);
+        }
+      }
+      if (arrCurPropsWeekday.length === 0) {
+        themMoiDataLoaiLop(arrCurPropsWeekday, loaiLop, heso);
+      }
+      setNhieuNgayChon(preDataNhieuNgayChon);
+    });
+  };
+  const timIndexLoaiLopTrongArrThuocPropsWeekday = (
+    arrCurPropsWeekday,
+    loaiLop
+  ) => {
+    const indexItemExisted = arrCurPropsWeekday.findIndex(
+      (item) => item.loaiLop === loaiLop
+    );
+    return indexItemExisted;
+  };
+  const themMoiDataLoaiLop = (arrCurPropsWeekday, loaiLop, heso) => {
+    arrCurPropsWeekday.push({ loaiLop: loaiLop, heso: heso });
+  };
+  const updateDataLoaiLop = (arrCurPropsWeekday, indexItemExisted, heso) => {
+    arrCurPropsWeekday[indexItemExisted].heso = heso;
+  };
+
+  //CB lấy data ngày được sửa
+  const getDataNgaySuaHandler = (data) => {
+    if (!data) {
+      return;
+    }
+    const preArrDataNgaySua = [...arrDataNgaySua];
+    //Data {idCell, ngay , nhom:1, canha:2}
+    if (arrDataNgaySua.length === 0) {
+      themMoiDataNgaySua(preArrDataNgaySua, data);
+    } else {
+      const indexCellNgaySua = timIndexCellNgaySua(preArrDataNgaySua, data);
+      if (indexCellNgaySua === -1) {
+        themMoiDataNgaySua(preArrDataNgaySua, data);
+      } else {
+        updateDataNgaySua(preArrDataNgaySua, indexCellNgaySua, data);
+      }
+    }
+    setArrDataNgaySua(preArrDataNgaySua);
+  };
+  const timIndexCellNgaySua = (preArrDataNgaySua, data) => {
+    const indexCellNgaySua = preArrDataNgaySua.findIndex(
+      (item) => item.idCell === data.idCell
+    );
+    return indexCellNgaySua;
+  };
+  const themMoiDataNgaySua = (preArrDataNgaySua, data) => {
+    preArrDataNgaySua.push(data);
+    return preArrDataNgaySua;
+  };
+  const updateDataNgaySua = (preArrDataNgaySua, indexCellNgaySua, data) => {
+    preArrDataNgaySua.splice(indexCellNgaySua, 1);
+    preArrDataNgaySua.push(data);
+    return preArrDataNgaySua;
+  };
+
   //CB chính submit sửa phí tháng đã tồn tại
-  const tinhPhiThangMoiHandler = async () => {
+  const suaPhiThangTonTaiHandler = async () => {
     const hocPhiThangUpdate = new HocPhiHocSinh({
       hocSinhId: hocSinhChonId,
       ngayTinhPhi: convertInputDateFormat(ngayChon),
       lichDaChonNgay: lichDaChonNgay,
     });
     const { statusCode, dataGot } = await hocPhiThangUpdate.themHocPhiHocSinh();
-    //Đẩy thông báo
+    dayThongBao(statusCode, dataGot);
+  };
+  const dayThongBao = (statusCode, dataGot) => {
     setTimeout(() => {
       notiCtx.clearNoti();
-      router.replace("/hoc-phi/dau-vao");
+      if (statusCode === 200 || statusCode === 201) {
+        redirectPageAndResetState("/hoc-phi/dau-vao");
+      }
     }, process.env.DELAY_TIME_NOTI);
     window.scrollTo(0, 0);
     notiCtx.pushNoti({ status: statusCode, message: dataGot.thongbao });
   };
-  //Side effect lần đầu load trang thì fetch get data ddcn của học sinh
+
+  //SIDE EFFECT
   useEffect(() => {
-    //Muốn viết async code trong useEffect phải tạo và call riêng như sau
+    setNgayChon(chuyenThangViewThanhNgay(thangTinh));
+  }, [thangTinh]);
+  useEffect(() => {
+    if (!isAllowFetching(hocSinhChonId, thangTinh)) {
+      return;
+    }
     const fetchGetDdcnThangTruoc = async () => {
-      //Lấy data submit cái
+      startFetching();
       const dataSubmit = {
         hocSinhId: hocSinhChonId,
         ngayTinhPhi: chuyenThangViewThanhNgay(thangTinh),
       };
-      //Fetch
-      const response = await fetch("/api/hocphi/layDdcnThangTruoc", {
+      const response = await fetch(API_GET_DDCN_THANGTRUOC_ROUTE, {
         method: "POST",
         body: JSON.stringify(dataSubmit),
         headers: { "Content-Type": "application/json" },
       });
-      // const statusCode = response.status;
       const dataGot = await response.json();
       const arrDdcnThangTruoc = dataGot.data;
       setArrDdcnThangTruoc(arrDdcnThangTruoc);
+      endFetching();
     };
-    //Async lấy data ngày sửa học phí từ collections hocphis
+    fetchGetDdcnThangTruoc();
+  }, [hocSinhChonId, thangTinh]);
+  useEffect(() => {
+    if (!isAllowFetching(hocSinhChonId, thangTinh)) {
+      return;
+    }
     const fetchGetDataHocPhiSua = async () => {
-      const response = await fetch("/api/hocphi/layHocPhiSua", {
+      startFetching();
+      const response = await fetch(API_GET_HOCPHISUA_ROUTE, {
         method: "POST",
         body: JSON.stringify({
           hocSinhId: hocSinhChonId,
@@ -204,11 +263,17 @@ const SuaHocPhiPage = (props) => {
       if (lichDaChonNgay) {
         setLichChonNgay(lichDaChonNgay);
       }
+      endFetching();
     };
-    fetchGetDdcnThangTruoc();
     fetchGetDataHocPhiSua();
   }, [hocSinhChonId, thangTinh]);
-  //Từ mảng ddcn tháng trước của hs fetch về -> xử lý lại để lấy các thông số nghỉ, tăng cuòng
+  const isAllowFetching = (hocSinhChonId, thangTinh) => {
+    return (
+      hocSinhChonId && hocSinhChonId !== "" && thangTinh && thangTinh !== ""
+    );
+  };
+
+  //XỬ LÝ LẤY DATA DDCN THÁNG TRƯƠCS ĐỂ THÔGNS KÊ HP NGHỈ VÀ TĂNG CƯỜNG
   const {
     arrNghiKhongBuCoPhep,
     arrNghiKhongBuKoPhep,
@@ -222,7 +287,10 @@ const SuaHocPhiPage = (props) => {
     tienTangCuong,
   } = xuLyLayThongTinDdcnThangTruoc(arrDdcnThangTruoc, hocSinhChonId, hpCaNhan);
 
-  //Trả trả trả nào
+  if (isFetching) {
+    return <Loading />;
+  }
+
   return (
     <Card isSubBg={true}>
       <h3 style={{ textAlign: "center" }}>
@@ -302,7 +370,7 @@ const SuaHocPhiPage = (props) => {
       <CTA>
         <button
           type="button"
-          onClick={tinhPhiThangMoiHandler}
+          onClick={suaPhiThangTonTaiHandler}
           className="btn btn-submit"
         >
           Chốt sửa học phí

@@ -2,16 +2,13 @@ import classes from "./ChonNhieuNgay.module.css";
 import { useState, useEffect } from "react";
 
 const ChonNhieuNgay = (props) => {
-  //Đợi hàm lấy data từ trên thôi
+  //VARIABLES
   const { layData } = props;
-  //State lấy mảng thứ đuọc chọn
   const [arrThuChon, setArrThuChon] = useState([]);
-  //State lấy loại lớp chọn
   const [loaiLop, setLop] = useState("none");
-  //State lấy hệ số tính
   const [heso, setHeso] = useState(1);
 
-  //Cb reset mảng thứ chọn
+  //CALLBACKS
   const resetThuChon = () => {
     setArrThuChon([
       { name: "Hai", value: "Mon", isSelected: false },
@@ -23,68 +20,81 @@ const ChonNhieuNgay = (props) => {
       { name: "CN", value: "Sun", isSelected: false },
     ]);
   };
-
-  //Cb đánh lại mảng thứ
   const chonThuHandler = (name) => {
-    //clone lại mảng thu chọn
-    const arrClone = [...arrThuChon];
-    const thuMatched = arrClone.find((item) => item.name === name);
-    thuMatched.isSelected = !thuMatched.isSelected;
-    //Lưu lại mảng sau khi chọn
-    setArrThuChon(arrClone);
+    const arrThuChonClone = [...arrThuChon];
+    const thuMatched = timThuTheoName(arrThuChonClone, name);
+    switchSelectedThuChon(thuMatched);
+    setArrThuChon(arrThuChonClone);
   };
-  //Cb lấy loại lớp chọn
+  const timThuTheoName = (arrThuChon, name) => {
+    if (!arrThuChon || !name || arrThuChon.length === 0) {
+      return;
+    }
+    const thuMatched = arrThuChon.find((item) => item.name === name);
+    if (!thuMatched) {
+      return;
+    }
+    return thuMatched;
+  };
+  const switchSelectedThuChon = (thuChon) => {
+    if (!thuChon) {
+      return;
+    }
+    thuChon.isSelected = !thuChon.isSelected;
+  };
+
   const layLoaiLopHandler = (e) => {
     setLop(e.target.value);
   };
-  //Cb lấy hệ số
   const layHesoHandler = (e) => {
     setHeso(e.target.value);
   };
-  //Cb actions
-  const themNhieuHandler = () => {
-    const arrFlter = arrThuChon.filter((item) => item.isSelected);
-    if (loaiLop !== "none") {
-      if (layData) {
-        layData({
-          type: "them",
-          arrThuChon: arrFlter,
-          loaiLop: loaiLop,
-          heso: +heso,
-        });
-      }
-      console.log("thêm nhiều");
-      resetThuChon();
+
+  //FUNCTIONS
+  const themNhieuNgayChonHandler = () => {
+    const arrThuDuocChon = locArrThuDuocChon(arrThuChon);
+    if (!isDaChonLoaiLop(loaiLop)) {
+      return;
     }
-  };
-  const xoaNhieuHandler = () => {
-    const arrFlter = arrThuChon.filter((item) => item.isSelected);
     if (layData) {
-      layData({ type: "xoa", arrThuChon: arrFlter });
+      layData({
+        type: "them",
+        arrThuChon: arrThuDuocChon,
+        loaiLop: loaiLop,
+        heso: +heso,
+      });
     }
-    console.log("xóa nhiều");
     resetThuChon();
   };
-  const resetHandler = () => {
+  const locArrThuDuocChon = (arrThuChon) => {
+    if (arrThuChon.length === 0) {
+      return;
+    }
+    const arrFilter = arrThuChon.filter((item) => item.isSelected);
+    return arrFilter;
+  };
+  const isDaChonLoaiLop = (loaiLop) => {
+    return loaiLop !== "none";
+  };
+
+  const xoaNhieuNgayChonHandler = () => {
+    const arrThuDuocChon = locArrThuDuocChon(arrThuChon);
+    if (layData) {
+      layData({ type: "xoa", arrThuChon: arrThuDuocChon });
+    }
+    resetThuChon();
+  };
+
+  const resetChonNgayHandler = () => {
     if (layData) {
       layData({ type: "reset" });
     }
     resetThuChon();
-    console.log("reset luôn");
   };
-  //Side effect set mảng redner ngày
+
+  //SIDE EFFECT
   useEffect(() => {
-    //Mẫu mảng thứ
-    let ARR_THU = [
-      { name: "Hai", value: "Mon", isSelected: false },
-      { name: "Ba", value: "Tue", isSelected: false },
-      { name: "Tư", value: "Wed", isSelected: false },
-      { name: "Năm", value: "Thu", isSelected: false },
-      { name: "Sáu", value: "Fri", isSelected: false },
-      { name: "Bảy", value: "Sat", isSelected: false },
-      { name: "CN", value: "Sun", isSelected: false },
-    ];
-    setArrThuChon(ARR_THU);
+    resetThuChon();
   }, []);
 
   return (
@@ -130,14 +140,22 @@ const ChonNhieuNgay = (props) => {
         <button
           className={classes.btn}
           type="button"
-          onClick={themNhieuHandler}
+          onClick={themNhieuNgayChonHandler}
         >
           Thêm nhiều
         </button>
-        <button className={classes.btn} type="button" onClick={xoaNhieuHandler}>
+        <button
+          className={classes.btn}
+          type="button"
+          onClick={xoaNhieuNgayChonHandler}
+        >
           Xóa nhiều
         </button>
-        <button className={classes.btn} type="button" onClick={resetHandler}>
+        <button
+          className={classes.btn}
+          type="button"
+          onClick={resetChonNgayHandler}
+        >
           Reset
         </button>
       </div>

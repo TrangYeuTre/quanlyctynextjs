@@ -5,12 +5,14 @@ import { useState, useEffect } from "react";
 import NgayBar from "../../UI/NgayBar";
 
 const LuongNhom = (props) => {
+  //VARIABLES
   const { arrDdn, layDataLuongNhom } = props;
-  console.log(arrDdn)
-  //State magnr render
   const [arrDdnRender, setArrDdnRender] = useState(arrDdn);
-  //State lây value ghi chú từ input
   const [ghiChuVal, setGhiChuVal] = useState();
+  const tongLuongNhom = tinhTongLuongNhom(arrDdn);
+
+  //CALLBACKS
+  //Delay .5s mới thêm phần ghi chú gõ vào
   let delay;
   const layGhiChuHandler = (e) => {
     clearTimeout(delay);
@@ -18,23 +20,34 @@ const LuongNhom = (props) => {
       setGhiChuVal(e.target.value);
     }, 500);
   };
-  //Tính tổng lương nhớm
-  const tongLuongNhom = tinhTongLuongNhom(arrDdn);
-  //Cb thêm ghi chú cho ngày nhóm
-  const themGhiChuNgayNhomHandler = (ngayDiemDanh) => {
-    //Tìm trong mảng ngày tương ứng để thêm ghi chú
-    const arrDdnClone = [...arrDdnRender];
 
-    const ngayMatched = arrDdnClone.find(
+  const themGhiChuNgayNhomHandler = (ngayDiemDanh) => {
+    const arrDdnClone = [...arrDdnRender];
+    const ngayMatched = timNgayDiemDanhNhom(arrDdnClone, ngayDiemDanh);
+    updateGhiChuChoNgayDiemDanhNhom(ngayMatched, ghiChuVal);
+    updateMangDdnRenderVaTruyenDataLenCompTren(arrDdnClone);
+  };
+  const timNgayDiemDanhNhom = (arrDdn, ngayDiemDanh) => {
+    const ngayMatched = arrDdn.find(
       (item) => item.ngayDiemDanh === ngayDiemDanh
     );
-    if (ngayMatched) {
-      ngayMatched.ghiChu = ghiChuVal;
+    if (!ngayMatched) {
+      return;
     }
-    layDataLuongNhom(arrDdnClone);
-    setArrDdnRender(arrDdnClone);
+    return ngayMatched;
   };
-  // useEffect(()=>{},)
+  const updateGhiChuChoNgayDiemDanhNhom = (ngayMatched, ghiChuVal) => {
+    if (!ngayMatched) {
+      return;
+    }
+    ngayMatched.ghiChu = ghiChuVal;
+  };
+  const updateMangDdnRenderVaTruyenDataLenCompTren = (arrHandler) => {
+    layDataLuongNhom(arrHandler);
+    setArrDdnRender(arrHandler);
+  };
+
+  //SIDE EFFECT
   useEffect(() => {
     setArrDdnRender(arrDdn);
   }, [arrDdn]);

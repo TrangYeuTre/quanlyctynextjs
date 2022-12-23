@@ -7,98 +7,111 @@ import NgayBar from "../../UI/NgayBar";
 import { tinhTongPhuPhi } from "../luong_helper";
 
 const PhuPhi = (props) => {
+  //VARIABLES
   const { layDataPhuPhi, dataPhuPhi } = props;
-  //State view thêm/ sửa phụ phí
   const [viewThemPp, setViewThemPp] = useState(true);
-  //State lấy data của ngày được sửa
   const [dataNgaySua, setDataNgaySua] = useState();
-  //State chính lấy mảng data phụ phí
   const [arrPhuPhi, setArrPhuPhi] = useState([]);
-  //Cb view thêm hay sửa phụ phí
+  const tongPhuPhi = tinhTongPhuPhi(arrPhuPhi);
+
+  //CB
   const viewFormThemPhuPhi = () => {
     setViewThemPp(true);
   };
-  const viewFormSuaPhuPhi = (id) => {
+  const viewFormSuaPhuPhi = () => {
     setViewThemPp(false);
-    //TÌm data ngày sửa
-    let dataNgaySua = {};
-    const itemMatch = arrPhuPhi.find((item) => +item.ngayPhuPhiId === +id);
-    if (itemMatch) {
-      dataNgaySua = itemMatch;
-    }
-    setDataNgaySua(dataNgaySua);
   };
 
-  //Cb chính thêm phụ phí ngày mới
-  const themNgayPhuPhiHandler = (data) => {
-    //Clone lại mảng phụ phí
-    const arrClone = [...arrPhuPhi];
-    //Xư lý thêm prop ngayPhuPhiId cho data
-    if (arrClone.length === 0) {
-      const dataUpdate = { ...data, ngayPhuPhiId: 1 };
-      //Push nó vào
-      arrClone.push(dataUpdate);
-    } else {
-      //Trường hợp đã tồn tại
-      const lastItem = arrClone[arrClone.length - 1];
-      const newId = +lastItem.ngayPhuPhiId + 1;
-      const dataUpdate = { ...data, ngayPhuPhiId: newId };
-      //Push nó vào
-      arrClone.push(dataUpdate);
+  const loadDataMacDinhNgaySua = (ngayPhuPhiId) => {
+    viewFormSuaPhuPhi();
+    const ngayPhuPhiMatched = timNgayPhuPhi(arrPhuPhi, ngayPhuPhiId);
+    setDataNgaySua(ngayPhuPhiMatched);
+  };
+  const timNgayPhuPhi = (arrPhuPhi, ngayPhuPhiId) => {
+    if (!arrPhuPhi && arrPhuPhi.length === 0) {
+      return;
     }
-    //Sort lại mảng
-    arrClone.sort((a, b) =>
+    const itemMatch = arrPhuPhi.find(
+      (item) => +item.ngayPhuPhiId === +ngayPhuPhiId
+    );
+    if (!itemMatch) {
+      return;
+    }
+    return itemMatch;
+  };
+
+  //Thêm mới ngày phụ phí
+  const themNgayPhuPhiHandler = (data) => {
+    const arrClone = [...arrPhuPhi];
+    themMoiDataVaoArrPhuPhi(arrClone, data);
+    sapXepLaiArrPhuPhiTheoNgayTangDan(arrClone);
+    thietLapArrPhuPhiRenderVaTruyenLenCompTren(arrClone);
+  };
+  const themMoiDataVaoArrPhuPhi = (arrPhuPhi, data) => {
+    const newNgayPhuPhiId = taoNgayPhuPhiId(arrPhuPhi);
+    const dataAdd = { ...data, ngayPhuPhiId: newNgayPhuPhiId };
+    arrPhuPhi.push(dataAdd);
+  };
+  const taoNgayPhuPhiId = (arrPhuPhi) => {
+    let ngayPhuPhiId;
+    if (arrPhuPhi.length === 0) {
+      ngayPhuPhiId = 1;
+    } else {
+      const lastItem = arrPhuPhi[arrPhuPhi.length - 1];
+      ngayPhuPhiId = +lastItem.ngayPhuPhiId + 1;
+    }
+    return ngayPhuPhiId;
+  };
+  const sapXepLaiArrPhuPhiTheoNgayTangDan = (arrPhuPhi) => {
+    arrPhuPhi.sort((a, b) =>
       new Date(a.ngayPhuPhi) < new Date(b.ngayPhuPhi) ? -1 : 1
     );
-    //setArrPhuPhi
-    setArrPhuPhi(arrClone);
-    layDataPhuPhi(arrClone);
+  };
+  const thietLapArrPhuPhiRenderVaTruyenLenCompTren = (arrPhuPhi) => {
+    setArrPhuPhi(arrPhuPhi);
+    layDataPhuPhi(arrPhuPhi);
   };
 
-  //Cb sửa ngày phụ phí
+  //Sửa ngày phụ phí
   const suaNgayPhuPhiHandler = (data) => {
-    //clone lại arr phụ hí
     const arrClone = [...arrPhuPhi];
-    //Tìm và update lại data
-    const ngayMatched = arrClone.find(
-      (item) => +item.ngayPhuPhiId === +data.ngayPhuPhiId
-    );
-    if (ngayMatched) {
-      ngayMatched.phuPhi = +data.phuPhi;
-      ngayMatched.ghiChuPhuPhi = data.ghiChuPhuPhi;
+    const ngayMatched = timNgayPhuPhi(arrClone, +data.ngayPhuPhiId);
+    updateDataNgayPhuPhi(ngayMatched, data);
+    thietLapArrPhuPhiRenderVaTruyenLenCompTren(arrClone);
+  };
+  const updateDataNgayPhuPhi = (ngayMatched, data) => {
+    if (!ngayMatched) {
+      return;
     }
-    setArrPhuPhi(arrClone);
-    layDataPhuPhi(arrClone);
+    ngayMatched.phuPhi = +data.phuPhi;
+    ngayMatched.ghiChuPhuPhi = data.ghiChuPhuPhi;
   };
 
-  //Cb xóa phụ phí ngày mới
-  const xoaNgayPhuPhiHandler = (id) => {
-    //Clone
+  //Xóa ngày phụ phí
+  const xoaNgayPhuPhiHandler = (ngayPhuPhiId) => {
     let arrClone = [...arrPhuPhi];
     if (arrClone.length === 0) {
       setArrPhuPhi([]);
     }
-    //Tìm id và xóa
-    const indexNgayMatched = arrClone.findIndex(
-      (item) => +item.ngayPhuPhiId === +id
-    );
-    console.log(indexNgayMatched);
-    //Xóa
+    const indexNgayMatched = timIndexNgayPhuPhi(arrClone, ngayPhuPhiId);
     if (indexNgayMatched !== -1) {
       arrClone.splice(indexNgayMatched, 1);
     }
-    //Set lại
-    setArrPhuPhi(arrClone);
-    layDataPhuPhi(arrClone);
+    thietLapArrPhuPhiRenderVaTruyenLenCompTren(arrClone);
+  };
+  const timIndexNgayPhuPhi = (arrPhuPhi, ngayPhuPhiId) => {
+    if (!arrPhuPhi || !ngayPhuPhiId || arrPhuPhi.length === 0) {
+      return;
+    }
+    const indexNgayMatched = arrPhuPhi.findIndex(
+      (item) => +item.ngayPhuPhiId === +ngayPhuPhiId
+    );
+    return indexNgayMatched;
   };
 
-  const tongPhuPhi = tinhTongPhuPhi(arrPhuPhi);
-
-  //Side effect load ngày sửa phụ phí
+  //SIDE EFFECT
   useEffect(() => {
-    dataPhuPhi.sort((a, b) =>
-      new Date(a.ngayPhuPhi) < new Date(b.ngayPhuPhi) ? -1 : 1
-    );
+    sapXepLaiArrPhuPhiTheoNgayTangDan(dataPhuPhi);
     setArrPhuPhi(dataPhuPhi);
   }, [dataPhuPhi]);
 
@@ -153,7 +166,10 @@ const PhuPhi = (props) => {
                     <div className={classes.actions}>
                       <div
                         className={classes.sua}
-                        onClick={viewFormSuaPhuPhi.bind(0, item.ngayPhuPhiId)}
+                        onClick={loadDataMacDinhNgaySua.bind(
+                          0,
+                          item.ngayPhuPhiId
+                        )}
                       >
                         Sửa
                       </div>

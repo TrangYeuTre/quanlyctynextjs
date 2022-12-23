@@ -6,48 +6,50 @@ import {
   tinhTongTienLuongCaNhan,
 } from "../luong_helper";
 import { viewSplitMoney } from "../../../helper/uti";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-//CB view lại 2 chữ số thập phân
 const view2SoThapPhan = (num) => {
   return num.toFixed(2);
 };
-const lamTron = (num) => {
+const lamTronTienLenHangNghin = (num) => {
   return Math.round(num / 1000) * 1000;
 };
 
 const LuongCaNhan = (props) => {
-  //Lấy mảng ddcn
+  //VARIABLES
   const { arrDdcn, giaoVienChonData, layDataLuongCaNhan } = props;
-  //State mảng data cuối cùng để render lương cá nhân
   const [arrDataLuongCaNhan, setArrDataLuongCn] = useState([]);
-  //Một heler xử lý chuyển mảng ddcn về dạng thống ke theo học sinh cho giáo viên
   const arrDataInitLuongCaNhan = layDataLuongCaNhanTuArrDdcn(arrDdcn);
-  //Cb thêm hệ số
+
+  //CALLBACKS
   const themHeso45 = (hocSinhId) => {
-    let arrHandler = [];
-    if (arrDataLuongCaNhan.length === 0) {
-      //Lấy mảng init xử lý
-      arrHandler = [...arrDataInitLuongCaNhan];
-    } else {
-      arrHandler = [...arrDataLuongCaNhan];
-    }
-    //Tìm và đánh hệ số
-    const hsMatched = arrHandler.find((item) => item.hocSinhId === hocSinhId);
-    if (hsMatched) {
-      hsMatched.heSoTinh = 45;
-    }
-    //Chạy tính toán lại nào
-    const arrResult = tinhLaiArrLuongCaNhan(
-      arrHandler,
-      giaoVienChonData.luongCaNhan
+    const arrHandler = chotArrLuongCaNhanCanDungChoThemHeSo(
+      arrDataInitLuongCaNhan,
+      arrDataLuongCaNhan
     );
-    console.log(arrResult);
-    //Set lại mảng state
-    setArrDataLuongCn(arrResult);
-    layDataLuongCaNhan(arrResult);
+    timHocSinhVaDanhHeSoTinh(arrHandler, hocSinhId, 45);
+    const arrLuongCaNhanTinhLai = tinhLaiArrLuongCaNhanCapNhat(
+      arrHandler,
+      giaoVienChonData
+    );
+    updateArrLuongCnRenderVaTruyenDataLenCompTren(arrLuongCaNhanTinhLai);
   };
   const themHeso60 = (hocSinhId) => {
+    const arrHandler = chotArrLuongCaNhanCanDungChoThemHeSo(
+      arrDataInitLuongCaNhan,
+      arrDataLuongCaNhan
+    );
+    timHocSinhVaDanhHeSoTinh(arrHandler, hocSinhId, 60);
+    const arrLuongCaNhanTinhLai = tinhLaiArrLuongCaNhanCapNhat(
+      arrHandler,
+      giaoVienChonData
+    );
+    updateArrLuongCnRenderVaTruyenDataLenCompTren(arrLuongCaNhanTinhLai);
+  };
+  const chotArrLuongCaNhanCanDungChoThemHeSo = (
+    arrDataInitLuongCaNhan,
+    arrDataLuongCaNhan
+  ) => {
     let arrHandler = [];
     if (arrDataLuongCaNhan.length === 0) {
       //Lấy mảng init xử lý
@@ -55,29 +57,35 @@ const LuongCaNhan = (props) => {
     } else {
       arrHandler = [...arrDataLuongCaNhan];
     }
-    //Tìm và đánh hệ số
+    return arrHandler;
+  };
+  const timHocSinhVaDanhHeSoTinh = (arrHandler, hocSinhId, heSoTinh) => {
     const hsMatched = arrHandler.find((item) => item.hocSinhId === hocSinhId);
-    if (hsMatched) {
-      hsMatched.heSoTinh = 60;
+    if (!hsMatched) {
+      return;
     }
-    //Chạy tính toán lại nào
+    hsMatched.heSoTinh = +heSoTinh;
+  };
+  const tinhLaiArrLuongCaNhanCapNhat = (arrHandler, giaoVienChonData) => {
     const arrResult = tinhLaiArrLuongCaNhan(
       arrHandler,
       giaoVienChonData.luongCaNhan
     );
-    //Set lại mảng state
+    return arrResult;
+  };
+  const updateArrLuongCnRenderVaTruyenDataLenCompTren = (arrResult) => {
     setArrDataLuongCn(arrResult);
     layDataLuongCaNhan(arrResult);
   };
 
-  //Xử lý lấy mảng cuối render
-  let arrRender = arrDataInitLuongCaNhan;
-  if (arrDataLuongCaNhan.length > 0) {
-    arrRender = arrDataLuongCaNhan;
-  }
-  //Tính tổng tiền nào
+  //HANDLERS
+  //Xử lý lấy mảng cuối render, dùng lại cb
+  const arrRender = chotArrLuongCaNhanCanDungChoThemHeSo(
+    arrDataInitLuongCaNhan,
+    arrDataLuongCaNhan
+  );
   const tongTienLuongCaNhan = tinhTongTienLuongCaNhan(arrDataLuongCaNhan);
-  //Trả
+
   return (
     <div className={classes.container}>
       <h4>Tính lương cá nhân</h4>
@@ -200,7 +208,7 @@ const LuongCaNhan = (props) => {
                   hocsinh.gioTinh
                 )}h`}</td>
                 <td className={`${classes.cellData} ${classes.part2}`}>
-                  {viewSplitMoney(lamTron(hocsinh.thanhTien))} đ
+                  {viewSplitMoney(lamTronTienLenHangNghin(hocsinh.thanhTien))} đ
                 </td>
               </tr>
             ))}
@@ -233,7 +241,7 @@ const LuongCaNhan = (props) => {
               style={{ color: "var(--mauMh4--)" }}
               className={`${classes.cellData} ${classes.part2}`}
             >
-              {viewSplitMoney(lamTron(tongTienLuongCaNhan))} đ
+              {viewSplitMoney(lamTronTienLenHangNghin(tongTienLuongCaNhan))} đ
             </td>
           </tr>
         </tfoot>

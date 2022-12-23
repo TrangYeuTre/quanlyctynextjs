@@ -2,13 +2,15 @@ import classes from "./LichItem.module.css";
 import { TbCircleOff } from "react-icons/tb";
 
 const LichItem = (props) => {
-  //Mong từ props
+  //VARIABLES
   const { idCell, ngay, loaiLop, isActive } = props.data;
   const { getCellId } = props;
-  //Edit ngày chọn
+
+  //CALLBACKS
   const suaNgayChonHandler = (idCell) => {
     getCellId(idCell);
   };
+  
   return (
     <td className={!isActive ? classes.dis : null}>
       {isActive && (

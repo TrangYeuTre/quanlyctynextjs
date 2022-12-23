@@ -12,52 +12,57 @@ import DataGiaoVien from "../../../classes/DataGiaoVien";
 import LuongGiaoVien from "../../../classes/LuongGiaoVien";
 
 const LuongDauVaoPage = (props) => {
+  //VARIABLES
   const arrGiaoVien = DataGiaoVien.arrGiaoVien;
-  //CTx noti
   const notiCtx = useContext(NotiContext);
-  //Láy ctx chọn người đẻ lấy học sinh được chọn
   const chonNguoiCtx = useContext(ChonNguoiContext);
   const giaoVienChonId = chonNguoiCtx.nguoiDuocChonId;
-  //Lấy thông tin data giáo viên
   const shortName = DataGiaoVien.timKiemGiaoVienTheoId(giaoVienChonId)
     ? DataGiaoVien.timKiemGiaoVienTheoId(giaoVienChonId).shortName
     : "";
-  //State lương tháng đã tồn tại
   const [luongThangIdTonTai, setLuongThangIdTonTai] = useState();
-  //State load ui đầu vào hay ui đã xử lý fetch data về
   const [showDauVao, setShowDauVao] = useState(true);
-  //State lấy ngày chọn
   const [ngayChon, setNgayChon] = useState(new Date());
-  //State lấy kết quả lọc sau khi fetch
-  // kqLoc này có thể là 'none' ứng với thêm mới, hoặc là chuỗi string id ứng với sửa
   const [kqLoc, setKqLoc] = useState();
-
-  //Lấy view tháng sau từ ngày chọn để render phần ôption
   const viewThisMonth = new Date(ngayChon).toLocaleString("en-GB", {
     month: "numeric",
     year: "numeric",
   });
-  //Cb trở lại giao diện lọc ban đầu
+
+  //CALLBACKS
   const showUiDauVaoHandler = () => {
     setShowDauVao(true);
   };
-  //Cb lấy ngày được chọn
   const layNgayChonHandler = (date) => {
     setNgayChon(date);
   };
-  //Cb xử lý lấy thông tin đầu vào và fetch lên db đẻ lọc data cần lấy về
+
+  //FUNCTIONS
   const xuLyThongTinDauVaoHandler = async () => {
-    //Lấy data submit
+    if (!isAllowFetching()) {
+      return;
+    }
     const dataSubmit = {
       giaoVienId: giaoVienChonId || null,
       ngayChon: convertInputDateFormat(ngayChon) || null,
     };
-    //Fetch
     const { statusCode, dataGot } = await LuongGiaoVien.xuLyThongTinDauVao(
       dataSubmit
     );
-    setKqLoc(dataGot.data);
-    //Đẩy thông báo
+    capNhatKetQuaLoc(statusCode, dataGot);
+    dayThongBao(statusCode, dataGot);
+  };
+  const isAllowFetching = () => {
+    return (
+      giaoVienChonId && ngayChon && giaoVienChonId !== "" && ngayChon !== ""
+    );
+  };
+  const capNhatKetQuaLoc = (statusCode, dataGot) => {
+    if (statusCode === 200 || statusCode == 201) {
+      setKqLoc(dataGot.data);
+    }
+  };
+  const dayThongBao = (statusCode, dataGot) => {
     setTimeout(() => {
       notiCtx.clearNoti();
       if (statusCode === 200 || statusCode === 201) {
