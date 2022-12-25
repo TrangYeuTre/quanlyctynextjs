@@ -20,7 +20,10 @@ export const xoaItemHocSinhTrungTrongMang = (arr) => {
   return arrResult;
 };
 //Support cho comp Diểm danh cá nhân
-export const locMangHsDayChinhTheoThuLabel = (arrLichDayCaNhan, labelThuNgayDiemDanh) => {
+export const locMangHsDayChinhTheoThuLabel = (
+  arrLichDayCaNhan,
+  labelThuNgayDiemDanh
+) => {
   //Lọc lại mảng này theo théu
   let arrLichDayCaNhanByThu = [];
   if (arrLichDayCaNhan.length > 0) {
@@ -271,14 +274,15 @@ export const layShortNameGiaoVienDayThe = (arrGiaoVien, giaoVienDayTheId) => {
 };
 
 //Lấy obj giáo viên dạy thế để submit
-export const getObjSubmitDayThe = (
-  arrHocTroDayThe,
-  ngayDiemDanh,
-  giaoVienChonId,
-  giaoVienDayTheId,
-  giaoVienDayTheShortName,
-  dataGiaoVienDuocChon
-) => {
+export const getObjSubmitDayThe = (data) => {
+  const {
+    arrHocTroDayThe,
+    ngayDiemDanh,
+    giaoVienChonId,
+    giaoVienDayTheId,
+    giaoVienDayTheShortName,
+    dataGiaoVienDuocChon,
+  } = data;
   let objResult = {};
   const ngayDiemDanhFormat = convertInputDateFormat(ngayDiemDanh);
   if (arrHocTroDayThe.length > 0) {
@@ -287,8 +291,8 @@ export const getObjSubmitDayThe = (
         shortName: item.shortName,
         soPhutHocMotTiet: item.soPhutHocMotTiet,
         type: "dayThe",
-        giaoVienDayTheId: giaoVienDayTheId,
-        giaoVienDayTheShortName: giaoVienDayTheShortName,
+        giaoVienChinhId: giaoVienChonId,
+        giaoVienChinhShortName: dataGiaoVienDuocChon.shortName,
       };
     });
   }

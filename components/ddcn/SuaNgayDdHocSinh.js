@@ -136,7 +136,7 @@ const SuaNgayDiemDanhCuaHocSinhPage = (props) => {
         </select>
       </div>
       {/* Loại thằng nghỉ không render cái này */}
-      {typeDd !== "nghi" && (
+      {typeDd !== "nghi" && typeDd !== "dayThe" && (
         <div className={classes.control}>
           <label>Số phút học một tiết: </label>
           <input

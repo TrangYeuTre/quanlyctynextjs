@@ -58,14 +58,14 @@ const DiemDanhDayThePage = (props) => {
     arrHocSinhChon
   );
   //Tổng hợp lại data submit theo obj only
-  const { instaceNgayDayTheMoi, objHocSinhData } = getObjSubmitDayThe(
+  const { instaceNgayDayTheMoi, objHocSinhData } = getObjSubmitDayThe({
     arrHocTroDayThe,
     ngayDiemDanh,
     giaoVienChonId,
     giaoVienDayTheId,
     giaoVienDayTheShortName,
-    dataGiaoVienDuocChon
-  );
+    dataGiaoVienDuocChon,
+  });
 
   //FUNCTIONS
   const diemDanhDayTheHandler = async () => {

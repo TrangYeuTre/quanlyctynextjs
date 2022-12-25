@@ -87,6 +87,25 @@ const handler = async (req, res) => {
     //Chõ này không dùng được returnErrror bên trên vì chưa có client, hải res thủ công lỗi
     return res.status(500).json({ thongbao: "Lỗi kết nối đến mongodb rồi." });
   }
+  //Ưu tiên xử lý dạy thế trước vì nó chỉ thay đối giaoVIenId và shortName, không thay thế các info còn lài
+  if (method === "PUT" && type === "dayThe") {
+    await db
+      .collection("diemdanhcanhans")
+      .updateOne(
+        { _id: ObjectId(ngayDiemDanhId) },
+        {
+          $set: {
+            giaoVienId: giaoVienDayTheId,
+            shortName: giaoVienDayTheShortName,
+          },
+        }
+      );
+    client.close();
+    return res
+      .status(201)
+      .json({ thongbao: "Sửa ngày điểm danh dạy thế thành công." });
+  }
+
   //Tiến hành update lại ngày điểm danh thôi, trường hợp khác dayBu mới update lại data cua ngày đó
   if (method === "PUT") {
     try {
