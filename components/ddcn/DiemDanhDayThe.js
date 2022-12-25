@@ -40,6 +40,16 @@ const DiemDanhDayThePage = (props) => {
   const layGiaoVienDayTheIdHandler = (e) => {
     setGiaoVienDayTheId(e.target.value);
   };
+  const fortmatViewNgay = (date) => {
+    return new Date(date).toLocaleString(
+      ("en-GB",
+      {
+        day: "numeric",
+        month: "numeric",
+        year: "numeric",
+      })
+    );
+  };
 
   //HANDLERS
   //Xử lý xem mảng học trò đẻ chọn dạy thế render
@@ -97,13 +107,7 @@ const DiemDanhDayThePage = (props) => {
                   <h4>Ngày đã chốt điểm danh</h4>
                   <p className={classes.warning}>
                     Thứ: <span>{layTenThuTuNgay(ngayDiemDanh)}</span> --- Ngày:{" "}
-                    <span>
-                      {new Date(ngayDiemDanh).toLocaleString("en-GB", {
-                        day: "numeric",
-                        month: "numeric",
-                        year: "numeric",
-                      })}
-                    </span>
+                    <span>{fortmatViewNgay(ngayDiemDanh)}</span>
                   </p>
                   {/* Vùng chọn giáo viên day thế */}
                   <div className={classes.control}>
