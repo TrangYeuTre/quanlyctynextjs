@@ -149,7 +149,7 @@ const PhuPhi = (props) => {
           <tbody>
             {arrPhuPhi.length > 0 &&
               arrPhuPhi.map((item) => (
-                <tr key={item.ngayPhuPhiId}>
+                <tr key={Math.random()}>
                   <td className={`${classes.cellData} ${classes.part2}`}>
                     <NgayBar ngay={new Date(item.ngayPhuPhi).getDate()} />
                   </td>

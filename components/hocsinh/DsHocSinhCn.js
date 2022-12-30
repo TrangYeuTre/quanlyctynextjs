@@ -22,11 +22,12 @@ const DanhSachHocSinhCaNhanPage = (props) => {
   const delHocSinhHandler = async (id) => {
     const { statusCode, dataGot } = await HocSinh.xoaHocSinh(id);
     dayThongBao(statusCode, dataGot, id);
+    delHocTroPhuTrachCuaGiaoVien(id);
   };
   const dayThongBao = (statusCode, dataGot, id) => {
     setTimeout(() => {
       notiCtx.clearNoti();
-      if (statusCode === 200 || statusCode === 201) {
+      if (id && (statusCode === 200 || statusCode === 201)) {
         removeDomItem(id);
       }
     }, process.env.DELAY_TIME_NOTI);

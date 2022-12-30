@@ -105,18 +105,19 @@ const SuaLuongRoute = (props) => {
   }
 
   return (
-    arrDdcn.length > 0 &&
-    arrDdn.length > 0 &&
-    Object.keys(giaoVienChonData).length > 0 &&
-    Object.keys(dataLuongThang).length > 0 && (
-      <SuaLuongPage
-        arrDdcn={arrDdcn}
-        arrDdn={arrDdn}
-        ngayDauThang={chuyenThangViewThanhNgay(thangTinh)}
-        dataLuongThang={dataLuongThang}
-      />
-    )
+    // arrDdcn.length > 0 &&
+    // arrDdn.length > 0 && (
+    // Object.keys(giaoVienChonData).length > 0 &&
+    // Object.keys(dataLuongThang).length > 0 && (
+    <SuaLuongPage
+      arrDdcn={arrDdcn}
+      arrDdn={arrDdn}
+      ngayDauThang={chuyenThangViewThanhNgay(thangTinh)}
+      dataLuongThang={dataLuongThang}
+    />
   );
+  // )
+  // );
 };
 
 //SSG

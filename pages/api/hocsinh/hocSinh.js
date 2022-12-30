@@ -148,6 +148,7 @@ const handler = async (req, res) => {
     const hocSinhXoaId = req.body;
     //Xóa thôi
     try {
+      //Xóa trực tiếp học sinh
       await db
         .collection("hocsinhs")
         .deleteOne({ _id: ObjectId(hocSinhXoaId) });
