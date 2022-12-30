@@ -41,6 +41,7 @@ const TinhToanLuongPage = (props) => {
       dataLuongCaNhan: dataLuongCaNhan,
       dataLuongNhom: dataLuongNhom,
       dataPhuPhi: dataPhuPhi,
+      tongLuongThang : +tongLuong || 0,
     });
     const { statusCode, dataGot } =
       await luongGiaoVienThangMoi.themLuongGiaoVien();

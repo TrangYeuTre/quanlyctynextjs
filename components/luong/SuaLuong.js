@@ -19,19 +19,38 @@ const SuaLuongPage = (props) => {
   const [dataLuongCaNhan, setDataLuongCaNhan] = useState([]);
   const [dataLuongNhom, setDataLuongNhom] = useState([]);
   const [dataPhuPhi, setDataPhuPhi] = useState([]);
+  const [firstLoad, setFirstLoad] = useState(true);
   const tongLuong = tinhTongLuong(dataLuongCaNhan, dataLuongNhom, dataPhuPhi);
 
   //Callbacks
+  const xuLyLayTongLuongRender = (firstLoad, dataLuongThang, tongLuong) => {
+    let tongLuongRender = 0;
+    if (firstLoad) {
+      tongLuongRender = +dataLuongThang.tongLuongThang;
+    } else {
+      tongLuongRender = +tongLuong;
+    }
+    return tongLuongRender;
+  };
   const layDataLuongCaNhanHandler = (data) => {
     setDataLuongCaNhan(data);
+    setFirstLoad(false);
   };
   const layDataLuongNhomHandler = (data) => {
     setDataLuongNhom(data);
+    setFirstLoad(false);
   };
   const layDataPhuPhiHandler = (data) => {
     setDataPhuPhi(data);
+    setFirstLoad(false);
   };
 
+  //Không đem xử lý này lên khu VARIABLES sẽ gây lỗi
+  const tongLuongRender = xuLyLayTongLuongRender(
+    firstLoad,
+    dataLuongThang,
+    tongLuong
+  );
   //Func chính
   const chotLuongThangHandler = async () => {
     const luongGiaoVienUpdate = new LuongGiaoVien({
@@ -41,6 +60,7 @@ const SuaLuongPage = (props) => {
       dataLuongCaNhan: dataLuongCaNhan,
       dataLuongNhom: dataLuongNhom,
       dataPhuPhi: dataPhuPhi,
+      tongLuongThang: +tongLuongRender,
     });
     const { statusCode, dataGot } = await luongGiaoVienUpdate.suaLuongGiaoVien(
       dataLuongThang._id
@@ -77,6 +97,7 @@ const SuaLuongPage = (props) => {
 
   useEffect(() => {
     if (dataLuongThang && dataLuongThang.dataLuongCaNhan.length > 0) {
+      console.log(dataLuongThang);
       setDataLuongCaNhan(dataLuongThang.dataLuongCaNhan);
     }
     if (dataLuongThang && dataLuongThang.dataLuongNhom.length > 0) {
@@ -113,7 +134,7 @@ const SuaLuongPage = (props) => {
             ? null
             : "Chú ý : phần lương cá nhân phải chọn hết hệ số để tính thì mới được bấm nút tính bên dưới."
         }
-        tongTienLuong={isSubmit ? tongLuong : null}
+        tongTienLuong={isSubmit ? tongLuongRender : null}
       >
         <button
           type="button"

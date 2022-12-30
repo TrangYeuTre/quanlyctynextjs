@@ -9,6 +9,7 @@ class LuongGiaoVien {
     this.dataLuongCaNhan = inputData.dataLuongCaNhan;
     this.dataLuongNhom = inputData.dataLuongNhom;
     this.dataPhuPhi = inputData.dataPhuPhi;
+    this.tongLuongThang = inputData.tongLuongThang;
   }
 
   static async xuLyThongTinDauVao(dataSubmit) {

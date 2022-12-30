@@ -98,6 +98,8 @@ const SuaLuongCaNhan = (props) => {
   //Tính tổng tiền nào
   const tongTienLuongCaNhan = tinhTongTienLuongCaNhan(arrRender);
 
+  //SIDE EFFECT
+
   return (
     <div className={classes.container}>
       <h4>Tính lương cá nhân</h4>
